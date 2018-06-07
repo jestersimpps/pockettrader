@@ -13,6 +13,7 @@ export class AppExchanges {
   @State() isLoading = true;
   storage = STORE;
   balances: Balance[] = [];
+  totalBalance = 0;
 
   componentWillLoad() {
     this.storage.get(`exchanges`).then((exchanges) => {
@@ -31,6 +32,7 @@ export class AppExchanges {
     exchange.balances.forEach((balance: Balance) => {
       sum += balance.eur;
     });
+    this.totalBalance += sum;
     return Math.round(sum * 100) / 100;
   }
 
@@ -63,6 +65,7 @@ export class AppExchanges {
     axios.get(`https://api.coindesk.com/v1/bpi/currentprice.json`).then((priceData) => {
       Promise.all(tickerPromises).then((tickerData) => {
         Promise.all(balancePromises).then((balanceData) => {
+          this.totalBalance = 0;
           for (let index = 0; index < tickerData.length; index++) {
             const currentExchange = this.exchanges.filter((e) => e.key && e.secret)[index];
             currentExchange.balances = balanceData[index].data.filter((b) => b.balance > 0).map((balance) => {
@@ -91,8 +94,8 @@ export class AppExchanges {
         <ion-toolbar color="primary">
           <ion-title>Exchanges</ion-title>
           <ion-buttons slot="end">
-            <ion-button icon-only disabled={this.isLoading} onClick={() => this.refreshBalances()}>
-              <ion-icon name="refresh" />
+            <ion-button icon-only href="/settings">
+              <ion-icon name="settings" />
             </ion-button>
           </ion-buttons>
         </ion-toolbar>
@@ -107,7 +110,7 @@ export class AppExchanges {
               <ion-label>{exchange.id}</ion-label>
               {exchange.balances ? (
                 <ion-badge color="dark" item-end>
-                  {this.getBalanceTotal(exchange)} EUR
+                  {this.isLoading ? <ion-icon name="more" /> : this.getBalanceTotal(exchange) + ' EUR'}
                 </ion-badge>
               ) : (
                 ''
@@ -118,8 +121,14 @@ export class AppExchanges {
       </ion-content>,
       <ion-footer>
         <ion-toolbar>
-          <ion-button color="dark" class="full" href="/settings">
-            Settings
+          <ion-item>
+            <ion-label>Total</ion-label>
+            <ion-badge color="dark" item-end>
+              {this.isLoading ? <ion-icon name="more" /> : Math.round(this.totalBalance * 100) / 100 + ' EUR'}
+            </ion-badge>
+          </ion-item>
+          <ion-button icon-left color="primary" class="full" disabled={this.isLoading} onClick={() => this.refreshBalances()}>
+            <ion-icon name="refresh" /> Refresh
           </ion-button>
         </ion-toolbar>
       </ion-footer>,

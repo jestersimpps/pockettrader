@@ -19,6 +19,7 @@
     "@ionic/core": "4.0.0-alpha.7",
     "@stencil/core": "^0.9.6",
     "@stencil/router": "^0.2.1",
+    "axios": "^0.18.0",
     "highcharts": "^6.1.0"
   },
   "devDependencies": {

@@ -8,7 +8,7 @@
 // uncomment the following line to force mode to be Material Design
 // mode: 'md'
 //});
+declare let Context: any;
 
 import highcharts from './highcharts';
-declare let Context: any;
 Context.highcharts = highcharts;

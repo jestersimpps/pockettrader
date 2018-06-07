@@ -23,10 +23,18 @@ export class AppExchanges {
                 <img src={exchange.icon} />
               </ion-avatar>
               <ion-label>{exchange.id}</ion-label>
+              <ion-badge item-end>260k</ion-badge>
             </ion-item>
           ))}
         </ion-list>
       </ion-content>,
+      <ion-footer>
+        <ion-toolbar>
+          <ion-button color="dark" class="full" href="/settings">
+            Settings
+          </ion-button>
+        </ion-toolbar>
+      </ion-footer>,
     ];
   }
 }

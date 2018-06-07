@@ -101,6 +101,39 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface AppKeys {
+      'exchangeId': string;
+    }
+  }
+
+  interface HTMLAppKeysElement extends StencilComponents.AppKeys, HTMLStencilElement {}
+
+  var HTMLAppKeysElement: {
+    prototype: HTMLAppKeysElement;
+    new (): HTMLAppKeysElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-keys': HTMLAppKeysElement;
+  }
+  interface ElementTagNameMap {
+    'app-keys': HTMLAppKeysElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-keys': JSXElements.AppKeysAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppKeysAttributes extends HTMLAttributes {
+      'exchangeId'?: string;
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface MyApp {
 
     }
@@ -159,6 +192,39 @@ declare global {
   namespace JSXElements {
     export interface AppPairsAttributes extends HTMLAttributes {
       'exchange'?: string;
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppSettings {
+
+    }
+  }
+
+  interface HTMLAppSettingsElement extends StencilComponents.AppSettings, HTMLStencilElement {}
+
+  var HTMLAppSettingsElement: {
+    prototype: HTMLAppSettingsElement;
+    new (): HTMLAppSettingsElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-settings': HTMLAppSettingsElement;
+  }
+  interface ElementTagNameMap {
+    'app-settings': HTMLAppSettingsElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-settings': JSXElements.AppSettingsAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppSettingsAttributes extends HTMLAttributes {
+
     }
   }
 }

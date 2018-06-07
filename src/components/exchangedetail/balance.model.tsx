@@ -4,4 +4,8 @@ export class Balance {
   pending: number;
   currency: string;
   cryptoAddress?: string;
+  btc: number;
+  usd: number;
+  eur: number;
+  gbp: number;
 }

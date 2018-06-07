@@ -28,8 +28,6 @@ declare global {
 
 import '@ionic/core';
 import 'ionicons';
-import '@stencil/router';
-import '@stencil/state-tunnel';
 
 
 declare global {

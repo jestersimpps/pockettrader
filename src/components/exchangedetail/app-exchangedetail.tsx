@@ -12,7 +12,6 @@ declare const axios;
 })
 export class AppExchangeDetail {
   @Prop() exchangeId: string;
-  @State() log: string;
   @State() exchanges: Exchange[] = [];
   @State() exchange: Exchange = new Exchange();
   tickers;
@@ -27,26 +26,13 @@ export class AppExchangeDetail {
   }
 
   componentDidLoad() {
-    console.log(this.storage);
-    let balanceData;
-    this.log = `Getting tickers...`;
     axios
       .get(`http://lightningassets.com/exchangeapi/${this.exchange.id}/tickers`)
       .then((response) => {
         this.tickers = response.data;
-        this.log = `Getting balances...`;
-        return axios.post(`http://lightningassets.com/exchangeapi/${this.exchange.id}/balances/get`, {
-          key: this.exchange.key,
-          secret: this.exchange.secret,
-        });
-      })
-      .then((response) => {
-        balanceData = response.data;
-        this.log = `Getting latest prices...`;
         return axios.get(`https://api.coindesk.com/v1/bpi/currentprice.json`);
       })
       .then((priceData) => {
-        this.log = `Balances:`;
         highcharts.chart('pie', {
           chart: {
             plotBackgroundColor: '#fff',
@@ -59,7 +45,7 @@ export class AppExchangeDetail {
           },
           tooltip: {
             pointFormat: `{series.name}: <b>{point.percentage:.1f} %</b>
-          <br>{point.amount:.8f}  <b>{point.currency}</b>
+          <br>{point.balance:.8f}  <b>{point.currency}</b>
           <br>{point.usd:.8f}  <b>USD</b>
           <br>{point.eur:.8f}  <b>EUR</b>
           <br>{point.gbp:.8f}  <b>GBP</b>
@@ -79,15 +65,15 @@ export class AppExchangeDetail {
           series: [
             {
               name: 'Balances',
-              data: balanceData.filter((b) => b.balance > 0).map((balance) => {
+              data: this.exchange.balances.map((balance) => {
                 const btcbalance = this.getBtcValue(balance);
                 return {
                   name: balance.currency,
                   y: btcbalance,
-                  usd: btcbalance * +priceData.data.bpi.USD.rate_float,
+                  usd: this.exchange,
                   eur: btcbalance * +priceData.data.bpi.EUR.rate_float,
                   gbp: btcbalance * +priceData.data.bpi.GBP.rate_float,
-                  amount: balance.balance,
+                  balance: balance.balance,
                   currency: balance.currency,
                 };
               }),
@@ -96,7 +82,6 @@ export class AppExchangeDetail {
         });
       })
       .catch((error) => {
-        this.log = error.message;
         console.error(error);
       });
   }
@@ -113,7 +98,6 @@ export class AppExchangeDetail {
       </ion-header>,
 
       <ion-content padding>
-        <h5>{this.log}</h5>
         <div id="pie" />
       </ion-content>,
     ];

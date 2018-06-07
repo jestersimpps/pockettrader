@@ -1,7 +1,8 @@
 import { Component, Prop, State } from '@stencil/core';
 import highcharts from '../../global/highcharts';
 import { Balance } from './balance.model';
-import { Exchanges } from '../exchanges/exchanges';
+import { Exchange } from '../exchanges/exchanges';
+import { STORE } from '../../services/store';
 
 declare const axios;
 
@@ -12,15 +13,21 @@ declare const axios;
 export class AppExchangeDetail {
   @Prop() exchangeId: string;
   @State() log: string;
-  exchange;
+  @State() exchanges: Exchange[] = [];
+  @State() exchange: Exchange = new Exchange();
   tickers;
   balances: Balance[] = [];
+  storage = STORE;
 
   componentWillLoad() {
-    this.exchange = Exchanges.find((e) => e.id === this.exchangeId);
+    this.storage.get(`exchanges`).then((exchanges) => {
+      this.exchanges = exchanges;
+      this.exchange = this.exchanges.find((e) => e.id === this.exchangeId);
+    });
   }
 
   componentDidLoad() {
+    console.log(this.storage);
     let balanceData;
     this.log = `Getting tickers...`;
     axios

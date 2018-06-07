@@ -1,12 +1,20 @@
-import { Component } from '@stencil/core';
-import { Exchanges } from '../exchanges/exchanges';
+import { Component, State } from '@stencil/core';
+import { Exchange } from '../exchanges/exchanges';
+import { STORE } from '../../services/store';
 
 @Component({
   tag: 'app-settings',
   styleUrl: 'app-settings.css',
 })
 export class AppSettings {
-  exchanges = Exchanges;
+  @State() exchanges: Exchange[] = [];
+  storage = STORE;
+
+  componentWillLoad() {
+    this.storage.get(`exchanges`).then((exchanges) => {
+      this.exchanges = exchanges;
+    });
+  }
 
   render() {
     return [

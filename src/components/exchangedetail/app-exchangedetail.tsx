@@ -1,13 +1,15 @@
 import { Component, Prop } from '@stencil/core';
 import highcharts from '../../global/highcharts';
 import { Balance } from './balance.model';
+import { Exchanges } from '../exchanges/exchanges';
 
 @Component({
   tag: 'app-exchangedetail',
   styleUrl: 'app-exchangedetail.css',
 })
 export class AppExchangeDetail {
-  @Prop() exchange: string;
+  @Prop() exchangeId: string;
+  exchange;
   balances: Balance[] = [
     {
       currency: 'eth',
@@ -28,6 +30,10 @@ export class AppExchangeDetail {
       balance: 500,
     },
   ];
+
+  componentWillLoad() {
+    this.exchange = Exchanges.find((e) => e.id === this.exchangeId);
+  }
 
   componentDidLoad() {
     highcharts.chart('pie', {
@@ -75,7 +81,7 @@ export class AppExchangeDetail {
           <ion-buttons slot="start">
             <ion-back-button defaultHref="/" />
           </ion-buttons>
-          <ion-title>{this.exchange}</ion-title>
+          <ion-title>{this.exchange.id}</ion-title>
         </ion-toolbar>
       </ion-header>,
 

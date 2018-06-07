@@ -1,37 +1,12 @@
-import { Component, Prop } from '@stencil/core';
+import { Component } from '@stencil/core';
+import { Exchanges } from './exchanges';
 
 @Component({
   tag: 'app-exchanges',
   styleUrl: 'app-exchanges.css',
 })
 export class AppExchanges {
-  @Prop()
-  exchanges: {
-    id: string;
-    key: string;
-    secret: string;
-  }[] = [
-    {
-      id: 'kraken',
-      key: '',
-      secret: '',
-    },
-    {
-      id: 'poloniex',
-      key: '',
-      secret: '',
-    },
-    {
-      id: 'binance',
-      key: '',
-      secret: '',
-    },
-    {
-      id: 'bittrex',
-      key: '',
-      secret: '',
-    },
-  ];
+  exchanges = Exchanges;
 
   render() {
     return [
@@ -44,6 +19,9 @@ export class AppExchanges {
         <ion-list>
           {this.exchanges.map((exchange) => (
             <ion-item href={`/exchanges/${exchange.id}`}>
+              <ion-avatar item-start>
+                <img src={exchange.icon} />
+              </ion-avatar>
               <ion-label>{exchange.id}</ion-label>
             </ion-item>
           ))}

@@ -12,3 +12,4 @@ export function urlB64ToUint8Array(base64String: string) {
   }
   return outputArray;
 }
+

@@ -36,7 +36,7 @@ export class MyApp {
       <ion-app>
         <ion-router useHash={false}>
           <ion-route url="/" component="app-exchanges" />
-          <ion-route url="/exchanges/:exchange" component="app-exchangedetail" />
+          <ion-route url="/exchanges/:exchangeId" component="app-exchangedetail" />
         </ion-router>
         <ion-nav />
       </ion-app>

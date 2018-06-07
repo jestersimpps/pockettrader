@@ -36,7 +36,7 @@ declare global {
 
   namespace StencilComponents {
     interface AppExchangedetail {
-      'exchange': string;
+      'exchangeId': string;
     }
   }
 
@@ -59,7 +59,7 @@ declare global {
   }
   namespace JSXElements {
     export interface AppExchangedetailAttributes extends HTMLAttributes {
-      'exchange'?: string;
+      'exchangeId'?: string;
     }
   }
 }
@@ -69,11 +69,7 @@ declare global {
 
   namespace StencilComponents {
     interface AppExchanges {
-      'exchanges': {
-    id: string;
-    key: string;
-    secret: string;
-  }[];
+
     }
   }
 
@@ -96,11 +92,7 @@ declare global {
   }
   namespace JSXElements {
     export interface AppExchangesAttributes extends HTMLAttributes {
-      'exchanges'?: {
-    id: string;
-    key: string;
-    secret: string;
-  }[];
+
     }
   }
 }

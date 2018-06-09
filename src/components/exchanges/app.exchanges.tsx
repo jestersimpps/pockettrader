@@ -1,44 +1,67 @@
-import { Component, State } from '@stencil/core';
+import { Component, State, Prop } from '@stencil/core';
 import { CURRENCYSERVICE, BALANCESERVICE, EXCHANGESERVICE, TICKERSERVICE } from '../../services/globals';
 import highcharts from '../../global/highcharts';
 import numeral from 'numeral';
 import { Currency, BtcPrice } from '../../services/currency.service';
 import { Balance } from '../../services/balance.service';
 import { Exchanges, Exchange } from '../../services/exchange.service';
+import { appSetExchanges, appSetBaseCurrency, appSetConversionRates } from '../../actions/app';
+import { Store, Action } from '@stencil/redux';
 
 @Component({
   tag: 'app-exchanges',
   styleUrl: 'app-exchanges.css',
 })
 export class AppExchanges {
+  @Prop({ context: 'store' })
+  store: Store;
   @State() exchanges: Exchange[] = [];
   @State() isLoading = true;
   @State() totalBalance: number;
   @State() baseCurrency: Currency;
-  @State() ready = false;
 
   conversionRates: BtcPrice;
   balances: Balance[] = [];
   chart;
 
+  appSetExchanges: Action;
+  appSetBaseCurrency: Action;
+  appSetConversionRates: Action;
+
+  componentWillLoad() {
+    this.store.mapStateToProps(this, (state) => {
+      const {
+        app: { exchanges, baseCurrency, conversionRates },
+      } = state;
+      return {
+        exchanges,
+        baseCurrency,
+        conversionRates,
+      };
+    });
+    this.store.mapDispatchToProps(this, {
+      appSetExchanges,
+      appSetBaseCurrency,
+      appSetConversionRates,
+    });
+  }
+
   componentDidLoad() {
     EXCHANGESERVICE.getExchanges()
       .then((exchanges) => {
         this.isLoading = false;
-        if (exchanges) {
-          this.exchanges = exchanges;
+        if (!exchanges) {
+          this.appSetExchanges(Exchanges);
         } else {
-          this.exchanges = Exchanges;
-          EXCHANGESERVICE.setExchanges(this.exchanges);
+          this.appSetExchanges(exchanges);
         }
         return CURRENCYSERVICE.getBaseCurrency();
       })
       .then((baseCurrency) => {
         if (!baseCurrency) {
-          this.baseCurrency = Currency.mbtc;
-          CURRENCYSERVICE.setBaseCurrency(Currency.eur);
+          this.appSetBaseCurrency(Currency.mbtc);
         } else {
-          this.baseCurrency = baseCurrency;
+          this.appSetBaseCurrency(baseCurrency);
         }
         return CURRENCYSERVICE.getConversionRates();
       })
@@ -55,7 +78,7 @@ export class AppExchanges {
           this.totalBalance = CURRENCYSERVICE.convertToBase(BALANCESERVICE.getLatestTotal(totalBalances), this.conversionRates, this.baseCurrency);
         }
         this.drawChart(totalBalances);
-        this.ready = true;
+        this.isLoading = false;
       });
   }
 
@@ -215,19 +238,17 @@ export class AppExchanges {
           />
         </ion-refresher> */}
         <ion-list>
-          {this.ready &&
+          {!this.isLoading &&
             this.exchanges.filter((e) => e.key && e.secret).map((exchange) => (
               <ion-item lines="full" href={`/exchanges/${exchange.id}`}>
                 <ion-avatar item-start>
                   <img src={exchange.icon} />
                 </ion-avatar>
                 <ion-label>{exchange.id}</ion-label>
-                {exchange.balances ? (
+                {exchange.balances.length && (
                   <ion-badge color="light" item-end>
                     {`${numeral(this.getBtcTotal(exchange)).format(this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00')} ${this.baseCurrency}`}
                   </ion-badge>
-                ) : (
-                  ''
                 )}
               </ion-item>
             ))}
@@ -238,7 +259,7 @@ export class AppExchanges {
           <ion-item lines="none">
             <ion-label>Total</ion-label>
             <ion-badge color="light" item-end>
-              {this.ready &&
+              {!this.isLoading &&
                 `${this.isLoading ? '...' : numeral(this.totalBalance).format(this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00')} ${
                   this.baseCurrency
                 }`}

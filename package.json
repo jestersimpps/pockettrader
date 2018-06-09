@@ -16,14 +16,18 @@
     "test.watch": "jest --watch --no-cache"
   },
   "dependencies": {
-    "@ionic/core": "4.0.0-alpha.7",
+    "@ionic/core": "^4.0.0-alpha.7",
     "@stencil/core": "^0.9.6",
+    "@stencil/redux": "^0.0.3",
     "@stencil/router": "^0.2.1",
     "axios": "^0.18.0",
     "highcharts": "^6.1.0",
     "localforage": "^1.7.1",
     "localforage-cordovasqlitedriver": "^1.7.0",
-    "numeral": "^2.0.6"
+    "numeral": "^2.0.6",
+    "redux": "^4.0.0",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@stencil/dev-server": "latest",

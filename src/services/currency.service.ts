@@ -1,4 +1,4 @@
-import { STORE } from './storage';
+import { STORAGE } from './storage';
 
 declare const axios;
 
@@ -18,10 +18,9 @@ export class BtcPrice {
 }
 
 export class CurrencyService {
-  storage = STORE;
 
   getBaseCurrency(): Promise<Currency> {
-    return this.storage.get('basecurrency');
+    return STORAGE.get('basecurrency');
   }
 
   getConversionRates(): Promise<BtcPrice> {
@@ -32,13 +31,13 @@ export class CurrencyService {
         EUR: +response.data.bpi.EUR.rate_float,
         GBP: +response.data.bpi.GBP.rate_float,
       };
-      this.storage.set('conversionrates', conversionRates);
+      STORAGE.set('conversionrates', conversionRates);
       return conversionRates;
     });
   }
 
   setBaseCurrency(currency: Currency): void {
-    this.storage.set('basecurrency', currency);
+    STORAGE.set('basecurrency', currency);
   }
 
   convertToBase(btcValue: number, conversionRates: BtcPrice, baseCurrency: Currency): number {

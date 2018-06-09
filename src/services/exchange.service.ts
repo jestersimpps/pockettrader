@@ -1,5 +1,5 @@
 import { Balance } from './balance.service';
-import { STORE } from './storage';
+import { STORAGE } from './storage';
 
 export class Exchange {
   id: ExchangeId;
@@ -48,13 +48,12 @@ export const Exchanges: Exchange[] = [
 ];
 
 export class ExchangeService {
-  storage = STORE;
 
   getExchanges(): Promise<Exchange[]> {
-    return this.storage.get(`exchanges`);
+    return STORAGE.get(`exchanges`);
   }
 
   setExchanges(exchanges: Exchange[]): void {
-    this.storage.set(`exchanges`, exchanges);
+    STORAGE.set(`exchanges`, exchanges);
   }
 }

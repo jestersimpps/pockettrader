@@ -1,5 +1,5 @@
 import { Exchange } from './exchange.service';
-import { STORE } from './storage';
+import { STORAGE } from './storage';
 declare const axios;
 
 export class Balance {
@@ -15,10 +15,8 @@ export class Balance {
 }
 
 export class BalanceService {
-  storage = STORE;
-
   getTotalBalances(): Promise<[number, number][]> {
-    return this.storage.get('totalbalances');
+    return STORAGE.get('totalbalances');
   }
 
   getLatestTotal(totalBalances: [number, number][]): number {
@@ -29,7 +27,7 @@ export class BalanceService {
   }
 
   setTotalBalances(totalbalances: [number, number][]): void {
-    this.storage.set(`totalbalances`, totalbalances);
+    STORAGE.set(`totalbalances`, totalbalances);
   }
 
   getBalances(exchange: Exchange): Promise<Balance[]> {

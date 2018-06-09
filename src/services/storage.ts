@@ -10,7 +10,7 @@ export class Storage {
 
       let config = {
         name: '_cryptostorage',
-        storeName: '_cryptokv',
+        STORAGEName: '_cryptokv',
         driverOrder: ['sqlite', 'indexeddb', 'websql', 'localstorage'],
       };
 
@@ -62,4 +62,4 @@ export class Storage {
   }
 }
 
-export const STORE = new Storage();
+export const STORAGE = new Storage();

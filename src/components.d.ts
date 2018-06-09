@@ -26,6 +26,7 @@ declare global {
   interface HTMLAttributes {}
 }
 
+import '@stencil/redux';
 import '@ionic/core';
 import 'ionicons';
 

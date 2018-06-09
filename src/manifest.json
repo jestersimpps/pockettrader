@@ -1,6 +1,6 @@
 {
-  "name": "Ionic PWA Toolkit",
-  "short_name": "Ionic PWA",
+  "name": "PocketTrader",
+  "short_name": "PT",
   "start_url": "/",
   "display": "standalone",
   "icons": [{

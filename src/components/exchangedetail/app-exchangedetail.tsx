@@ -11,6 +11,7 @@ import { EXCHANGESERVICE, TICKERSERVICE } from '../../services/globals';
 })
 export class AppExchangeDetail {
   @Prop() exchangeId: ExchangeId;
+
   @State() exchanges: Exchange[] = [];
   @State() exchange: Exchange = new Exchange();
   @State() tickers = [];

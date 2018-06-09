@@ -12,13 +12,13 @@ export enum Currency {
 
 export class BtcPrice {
   mBTC: number;
+  BTC: number;
   USD: number;
   EUR: number;
   GBP: number;
 }
 
 export class CurrencyService {
-
   getBaseCurrency(): Promise<Currency> {
     return STORAGE.get('basecurrency');
   }
@@ -27,6 +27,7 @@ export class CurrencyService {
     return axios.get(`https://api.coindesk.com/v1/bpi/currentprice.json`).then((response) => {
       const conversionRates = <BtcPrice>{
         mBTC: 1000,
+        BTC: 1,
         USD: +response.data.bpi.USD.rate_float,
         EUR: +response.data.bpi.EUR.rate_float,
         GBP: +response.data.bpi.GBP.rate_float,

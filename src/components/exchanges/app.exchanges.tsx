@@ -17,11 +17,10 @@ export class AppExchanges {
   store: Store;
   @State() exchanges: Exchange[] = [];
   @State() isLoading = true;
-  @State() totalBalance: number;
   @State() baseCurrency: Currency;
+  @State() conversionRates: BtcPrice;
+  @State() totalBalance: number;
 
-  conversionRates: BtcPrice;
-  balances: Balance[] = [];
   chart;
 
   appSetExchanges: Action;
@@ -46,6 +45,12 @@ export class AppExchanges {
     });
   }
 
+  componentDidUpdate() {
+    BALANCESERVICE.getTotalBalances().then((totalBalances) => {
+      this.totalBalance = CURRENCYSERVICE.convertToBase(BALANCESERVICE.getLatestTotal(totalBalances), this.conversionRates, this.baseCurrency);
+    });
+  }
+
   componentDidLoad() {
     EXCHANGESERVICE.getExchanges()
       .then((exchanges) => {
@@ -66,7 +71,7 @@ export class AppExchanges {
         return CURRENCYSERVICE.getConversionRates();
       })
       .then((conversionRates) => {
-        this.conversionRates = conversionRates;
+        this.appSetConversionRates(conversionRates);
         return BALANCESERVICE.getTotalBalances();
       })
       .then((totalBalances) => {
@@ -245,7 +250,7 @@ export class AppExchanges {
                   <img src={exchange.icon} />
                 </ion-avatar>
                 <ion-label>{exchange.id}</ion-label>
-                {exchange.balances.length && (
+                {!this.isLoading && (
                   <ion-badge color="light" item-end>
                     {`${numeral(this.getBtcTotal(exchange)).format(this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00')} ${this.baseCurrency}`}
                   </ion-badge>
@@ -260,9 +265,7 @@ export class AppExchanges {
             <ion-label>Total</ion-label>
             <ion-badge color="light" item-end>
               {!this.isLoading &&
-                `${this.isLoading ? '...' : numeral(this.totalBalance).format(this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00')} ${
-                  this.baseCurrency
-                }`}
+                `${numeral(this.totalBalance).format(this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00')} ${this.baseCurrency}`}
             </ion-badge>
           </ion-item>
           <div id="spline" class="chart" />

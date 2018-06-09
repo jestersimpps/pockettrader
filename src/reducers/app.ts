@@ -31,7 +31,6 @@ const app = (state: AppState = getInitialState(), action: ActionTypes) => {
       return { ...state, baseCurrency: action.data };
     }
     case TypeKeys.APP_SET_CONVERSIONRATES: {
-      CURRENCYSERVICE.setBaseCurrency(action.data);
       return { ...state, conversionRates: action.data };
     }
   }

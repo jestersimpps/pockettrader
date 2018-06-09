@@ -1,95 +1,105 @@
 import { Component, Prop, State } from '@stencil/core';
 import highcharts from '../../global/highcharts';
-import { Balance } from './balance.model';
-import { Exchange } from '../exchanges/exchanges';
-import { STORE } from '../../services/store';
-
-declare const axios;
+import numeral from 'numeral';
+import { Balance } from '../../services/balance.service';
+import { Exchange, ExchangeId } from '../../services/exchange.service';
+import { EXCHANGESERVICE, TICKERSERVICE } from '../../services/globals';
 
 @Component({
   tag: 'app-exchangedetail',
   styleUrl: 'app-exchangedetail.css',
 })
 export class AppExchangeDetail {
-  @Prop() exchangeId: string;
+  @Prop() exchangeId: ExchangeId;
   @State() exchanges: Exchange[] = [];
   @State() exchange: Exchange = new Exchange();
-  tickers;
-  balances: Balance[] = [];
-  storage = STORE;
+  @State() tickers = [];
 
   componentWillLoad() {
-    this.storage.get(`exchanges`).then((exchanges) => {
+    EXCHANGESERVICE.getExchanges().then((exchanges) => {
       this.exchanges = exchanges;
       this.exchange = this.exchanges.find((e) => e.id === this.exchangeId);
+    });
+    TICKERSERVICE.getTickers(this.exchangeId).then((response) => {
+      this.tickers = response.data;
     });
   }
 
   componentDidLoad() {
-    axios
-      .get(`http://lightningassets.com/exchangeapi/${this.exchange.id}/tickers`)
-      .then((response) => {
-        this.tickers = response.data;
-        return axios.get(`https://api.coindesk.com/v1/bpi/currentprice.json`);
-      })
-      .then((priceData) => {
-        highcharts.chart('pie', {
-          chart: {
-            plotBackgroundColor: '#fff',
-            plotBorderWidth: null,
-            plotShadow: false,
-            type: 'pie',
-          },
-          title: {
-            text: ``,
-          },
-          tooltip: {
-            pointFormat: `{series.name}: <b>{point.percentage:.1f} %</b>
+    highcharts.chart('pie', {
+      chart: {
+        plotBackgroundColor: '#fff',
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie',
+      },
+      title: {
+        text: ``,
+      },
+      tooltip: {
+        pointFormat: `{series.name}: <b>{point.percentage:.1f} %</b>
           <br>{point.balance:.8f}  <b>{point.currency}</b>
           <br>{point.usd:.8f}  <b>USD</b>
           <br>{point.eur:.8f}  <b>EUR</b>
           <br>{point.gbp:.8f}  <b>GBP</b>
           `,
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: true,
+            format: `<b>{point.name}</b><br>{point.percentage:.1f} % `,
+            distance: 0,
           },
-          plotOptions: {
-            pie: {
-              allowPointSelect: true,
-              cursor: 'pointer',
-              dataLabels: {
-                enabled: true,
-                format: `<b>{point.name}</b><br>{point.percentage:.1f} % `,
-                distance: 0,
-              },
-            },
-          },
-          series: [
-            {
-              name: 'Balances',
-              data: this.exchange.balances.map((balance) => {
-                const btcbalance = this.getBtcValue(balance);
-                return {
-                  name: balance.currency,
-                  y: btcbalance,
-                  usd: this.exchange,
-                  eur: btcbalance * +priceData.data.bpi.EUR.rate_float,
-                  gbp: btcbalance * +priceData.data.bpi.GBP.rate_float,
-                  balance: balance.balance,
-                  currency: balance.currency,
-                };
-              }),
-            },
-          ],
-        });
-      })
-      .catch((error) => {
-        console.error(error);
+        },
+      },
+      series: [
+        {
+          name: 'Balances',
+          data: this.exchange.balances.map((balance) => {
+            return {
+              name: balance.currency,
+              y: balance.btc,
+              btc: balance.btc,
+              usd: balance.usd,
+              eur: balance.eur,
+              gbp: balance.gbp,
+              balance: balance.balance,
+              currency: balance.currency,
+            };
+          }),
+        },
+      ],
+    });
+  }
+
+  getTotal(cur = 'btc') {
+    let sum = 0;
+    if (this.exchange && this.exchange.balances) {
+      this.exchange.balances.map((balance: Balance) => {
+        sum += balance[cur];
       });
+    }
+    // in millibits
+    return sum;
+  }
+
+  getPercentage(currency) {
+    const ticker = this.tickers.find((t) => {
+      return t.base === currency;
+    });
+    if (ticker) {
+      return ticker.percentage;
+    }
+    return '?';
   }
 
   render() {
     return [
       <ion-header>
-        <ion-toolbar color="primary">
+        <ion-toolbar color="dark">
           <ion-buttons slot="start">
             <ion-back-button defaultHref="/" />
           </ion-buttons>
@@ -97,21 +107,81 @@ export class AppExchangeDetail {
         </ion-toolbar>
       </ion-header>,
 
-      <ion-content padding>
+      <ion-content>
+        <ion-item-divider color="light">Total Balance</ion-item-divider>
+        <ion-grid>
+          <ion-row>
+            <ion-col col-g>
+              <b>mBTC: </b>
+              {numeral(this.getTotal('btc') * 1000).format('0,0.0000')}
+            </ion-col>
+            <ion-col col-g>
+              <b>EUR: </b>
+              {numeral(this.getTotal('eur')).format('0,0.00')}
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col col-g>
+              <b>USD: </b>
+              {numeral(this.getTotal('usd')).format('0,0.00')}
+            </ion-col>
+            <ion-col col-g>
+              <b>GBP: </b>
+              {numeral(this.getTotal('gbp')).format('0,0.00')}
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-item-divider color="light">Balance distribution</ion-item-divider>
         <div id="pie" />
+        <ion-item-divider color="light">Individual Balances</ion-item-divider>
+        <ion-list>
+          {this.exchange && this.exchange.balances && this.tickers.length
+            ? this.exchange.balances.map((balance) => (
+                <ion-item-sliding>
+                  <ion-item lines="full">
+                    <ion-grid>
+                      <ion-row>
+                        <ion-col col-g>
+                          <b>{balance.currency}</b>
+                        </ion-col>
+                        <ion-col col-g text-right>
+                          <ion-badge color={this.getPercentage(balance.currency) > 0 ? 'success' : 'danger'}>
+                            {numeral(this.getPercentage(balance.currency)).format('0,0.00')} %
+                          </ion-badge>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col col-g>
+                          <span>{numeral(balance.balance).format('0,0.00')}</span>
+                        </ion-col>
+                        <ion-col col-g text-right>
+                          <span slot="end">{numeral(balance.btc * 1000).format('0,0.0000')} mBTC</span>
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-item>
+                  <ion-item-options side="end">
+                    <button ion-button color="danger">
+                      <ion-icon name="md-arrow-dropdown" />
+                      Buy
+                    </button>
+                    <button ion-button color="success">
+                      <ion-icon name="md-arrow-dropup" />
+                      Sell
+                    </button>
+                  </ion-item-options>
+                </ion-item-sliding>
+              ))
+            : ''}
+        </ion-list>
       </ion-content>,
+      <ion-footer>
+        <ion-toolbar>
+          <ion-button icon-left color="dark" class="full" disabled>
+            Trade
+          </ion-button>
+        </ion-toolbar>
+      </ion-footer>,
     ];
-  }
-
-  getBtcValue(balance: Balance) {
-    const innerTicker = this.tickers.find((t) => t.symbol === `${balance.currency}/BTC`);
-    if (balance.currency === 'BTC') {
-      return balance.balance;
-    }
-    if (innerTicker) {
-      return balance.balance * innerTicker.last;
-    } else {
-      return 0;
-    }
   }
 }

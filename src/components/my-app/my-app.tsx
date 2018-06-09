@@ -8,7 +8,6 @@ import { Component, Prop, Listen } from '@stencil/core';
 export class MyApp {
   @Prop({ connect: 'ion-toast-controller' })
   toastCtrl: HTMLIonToastControllerElement;
-
   /**
    * Handle service worker updates correctly.
    * This code will show a toast letting the
@@ -37,7 +36,8 @@ export class MyApp {
           <ion-route url="/" component="app-exchanges" />
           <ion-route url="/exchanges/:exchangeId" component="app-exchangedetail" />
           <ion-route url="/settings/" component="app-settings" />
-          <ion-route url="/settings/keys/:exchangeId" component="app-keys" />
+          <ion-route url="/settings/keys" component="app-keys" />
+          <ion-route url="/settings/basecurrency" component="app-basecurrency" />
         </ion-router>
         <ion-nav />
       </ion-app>

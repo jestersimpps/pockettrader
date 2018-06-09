@@ -22,7 +22,8 @@
     "axios": "^0.18.0",
     "highcharts": "^6.1.0",
     "localforage": "^1.7.1",
-    "localforage-cordovasqlitedriver": "^1.7.0"
+    "localforage-cordovasqlitedriver": "^1.7.0",
+    "numeral": "^2.0.6"
   },
   "devDependencies": {
     "@stencil/dev-server": "latest",

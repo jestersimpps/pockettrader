@@ -29,12 +29,48 @@ declare global {
 import '@ionic/core';
 import 'ionicons';
 
+import {
+  ExchangeId,
+} from './services/exchange.service';
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppBasecurrency {
+
+    }
+  }
+
+  interface HTMLAppBasecurrencyElement extends StencilComponents.AppBasecurrency, HTMLStencilElement {}
+
+  var HTMLAppBasecurrencyElement: {
+    prototype: HTMLAppBasecurrencyElement;
+    new (): HTMLAppBasecurrencyElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-basecurrency': HTMLAppBasecurrencyElement;
+  }
+  interface ElementTagNameMap {
+    'app-basecurrency': HTMLAppBasecurrencyElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-basecurrency': JSXElements.AppBasecurrencyAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppBasecurrencyAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
 
 declare global {
 
   namespace StencilComponents {
     interface AppExchangedetail {
-      'exchangeId': string;
+      'exchangeId': ExchangeId;
     }
   }
 
@@ -57,7 +93,7 @@ declare global {
   }
   namespace JSXElements {
     export interface AppExchangedetailAttributes extends HTMLAttributes {
-      'exchangeId'?: string;
+      'exchangeId'?: ExchangeId;
     }
   }
 }
@@ -100,7 +136,7 @@ declare global {
 
   namespace StencilComponents {
     interface AppKeys {
-      'exchangeId': string;
+
     }
   }
 
@@ -123,7 +159,7 @@ declare global {
   }
   namespace JSXElements {
     export interface AppKeysAttributes extends HTMLAttributes {
-      'exchangeId'?: string;
+
     }
   }
 }

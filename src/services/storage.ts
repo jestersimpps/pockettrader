@@ -1,7 +1,7 @@
 import LocalForage from 'localforage';
 import CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
 
-export default class Storage {
+export class Storage {
   dbPromise;
 
   constructor() {
@@ -61,3 +61,5 @@ export default class Storage {
     return this.dbPromise.then((db) => db.clear());
   }
 }
+
+export const STORE = new Storage();

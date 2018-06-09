@@ -57,7 +57,7 @@ export class AppKeys {
         <ion-card>
           <ion-card-content>
             <ion-icon name="md-information-circle" />
-            These API Keys will never be STORAGEd on any third party server. They will only be STORAGEd locally on your phone.{' '}
+            These API Keys will be stored locally on your phone.
           </ion-card-content>
         </ion-card>
         <ion-list>

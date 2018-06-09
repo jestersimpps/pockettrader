@@ -9,6 +9,7 @@ interface AppState {
   baseCurrency: Currency;
   totalBalances: [number, number][];
   conversionRates: BtcPrice;
+  ticker: any;
 }
 
 const getInitialState = () => {
@@ -17,6 +18,7 @@ const getInitialState = () => {
     baseCurrency: Currency.mbtc,
     totalBalances: [],
     conversionRates: <BtcPrice>{},
+    ticker: {},
   };
 };
 
@@ -32,6 +34,9 @@ const app = (state: AppState = getInitialState(), action: ActionTypes) => {
     }
     case TypeKeys.APP_SET_CONVERSIONRATES: {
       return { ...state, conversionRates: action.data };
+    }
+    case TypeKeys.APP_SET_TICKER: {
+      return { ...state, ticker: action.data };
     }
   }
 

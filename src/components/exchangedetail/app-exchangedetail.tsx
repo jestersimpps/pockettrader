@@ -3,23 +3,45 @@ import highcharts from '../../global/highcharts';
 import numeral from 'numeral';
 import { Balance } from '../../services/balance.service';
 import { Exchange, ExchangeId } from '../../services/exchange.service';
-import { EXCHANGESERVICE, TICKERSERVICE } from '../../services/globals';
+import { TICKERSERVICE, CURRENCYSERVICE } from '../../services/globals';
+import { Store, Action } from '@stencil/redux';
+import { appSetExchanges, appSetBaseCurrency, appSetConversionRates } from '../../actions/app';
+import { Currency, BtcPrice } from '../../services/currency.service';
 
 @Component({
   tag: 'app-exchangedetail',
   styleUrl: 'app-exchangedetail.css',
 })
 export class AppExchangeDetail {
+  @Prop({ context: 'store' })
+  store: Store;
   @Prop() exchangeId: ExchangeId;
 
   @State() exchanges: Exchange[] = [];
   @State() exchange: Exchange = new Exchange();
   @State() tickers = [];
+  @State() baseCurrency: Currency;
+  @State() conversionRates: BtcPrice;
+
+  appSetExchanges: Action;
+  appSetBaseCurrency: Action;
+  appSetConversionRates: Action;
 
   componentWillLoad() {
-    EXCHANGESERVICE.getExchanges().then((exchanges) => {
-      this.exchanges = exchanges;
-      this.exchange = this.exchanges.find((e) => e.id === this.exchangeId);
+    this.store.mapStateToProps(this, (state) => {
+      const {
+        app: { exchanges, baseCurrency, conversionRates },
+      } = state;
+      return {
+        exchanges,
+        baseCurrency,
+        conversionRates,
+      };
+    });
+    this.store.mapDispatchToProps(this, {
+      appSetExchanges,
+      appSetBaseCurrency,
+      appSetConversionRates,
     });
     TICKERSERVICE.getTickers(this.exchangeId).then((response) => {
       this.tickers = response.data;
@@ -27,6 +49,7 @@ export class AppExchangeDetail {
   }
 
   componentDidLoad() {
+    this.exchange = this.exchanges.find((e) => e.id === this.exchangeId);
     highcharts.chart('pie', {
       chart: {
         plotBackgroundColor: '#fff',
@@ -136,44 +159,37 @@ export class AppExchangeDetail {
         <div id="pie" />
         <ion-item-divider color="light">Individual Balances</ion-item-divider>
         <ion-list>
-          {this.exchange && this.exchange.balances && this.tickers.length
-            ? this.exchange.balances.map((balance) => (
-                <ion-item-sliding>
-                  <ion-item lines="full">
-                    <ion-grid>
-                      <ion-row>
-                        <ion-col col-g>
-                          <b>{balance.currency}</b>
-                        </ion-col>
-                        <ion-col col-g text-right>
-                          <ion-badge color={this.getPercentage(balance.currency) > 0 ? 'success' : 'danger'}>
-                            {numeral(this.getPercentage(balance.currency)).format('0,0.00')} %
-                          </ion-badge>
-                        </ion-col>
-                      </ion-row>
-                      <ion-row>
-                        <ion-col col-g>
-                          <span>{numeral(balance.balance).format('0,0.00')}</span>
-                        </ion-col>
-                        <ion-col col-g text-right>
-                          <span slot="end">{numeral(balance.btc * 1000).format('0,0.0000')} mBTC</span>
-                        </ion-col>
-                      </ion-row>
-                    </ion-grid>
-                  </ion-item>
-                  <ion-item-options side="end">
-                    <button ion-button color="danger">
-                      <ion-icon name="md-arrow-dropdown" />
-                      Buy
-                    </button>
-                    <button ion-button color="success">
-                      <ion-icon name="md-arrow-dropup" />
-                      Sell
-                    </button>
-                  </ion-item-options>
-                </ion-item-sliding>
-              ))
-            : ''}
+          {this.exchange &&
+            this.exchange.balances &&
+            this.tickers.length &&
+            this.exchange.balances.map((balance) => (
+              <ion-item lines="full" href={`/pair/${this.exchange.id}/${balance.currency}`}>
+                <ion-grid>
+                  <ion-row>
+                    <ion-col col-g>
+                      <b>{balance.currency}</b>
+                    </ion-col>
+                    <ion-col col-g text-right>
+                      <ion-badge color={this.getPercentage(balance.currency) > 0 ? 'success' : 'danger'}>
+                        {numeral(this.getPercentage(balance.currency)).format('0,0.00')} %
+                      </ion-badge>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col col-g>
+                      <span>{numeral(balance.balance).format('0,0.00')}</span>
+                    </ion-col>
+                    <ion-col col-g text-right>
+                      <span slot="end">
+                        {`${numeral(CURRENCYSERVICE.convertToBase(balance.btc, this.conversionRates, this.baseCurrency)).format(
+                          this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00',
+                        )} ${this.baseCurrency}`}
+                      </span>
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-item>
+            ))}
         </ion-list>
       </ion-content>,
       <ion-footer>

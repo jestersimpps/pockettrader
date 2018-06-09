@@ -15,6 +15,7 @@ import { Store, Action } from '@stencil/redux';
 export class AppExchanges {
   @Prop({ context: 'store' })
   store: Store;
+  
   @State() exchanges: Exchange[] = [];
   @State() isLoading = true;
   @State() baseCurrency: Currency;

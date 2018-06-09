@@ -202,31 +202,33 @@ declare global {
 declare global {
 
   namespace StencilComponents {
-    interface AppPairs {
-      'exchange': string;
+    interface AppPair {
+      'exchangeId': ExchangeId;
+      'pair': string;
     }
   }
 
-  interface HTMLAppPairsElement extends StencilComponents.AppPairs, HTMLStencilElement {}
+  interface HTMLAppPairElement extends StencilComponents.AppPair, HTMLStencilElement {}
 
-  var HTMLAppPairsElement: {
-    prototype: HTMLAppPairsElement;
-    new (): HTMLAppPairsElement;
+  var HTMLAppPairElement: {
+    prototype: HTMLAppPairElement;
+    new (): HTMLAppPairElement;
   };
   interface HTMLElementTagNameMap {
-    'app-pairs': HTMLAppPairsElement;
+    'app-pair': HTMLAppPairElement;
   }
   interface ElementTagNameMap {
-    'app-pairs': HTMLAppPairsElement;
+    'app-pair': HTMLAppPairElement;
   }
   namespace JSX {
     interface IntrinsicElements {
-      'app-pairs': JSXElements.AppPairsAttributes;
+      'app-pair': JSXElements.AppPairAttributes;
     }
   }
   namespace JSXElements {
-    export interface AppPairsAttributes extends HTMLAttributes {
-      'exchange'?: string;
+    export interface AppPairAttributes extends HTMLAttributes {
+      'exchangeId'?: ExchangeId;
+      'pair'?: string;
     }
   }
 }

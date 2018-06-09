@@ -1,0 +1,22 @@
+.tvchart {
+  height: 50%;
+}
+.full {
+  width: 100%;
+}
+.small {
+  width: 20%;
+}
+.inputbox {
+  border-radius: 7px;
+  border: 2px solid #ffce00;
+  padding: 1px;
+  padding-left: 10px;
+  margin: 4px;
+}
+ion-grid {
+  padding: 0;
+}
+.buttonRow {
+  margin-bottom: -15px;
+}

@@ -50,9 +50,7 @@ export class AppExchanges {
   }
 
   componentDidUpdate() {
-    BALANCESERVICE.getTotalBalances().then((totalBalances) => {
-      this.totalBalance = CURRENCYSERVICE.convertToBase(BALANCESERVICE.getLatestTotal(totalBalances), this.conversionRates, this.baseCurrency);
-    });
+    this.updateTotalBalances();
   }
 
   componentDidLoad() {
@@ -84,12 +82,18 @@ export class AppExchanges {
           this.totalBalance = 0;
           BALANCESERVICE.setTotalBalances([]);
         } else {
-          this.totalBalance = CURRENCYSERVICE.convertToBase(BALANCESERVICE.getLatestTotal(totalBalances), this.conversionRates, this.baseCurrency);
+          this.updateTotalBalances();
         }
         this.refreshBalances();
         this.drawChart(totalBalances);
         this.isLoading = false;
       });
+  }
+
+  updateTotalBalances() {
+    BALANCESERVICE.getTotalBalances().then((totalBalances) => {
+      this.totalBalance = CURRENCYSERVICE.convertToBase(BALANCESERVICE.getLatestTotal(totalBalances), this.conversionRates, this.baseCurrency);
+    });
   }
 
   drawChart(totalBalances) {
@@ -239,10 +243,10 @@ export class AppExchanges {
     return [
       <ion-header>
         <ion-toolbar color="dark">
-          <ion-title>Exchanges</ion-title>
+          <ion-title>Balances</ion-title>
           <ion-buttons slot="end">
             <ion-button icon-only href="/settings">
-              <ion-icon name="md-settings" padding />
+              <ion-icon name="md-menu" padding />
             </ion-button>
           </ion-buttons>
         </ion-toolbar>
@@ -256,6 +260,8 @@ export class AppExchanges {
             refreshingText="Refreshing..."
           />
         </ion-refresher> */}
+        {!this.isLoading && <app-sunburst />}
+
         <ion-list>
           {!this.isLoading &&
             this.exchanges.filter((e) => e.key && e.secret).map((exchange) => (

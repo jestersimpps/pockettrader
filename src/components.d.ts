@@ -136,6 +136,39 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface AppSunburst {
+
+    }
+  }
+
+  interface HTMLAppSunburstElement extends StencilComponents.AppSunburst, HTMLStencilElement {}
+
+  var HTMLAppSunburstElement: {
+    prototype: HTMLAppSunburstElement;
+    new (): HTMLAppSunburstElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-sunburst': HTMLAppSunburstElement;
+  }
+  interface ElementTagNameMap {
+    'app-sunburst': HTMLAppSunburstElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-sunburst': JSXElements.AppSunburstAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppSunburstAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface AppKeys {
 
     }

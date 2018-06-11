@@ -3,6 +3,7 @@ import { TypeKeys, ActionTypes } from '../actions/index';
 import { Exchange } from '../services/exchange.service';
 import { EXCHANGESERVICE, CURRENCYSERVICE } from '../services/globals';
 import { Currency } from '../services/currency.service';
+import { Ticker } from '../services/ticker.service';
 
 interface AppState {
   exchanges: Exchange[];
@@ -10,6 +11,7 @@ interface AppState {
   totalBalances: [number, number][];
   conversionRates: BtcPrice;
   ticker: any;
+  tickers: Ticker[];
 }
 
 const getInitialState = () => {
@@ -19,6 +21,7 @@ const getInitialState = () => {
     totalBalances: [],
     conversionRates: <BtcPrice>{},
     ticker: {},
+    tickers: [],
   };
 };
 
@@ -37,6 +40,9 @@ const app = (state: AppState = getInitialState(), action: ActionTypes) => {
     }
     case TypeKeys.APP_SET_TICKER: {
       return { ...state, ticker: action.data };
+    }
+    case TypeKeys.APP_SET_TICKERS: {
+      return { ...state, tickers: action.data };
     }
   }
 

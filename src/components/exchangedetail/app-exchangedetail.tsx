@@ -3,10 +3,11 @@ import highcharts from '../../global/highcharts';
 import numeral from 'numeral';
 import { Balance } from '../../services/balance.service';
 import { Exchange, ExchangeId } from '../../services/exchange.service';
-import { TICKERSERVICE, CURRENCYSERVICE } from '../../services/globals';
+import { CURRENCYSERVICE } from '../../services/globals';
 import { Store, Action } from '@stencil/redux';
 import { appSetExchanges, appSetBaseCurrency, appSetConversionRates } from '../../actions/app';
 import { Currency, BtcPrice } from '../../services/currency.service';
+import { Ticker } from '../../services/ticker.service';
 
 @Component({
   tag: 'app-exchangedetail',
@@ -19,7 +20,7 @@ export class AppExchangeDetail {
 
   @State() exchanges: Exchange[] = [];
   @State() exchange: Exchange = new Exchange();
-  @State() tickers = [];
+  @State() tickers: Ticker[] = [];
   @State() baseCurrency: Currency;
   @State() conversionRates: BtcPrice;
 
@@ -30,21 +31,19 @@ export class AppExchangeDetail {
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { exchanges, baseCurrency, conversionRates },
+        app: { exchanges, baseCurrency, conversionRates, tickers },
       } = state;
       return {
         exchanges,
         baseCurrency,
         conversionRates,
+        tickers,
       };
     });
     this.store.mapDispatchToProps(this, {
       appSetExchanges,
       appSetBaseCurrency,
       appSetConversionRates,
-    });
-    TICKERSERVICE.getTickers(this.exchangeId).then((response) => {
-      this.tickers = response.data;
     });
   }
 
@@ -111,7 +110,7 @@ export class AppExchangeDetail {
   }
 
   getPercentage(currency) {
-    const ticker = this.tickers.find((t) => {
+    const ticker = this.tickers.find((e) => e.exchangeId === this.exchangeId).tickers.find((t) => {
       return t.base === currency;
     });
     if (ticker) {

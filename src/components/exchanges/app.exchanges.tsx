@@ -4,9 +4,10 @@ import highcharts from '../../global/highcharts';
 import numeral from 'numeral';
 import { Currency, BtcPrice } from '../../services/currency.service';
 import { Balance } from '../../services/balance.service';
-import { Exchanges, Exchange } from '../../services/exchange.service';
-import { appSetExchanges, appSetBaseCurrency, appSetConversionRates } from '../../actions/app';
+import { Exchanges, Exchange, ExchangeId } from '../../services/exchange.service';
+import { appSetExchanges, appSetBaseCurrency, appSetConversionRates, appSetTickers } from '../../actions/app';
 import { Store, Action } from '@stencil/redux';
+import { Ticker } from '../../services/ticker.service';
 
 @Component({
   tag: 'app-exchanges',
@@ -15,7 +16,7 @@ import { Store, Action } from '@stencil/redux';
 export class AppExchanges {
   @Prop({ context: 'store' })
   store: Store;
-  
+
   @State() exchanges: Exchange[] = [];
   @State() isLoading = true;
   @State() baseCurrency: Currency;
@@ -27,6 +28,7 @@ export class AppExchanges {
   appSetExchanges: Action;
   appSetBaseCurrency: Action;
   appSetConversionRates: Action;
+  appSetTickers: Action;
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
@@ -43,6 +45,7 @@ export class AppExchanges {
       appSetExchanges,
       appSetBaseCurrency,
       appSetConversionRates,
+      appSetTickers,
     });
   }
 
@@ -83,6 +86,7 @@ export class AppExchanges {
         } else {
           this.totalBalance = CURRENCYSERVICE.convertToBase(BALANCESERVICE.getLatestTotal(totalBalances), this.conversionRates, this.baseCurrency);
         }
+        this.refreshBalances();
         this.drawChart(totalBalances);
         this.isLoading = false;
       });
@@ -159,9 +163,13 @@ export class AppExchanges {
 
   refreshBalances() {
     this.isLoading = true;
+    let exchangeIds: ExchangeId[] = [];
     let tickerPromises = [];
     let balancePromises = [];
+    let tickers: Ticker[] = [];
+
     this.exchanges.filter((e) => e.key && e.secret).forEach((exchange) => {
+      exchangeIds.push(exchange.id);
       tickerPromises.push(TICKERSERVICE.getTickers(exchange.id));
       balancePromises.push(BALANCESERVICE.getBalances(exchange));
     });
@@ -173,7 +181,11 @@ export class AppExchanges {
             Promise.all(balancePromises)
               .then((balanceData) => {
                 let tempTotalBtcBalance = 0;
-                for (let index = 0; index < tickerData.length; index++) {
+                for (let index = 0; index < exchangeIds.length; index++) {
+                  tickers.push({
+                    exchangeId: exchangeIds[index],
+                    tickers: tickerData[index].data,
+                  });
                   const currentExchange = this.exchanges.filter((e) => e.key && e.secret)[index];
                   currentExchange.balances = balanceData[index].data.filter((b) => b.balance > 0).map((balance) => {
                     const btcbalance = this.getBtcValue(balance, tickerData[index].data);
@@ -191,6 +203,7 @@ export class AppExchanges {
                     };
                   });
                 }
+                this.appSetTickers(tickers);
                 this.setNewTotalBalance(tempTotalBtcBalance);
                 EXCHANGESERVICE.setExchanges(this.exchanges);
                 this.isLoading = false;

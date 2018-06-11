@@ -1,7 +1,7 @@
 import { Component, State, Prop } from '@stencil/core';
 import { Exchange } from '../../../services/exchange.service';
-import { Store, Action } from '@stencil/redux';
-import numeral from 'numeral';
+import { Store } from '@stencil/redux';
+// import numeral from 'numeral';
 
 declare const d3;
 
@@ -13,8 +13,6 @@ export class AppKeys {
   @Prop({ context: 'store' })
   store: Store;
   @State() exchanges: Exchange[] = [];
-
-  appSetExchanges: Action;
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
@@ -30,7 +28,7 @@ export class AppKeys {
   componentDidLoad() {
     const width = window.innerWidth,
       height = window.innerHeight,
-      maxRadius = Math.min(width, height) / 1.3;
+      maxRadius = Math.min(width, height) / 1.4;
     const formatNumber = d3.format(',d');
     const color = function(d) {
       let colors;
@@ -116,14 +114,26 @@ export class AppKeys {
 
     const nodeData = {
       name: 'All Balances',
-      children: this.exchanges.map((e) => {
-        return {
-          name: e.id,
-          children: e.balances.map((b) => {
-            return { name: b.currency, size: b.btc, balance: b.balance, value: b.btc };
-          }),
-        };
-      }),
+      children: [
+        ...this.exchanges.map((e) => {
+          return {
+            name: e.id,
+            balance: e.balances.reduce(function(prev, cur) {
+              return prev + cur.balance;
+            }, 0),
+            value: e.balances.reduce(function(prev, cur) {
+              return prev + cur.btc;
+            }, 0),
+            children: e.balances.map((b) => {
+              return { name: b.currency, size: b.btc, balance: b.balance, value: b.btc };
+            }),
+          };
+        }),
+        {
+          name: 'Wallets',
+          children: [],
+        },
+      ],
     };
 
     const root = d3.hierarchy(nodeData).sum(function(d) {
@@ -131,8 +141,6 @@ export class AppKeys {
     });
 
     const slice = svg.selectAll('g.slice').data(partition(root).descendants());
-
-    slice.exit().remove();
 
     const newSlice = slice
       .enter()
@@ -161,13 +169,16 @@ export class AppKeys {
       .append('text')
       .style('stroke', '#fff')
       .attr('fill', '#fff')
-      .attr('font-size', '1.2rem');
+      .style('font-size', function(d) {
+        console.log(d);
+        return Math.min(2 * d.r, ((2 * d.r - 8) / d.data.name.length) * 24) + 'px';
+      });
 
     text
       .append('textPath')
       .attr('startOffset', '50%')
       .attr('xlink:href', (_, i) => `#hiddenArc${i}`)
-      .text((d) => (d.data.balance ? `${numeral(d.data.balance).format('0,0.00')}  ${d.data.name}` : `${d.data.name}`));
+      .text((d) => `${d.data.name}`);
 
     function focusOn(d = { x0: 0, x1: 1, y0: 0, y1: 1 }) {
       // Reset to top-level if no data point specified
@@ -199,7 +210,9 @@ export class AppKeys {
             if (d.parent) {
               moveStackToFront(d.parent);
             }
-          });
+          })
+          .transition()
+          .duration(500);
       }
     }
   }

@@ -35,3 +35,9 @@ export const appSetTickers = (data: Ticker[]) => async (dispatch, _getState) => 
     data: data,
   });
 };
+export const appSetTotalBalances = (data: any) => async (dispatch, _getState) => {
+  return dispatch({
+    type: TypeKeys.APP_SET_TOTALBALANCES,
+    data: data,
+  });
+};

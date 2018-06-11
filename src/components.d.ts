@@ -136,6 +136,39 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface AppBarchart {
+
+    }
+  }
+
+  interface HTMLAppBarchartElement extends StencilComponents.AppBarchart, HTMLStencilElement {}
+
+  var HTMLAppBarchartElement: {
+    prototype: HTMLAppBarchartElement;
+    new (): HTMLAppBarchartElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-barchart': HTMLAppBarchartElement;
+  }
+  interface ElementTagNameMap {
+    'app-barchart': HTMLAppBarchartElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-barchart': JSXElements.AppBarchartAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppBarchartAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface AppSunburst {
 
     }

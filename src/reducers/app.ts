@@ -44,6 +44,9 @@ const app = (state: AppState = getInitialState(), action: ActionTypes) => {
     case TypeKeys.APP_SET_TICKERS: {
       return { ...state, tickers: action.data };
     }
+    case TypeKeys.APP_SET_TOTALBALANCES: {
+      return { ...state, totalBalances: action.data };
+    }
   }
 
   return state;

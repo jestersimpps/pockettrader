@@ -1,0 +1,7 @@
+#bar-chart div {
+    display: inline-block;
+    background: #2678B2;
+  }
+#bar-chart div:hover {
+    background: #FD7F28;
+  }

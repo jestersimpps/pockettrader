@@ -23,6 +23,7 @@ export class AppExchanges {
   @State() conversionRates: BtcPrice;
   @State() totalBalance: number;
   @State() tickers: any[];
+  @State() segment = 'Overview';
 
   chart;
 
@@ -268,15 +269,15 @@ export class AppExchanges {
       <ion-header>
         <ion-toolbar color="dark">
           <ion-buttons slot="start">
-            <ion-button icon-only disabled={this.isLoading} onClick={() => this.refreshBalances()}>
+            <ion-button shape="round" color="light" disabled={this.isLoading} onClick={() => this.refreshBalances()}>
               <ion-icon name="md-refresh" padding />
             </ion-button>
           </ion-buttons>
 
-          <ion-title>
-            Total:{' '}
-            {!this.isLoading &&
-              `${numeral(this.totalBalance).format(this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00')} ${this.baseCurrency}`}
+          <ion-title text-center>
+            <ion-badge color="light">
+              {`${numeral(this.totalBalance).format(this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00')} ${this.baseCurrency}`}
+            </ion-badge>
           </ion-title>
           <ion-buttons slot="end">
             <ion-button icon-only href="/settings">
@@ -286,21 +287,22 @@ export class AppExchanges {
         </ion-toolbar>
       </ion-header>,
       <ion-content>
-        {/* <ion-refresher slot="fixed" onIonRefresh={() => this.refreshBalances()}>
-          <ion-refresher-content
-            pullingIcon="arrow-dropdown"
-            pullingText="Pull to refresh"
-            refreshingSpinner="circles"
-            refreshingText="Refreshing..."
-          />
-        </ion-refresher> */}
-        {!this.isLoading && <app-sunburst />}
-        {/* {!this.isLoading && <app-barchart />} */}
-
+        <ion-segment color="light" padding value={this.segment}>
+          <ion-segment-button value="Overview" onClick={() => (this.segment = 'Overview')}>
+            Overview
+          </ion-segment-button>
+          <ion-segment-button value="Exchanges" onClick={() => (this.segment = 'Exchanges')}>
+            Exchanges
+          </ion-segment-button>
+          <ion-segment-button value="Wallets" onClick={() => (this.segment = 'Wallets')}>
+            Wallets
+          </ion-segment-button>
+        </ion-segment>
         <ion-list>
-          <ion-item-divider color="light">Exchanges</ion-item-divider>
+          {!this.isLoading && this.segment === 'Overview' && <app-sunburst />}
 
           {!this.isLoading &&
+            this.segment === 'Exchanges' &&
             this.exchanges.filter((e) => e.key && e.secret).map((exchange) => (
               <ion-item lines="full" href={`/exchanges/${exchange.id}`}>
                 <ion-avatar item-start>
@@ -316,22 +318,22 @@ export class AppExchanges {
             ))}
         </ion-list>
       </ion-content>,
-      <ion-footer>
-        <ion-toolbar>
-          {/* <ion-item lines="none">
-            <ion-label>Total</ion-label>
-            <ion-badge color="light" item-end>
-              {!this.isLoading &&
-                `${numeral(this.totalBalance).format(this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00')} ${this.baseCurrency}`}
-            </ion-badge>
-          </ion-item>
-          
-          <div id="spline" class="chart" />
-          <ion-button icon-left color="dark" class="full" disabled={this.isLoading} onClick={() => this.refreshBalances()}>
-            {this.isLoading ? <ion-spinner name="lines-small" /> : `Refresh`}
-          </ion-button> */}
-        </ion-toolbar>
-      </ion-footer>,
+      // <ion-footer>
+      //   <ion-toolbar>
+      //     <ion-item lines="none">
+      //       <ion-label>Total</ion-label>
+      //       <ion-badge color="light" item-end>
+      //         {!this.isLoading &&
+      //           `${numeral(this.totalBalance).format(this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00')} ${this.baseCurrency}`}
+      //       </ion-badge>
+      //     </ion-item>
+
+      //     <div id="spline" class="chart" />
+      //     <ion-button icon-left color="dark" class="full" disabled={this.isLoading} onClick={() => this.refreshBalances()}>
+      //       {this.isLoading ? <ion-spinner name="lines-small" /> : `Refresh`}
+      //     </ion-button>
+      //   </ion-toolbar>
+      // </ion-footer>,
     ];
   }
 }

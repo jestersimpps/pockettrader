@@ -76,7 +76,7 @@ export class AppExchangeBalances {
                     <b>{balance.currency}</b>
                   </ion-col>
                   <ion-col col-g text-center class="lineText">
-                    {`${numeral(CURRENCYSERVICE.convertToBase(balance.btcprice, this.conversionRates, this.baseCurrency)).format(
+                  {`${numeral(CURRENCYSERVICE.convertToBase(balance.btc, this.conversionRates, this.baseCurrency)).format(
                       this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00',
                     )} ${this.baseCurrency}`}
                   </ion-col>
@@ -91,7 +91,8 @@ export class AppExchangeBalances {
                     <span>{numeral(balance.balance).format('0,0.00')}</span>
                   </ion-col>
                   <ion-col col-g text-right class="lineText">
-                    {`${numeral(CURRENCYSERVICE.convertToBase(balance.btc, this.conversionRates, this.baseCurrency)).format(
+                   
+                     {`${numeral(CURRENCYSERVICE.convertToBase(balance.btcprice, this.conversionRates, this.baseCurrency)).format(
                       this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00',
                     )} ${this.baseCurrency}`}
                   </ion-col>

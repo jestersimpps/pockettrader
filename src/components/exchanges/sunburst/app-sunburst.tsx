@@ -58,7 +58,7 @@ export class AppSunburst {
       let colors;
 
       if (!d.parent) {
-        colors = d3.scaleOrdinal(d3.schemeCategory10);
+        colors = d3.scaleOrdinal(['#488aff', '#32db64', '#ffce00', '#f53d3d', '#989aa2']);
         d.color = '#131722';
       } else if (d.children) {
         let startColor = d3.hcl(d.color).darker(),
@@ -169,10 +169,7 @@ export class AppSunburst {
       .append('text')
       .style('stroke', '#fff')
       .attr('fill', '#fff')
-      .style('font-size', function(d) {
-        console.log(d);
-        return Math.min(2 * d.r, ((2 * d.r - 8) / d.data.name.length) * 24) + 'px';
-      });
+      .style('font-size', '1.2rem');
 
     text
       .append('textPath')

@@ -48,7 +48,7 @@ export class AppPair {
       symbol: `${this.exchangeId}:${this.pair}BTC`,
       interval: '60',
       timezone: 'Etc/UTC',
-      theme: 'Light',
+      theme: 'Dark',
       style: '1',
       locale: 'en',
       toolbar_bg: '#fff',

@@ -8,7 +8,7 @@ declare const d3;
   tag: 'app-barchart',
   styleUrl: 'app-barchart.css',
 })
-export class AppKeys {
+export class AppBarChart {
   @Prop({ context: 'store' })
   store: Store;
   @State() totalBalances: [number, number][];

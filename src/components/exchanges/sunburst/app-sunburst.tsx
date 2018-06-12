@@ -9,7 +9,7 @@ declare const d3;
   tag: 'app-sunburst',
   styleUrl: 'app-sunburst.css',
 })
-export class AppKeys {
+export class AppSunburst {
   @Prop({ context: 'store' })
   store: Store;
   @State() exchanges: Exchange[] = [];
@@ -26,6 +26,30 @@ export class AppKeys {
   }
 
   componentDidLoad() {
+    const nodeData = {
+      name: 'All Balances',
+      children: [
+        ...this.exchanges.map((e) => {
+          return {
+            name: e.id,
+            balance: e.balances.reduce(function(prev, cur) {
+              return prev + cur.balance;
+            }, 0),
+            value: e.balances.reduce(function(prev, cur) {
+              return prev + cur.btc;
+            }, 0),
+            children: e.balances.map((b) => {
+              return { name: b.currency, size: b.btc, balance: b.balance, value: b.btc };
+            }),
+          };
+        }),
+        {
+          name: 'Wallets',
+          children: [],
+        },
+      ],
+    };
+
     const width = window.innerWidth,
       height = window.innerHeight,
       maxRadius = Math.min(width, height) / 1.4;
@@ -111,30 +135,6 @@ export class AppKeys {
       .style('background', '#131722')
       .attr('viewBox', `${-width / 2} ${-height / 2} ${width} ${height}`)
       .on('click', () => focusOn()); // Reset zoom on canvas click
-
-    const nodeData = {
-      name: 'All Balances',
-      children: [
-        ...this.exchanges.map((e) => {
-          return {
-            name: e.id,
-            balance: e.balances.reduce(function(prev, cur) {
-              return prev + cur.balance;
-            }, 0),
-            value: e.balances.reduce(function(prev, cur) {
-              return prev + cur.btc;
-            }, 0),
-            children: e.balances.map((b) => {
-              return { name: b.currency, size: b.btc, balance: b.balance, value: b.btc };
-            }),
-          };
-        }),
-        {
-          name: 'Wallets',
-          children: [],
-        },
-      ],
-    };
 
     const root = d3.hierarchy(nodeData).sum(function(d) {
       return d.size;

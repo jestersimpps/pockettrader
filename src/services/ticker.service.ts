@@ -1,4 +1,6 @@
 import { ExchangeId } from './exchange.service';
+import { STORAGE } from './storage';
+
 declare const axios;
 
 export class Ticker {
@@ -6,6 +8,13 @@ export class Ticker {
   tickers: any[];
 }
 export class TickerService {
+  getTickersFromStore(): Promise<Ticker[]> {
+    return STORAGE.get('tickers');
+  }
+  setTickers(tickers: Ticker[]): void {
+    return STORAGE.set('tickers', tickers);
+  }
+
   getTickers(exchangeId: ExchangeId) {
     return axios.get(`http://lightningassets.com/exchangeapi/${exchangeId}/tickers`);
   }

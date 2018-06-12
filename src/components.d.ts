@@ -70,6 +70,39 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface AppExchangebalances {
+      'exchangeId': ExchangeId;
+    }
+  }
+
+  interface HTMLAppExchangebalancesElement extends StencilComponents.AppExchangebalances, HTMLStencilElement {}
+
+  var HTMLAppExchangebalancesElement: {
+    prototype: HTMLAppExchangebalancesElement;
+    new (): HTMLAppExchangebalancesElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-exchangebalances': HTMLAppExchangebalancesElement;
+  }
+  interface ElementTagNameMap {
+    'app-exchangebalances': HTMLAppExchangebalancesElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-exchangebalances': JSXElements.AppExchangebalancesAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppExchangebalancesAttributes extends HTMLAttributes {
+      'exchangeId'?: ExchangeId;
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface AppExchangedetail {
       'exchangeId': ExchangeId;
     }

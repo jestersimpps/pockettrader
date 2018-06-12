@@ -1,4 +1,4 @@
-import { Exchange } from './exchange.service';
+import { Exchange, ExchangeId } from './exchange.service';
 import { STORAGE } from './storage';
 declare const axios;
 
@@ -12,6 +12,12 @@ export class Balance {
   usd: number;
   eur: number;
   gbp: number;
+  btcprice: number;
+}
+
+export class Balances {
+  exchangeId: ExchangeId;
+  tickers: any[];
 }
 
 export class BalanceService {
@@ -29,11 +35,19 @@ export class BalanceService {
   setTotalBalances(totalbalances: [number, number][]): void {
     STORAGE.set(`totalbalances`, totalbalances);
   }
+  
+  setBalances(balances: Balances): void {
+    STORAGE.set(`balances`, balances);
+  }
 
   getBalances(exchange: Exchange): Promise<Balance[]> {
     return axios.post(`http://lightningassets.com/exchangeapi/${exchange.id}/balances/get`, {
       key: exchange.key,
       secret: exchange.secret,
     });
+  }
+
+  getBalancesFromStore(): Promise<Balances> {
+    return STORAGE.get('balances');
   }
 }

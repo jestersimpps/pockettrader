@@ -22,6 +22,7 @@ export class AppExchanges {
   @State() baseCurrency: Currency;
   @State() conversionRates: BtcPrice;
   @State() totalBalance: number;
+  @State() tickers: any[];
 
   chart;
 
@@ -34,12 +35,13 @@ export class AppExchanges {
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { exchanges, baseCurrency, conversionRates },
+        app: { exchanges, baseCurrency, conversionRates, tickers },
       } = state;
       return {
         exchanges,
         baseCurrency,
         conversionRates,
+        tickers,
       };
     });
     this.store.mapDispatchToProps(this, {
@@ -75,6 +77,10 @@ export class AppExchanges {
       })
       .then((conversionRates) => {
         this.appSetConversionRates(conversionRates);
+        return TICKERSERVICE.getTickersFromStore();
+      })
+      .then((tickers) => {
+        this.appSetTickers(tickers);
         return BALANCESERVICE.getTotalBalances();
       })
       .then((totalBalances) => {
@@ -85,8 +91,8 @@ export class AppExchanges {
         } else {
           this.updateTotalBalance();
         }
-        this.refreshBalances();
         // this.drawChart(totalBalances);
+        this.isLoading = false;
       });
   }
 
@@ -158,8 +164,22 @@ export class AppExchanges {
     if (balance.currency === 'BTC') {
       return balance.balance;
     }
+    // TODO fiat
     if (innerTicker) {
       return balance.balance * innerTicker.last;
+    } else {
+      return 0;
+    }
+  }
+
+  getBtcPrice(balance: Balance, tickerData) {
+    const innerTicker = tickerData.find((t) => t.symbol === `${balance.currency}/BTC`);
+    if (balance.currency === 'BTC') {
+      return 1;
+    }
+    // TODO fiat
+    if (innerTicker) {
+      return innerTicker.last;
     } else {
       return 0;
     }
@@ -191,8 +211,9 @@ export class AppExchanges {
                     tickers: tickerData[index].data,
                   });
                   const currentExchange = this.exchanges.filter((e) => e.key && e.secret)[index];
-                  currentExchange.balances = balanceData[index].data.filter((b) => b.balance > 0).map((balance) => {
+                  currentExchange.balances = balanceData[index].data.filter((b) => b.balance > 0).map((balance: Balance) => {
                     const btcbalance = this.getBtcValue(balance, tickerData[index].data);
+                    const btcprice = this.getBtcPrice(balance, tickerData[index].data);
                     tempTotalBtcBalance += btcbalance;
                     return {
                       name: balance.currency,
@@ -204,6 +225,7 @@ export class AppExchanges {
                       gbp: btcbalance * priceData.GBP,
                       balance: balance.balance,
                       currency: balance.currency,
+                      btcprice: btcprice,
                     };
                   });
                 }
@@ -245,7 +267,17 @@ export class AppExchanges {
     return [
       <ion-header>
         <ion-toolbar color="dark">
-          <ion-title>Balances</ion-title>
+          <ion-buttons slot="start">
+            <ion-button icon-only disabled={this.isLoading} onClick={() => this.refreshBalances()}>
+              <ion-icon name="md-refresh" padding />
+            </ion-button>
+          </ion-buttons>
+
+          <ion-title>
+            Total:{' '}
+            {!this.isLoading &&
+              `${numeral(this.totalBalance).format(this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00')} ${this.baseCurrency}`}
+          </ion-title>
           <ion-buttons slot="end">
             <ion-button icon-only href="/settings">
               <ion-icon name="md-menu" padding />
@@ -263,28 +295,29 @@ export class AppExchanges {
           />
         </ion-refresher> */}
         {!this.isLoading && <app-sunburst />}
-        {!this.isLoading && <app-barchart />}
+        {/* {!this.isLoading && <app-barchart />} */}
+
+        <ion-list>
+          <ion-item-divider color="light">Exchanges</ion-item-divider>
+
+          {!this.isLoading &&
+            this.exchanges.filter((e) => e.key && e.secret).map((exchange) => (
+              <ion-item lines="full" href={`/exchanges/${exchange.id}`}>
+                <ion-avatar item-start>
+                  <img src={exchange.icon} />
+                </ion-avatar>
+                <ion-label>{exchange.id}</ion-label>
+                {!this.isLoading && (
+                  <ion-badge color="light" item-end>
+                    {`${numeral(this.getBtcTotal(exchange)).format(this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00')} ${this.baseCurrency}`}
+                  </ion-badge>
+                )}
+              </ion-item>
+            ))}
+        </ion-list>
       </ion-content>,
       <ion-footer>
         <ion-toolbar>
-          <ion-list>
-            {!this.isLoading &&
-              this.exchanges.filter((e) => e.key && e.secret).map((exchange) => (
-                <ion-item lines="full" href={`/exchanges/${exchange.id}`}>
-                  <ion-avatar item-start>
-                    <img src={exchange.icon} />
-                  </ion-avatar>
-                  <ion-label>{exchange.id}</ion-label>
-                  {!this.isLoading && (
-                    <ion-badge color="light" item-end>
-                      {`${numeral(this.getBtcTotal(exchange)).format(this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00')} ${
-                        this.baseCurrency
-                      }`}
-                    </ion-badge>
-                  )}
-                </ion-item>
-              ))}
-          </ion-list>
           {/* <ion-item lines="none">
             <ion-label>Total</ion-label>
             <ion-badge color="light" item-end>

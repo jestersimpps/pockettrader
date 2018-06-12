@@ -1,7 +1,7 @@
 import { BtcPrice } from './../services/currency.service';
 import { TypeKeys, ActionTypes } from '../actions/index';
 import { Exchange } from '../services/exchange.service';
-import { EXCHANGESERVICE, CURRENCYSERVICE } from '../services/globals';
+import { EXCHANGESERVICE, CURRENCYSERVICE, TICKERSERVICE } from '../services/globals';
 import { Currency } from '../services/currency.service';
 import { Ticker } from '../services/ticker.service';
 
@@ -42,6 +42,7 @@ const app = (state: AppState = getInitialState(), action: ActionTypes) => {
       return { ...state, ticker: action.data };
     }
     case TypeKeys.APP_SET_TICKERS: {
+      TICKERSERVICE.setTickers(action.data);
       return { ...state, tickers: action.data };
     }
     case TypeKeys.APP_SET_TOTALBALANCES: {

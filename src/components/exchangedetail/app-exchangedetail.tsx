@@ -1,9 +1,9 @@
 import { Component, Prop, State } from '@stencil/core';
-import highcharts from '../../global/highcharts';
-import numeral from 'numeral';
+// import highcharts from '../../global/highcharts';
+// import numeral from 'numeral';
 import { Balance } from '../../services/balance.service';
 import { Exchange, ExchangeId } from '../../services/exchange.service';
-import { CURRENCYSERVICE } from '../../services/globals';
+// import { CURRENCYSERVICE } from '../../services/globals';
 import { Store, Action } from '@stencil/redux';
 import { appSetExchanges, appSetBaseCurrency, appSetConversionRates } from '../../actions/app';
 import { Currency, BtcPrice } from '../../services/currency.service';
@@ -49,53 +49,53 @@ export class AppExchangeDetail {
 
   componentDidLoad() {
     this.exchange = this.exchanges.find((e) => e.id === this.exchangeId);
-    highcharts.chart('pie', {
-      chart: {
-        plotBackgroundColor: '#fff',
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: 'pie',
-      },
-      title: {
-        text: ``,
-      },
-      tooltip: {
-        pointFormat: `{series.name}: <b>{point.percentage:.1f} %</b>
-          <br>{point.balance:.8f}  <b>{point.currency}</b>
-          <br>{point.usd:.8f}  <b>USD</b>
-          <br>{point.eur:.8f}  <b>EUR</b>
-          <br>{point.gbp:.8f}  <b>GBP</b>
-          `,
-      },
-      plotOptions: {
-        pie: {
-          allowPointSelect: true,
-          cursor: 'pointer',
-          dataLabels: {
-            enabled: true,
-            format: `<b>{point.name}</b><br>{point.percentage:.1f} % `,
-            distance: 0,
-          },
-        },
-      },
-      series: [
-        {
-          name: 'Balances',
-          data: this.exchange.balances.map((balance) => {
-            return {
-              name: balance.currency,
-              y: balance.btc,
-              btc: balance.btc,
-              usd: balance.usd,
-              eur: balance.eur,
-              gbp: balance.gbp,
-              balance: balance.balance,
-              currency: balance.currency,
-            };
-          }),
-        },
-      ],
-    });
+    // highcharts.chart('pie', {
+    //   chart: {
+    //     plotBackgroundColor: '#fff',
+    //     plotBorderWidth: null,
+    //     plotShadow: false,
+    //     type: 'pie',
+    //   },
+    //   title: {
+    //     text: ``,
+    //   },
+    //   tooltip: {
+    //     pointFormat: `{series.name}: <b>{point.percentage:.1f} %</b>
+    //       <br>{point.balance:.8f}  <b>{point.currency}</b>
+    //       <br>{point.usd:.8f}  <b>USD</b>
+    //       <br>{point.eur:.8f}  <b>EUR</b>
+    //       <br>{point.gbp:.8f}  <b>GBP</b>
+    //       `,
+    //   },
+    //   plotOptions: {
+    //     pie: {
+    //       allowPointSelect: true,
+    //       cursor: 'pointer',
+    //       dataLabels: {
+    //         enabled: true,
+    //         format: `<b>{point.name}</b><br>{point.percentage:.1f} % `,
+    //         distance: 0,
+    //       },
+    //     },
+    //   },
+    //   series: [
+    //     {
+    //       name: 'Balances',
+    //       data: this.exchange.balances.map((balance) => {
+    //         return {
+    //           name: balance.currency,
+    //           y: balance.btc,
+    //           btc: balance.btc,
+    //           usd: balance.usd,
+    //           eur: balance.eur,
+    //           gbp: balance.gbp,
+    //           balance: balance.balance,
+    //           currency: balance.currency,
+    //         };
+    //       }),
+    //     },
+    //   ],
+    // });
   }
 
   getTotal(cur = 'btc') {
@@ -131,7 +131,7 @@ export class AppExchangeDetail {
       </ion-header>,
 
       <ion-content>
-        <ion-item-divider color="light">Total Balance</ion-item-divider>
+        {/* <ion-item-divider color="light">Total Balance</ion-item-divider>
         <ion-grid>
           <ion-row>
             <ion-col col-g>
@@ -155,41 +155,9 @@ export class AppExchangeDetail {
           </ion-row>
         </ion-grid>
         <ion-item-divider color="light">Balance distribution</ion-item-divider>
-        <div id="pie" />
-        <ion-item-divider color="light">Individual Balances</ion-item-divider>
-        <ion-list>
-          {this.exchange &&
-            this.exchange.balances &&
-            this.tickers.length &&
-            this.exchange.balances.map((balance) => (
-              <ion-item lines="full" href={`/pair/${this.exchange.id}/${balance.currency}`}>
-                <ion-grid>
-                  <ion-row>
-                    <ion-col col-g>
-                      <b>{balance.currency}</b>
-                    </ion-col>
-                    <ion-col col-g text-right>
-                      <ion-badge color={this.getPercentage(balance.currency) > 0 ? 'success' : 'danger'}>
-                        {numeral(this.getPercentage(balance.currency)).format('0,0.00')} %
-                      </ion-badge>
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col col-g>
-                      <span>{numeral(balance.balance).format('0,0.00')}</span>
-                    </ion-col>
-                    <ion-col col-g text-right>
-                      <span slot="end">
-                        {`${numeral(CURRENCYSERVICE.convertToBase(balance.btc, this.conversionRates, this.baseCurrency)).format(
-                          this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00',
-                        )} ${this.baseCurrency}`}
-                      </span>
-                    </ion-col>
-                  </ion-row>
-                </ion-grid>
-              </ion-item>
-            ))}
-        </ion-list>
+        <div id="pie" /> */}
+        {/* <ion-item-divider color="light">Individual Balances</ion-item-divider> */}
+        <app-exchangebalances exchangeId={this.exchangeId} />
       </ion-content>,
       <ion-footer>
         <ion-toolbar>

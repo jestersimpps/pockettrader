@@ -1,7 +1,6 @@
 import { Component, Prop, State } from '@stencil/core';
 // import highcharts from '../../global/highcharts';
 // import numeral from 'numeral';
-import { Balance } from '../../services/balance.service';
 import { Exchange, ExchangeId } from '../../services/exchange.service';
 // import { CURRENCYSERVICE } from '../../services/globals';
 import { Store, Action } from '@stencil/redux';
@@ -98,27 +97,6 @@ export class AppExchangeDetail {
     // });
   }
 
-  getTotal(cur = 'btc') {
-    let sum = 0;
-    if (this.exchange && this.exchange.balances) {
-      this.exchange.balances.map((balance: Balance) => {
-        sum += balance[cur];
-      });
-    }
-    // in millibits
-    return sum;
-  }
-
-  getPercentage(currency) {
-    const ticker = this.tickers.find((e) => e.exchangeId === this.exchangeId).tickers.find((t) => {
-      return t.base === currency;
-    });
-    if (ticker) {
-      return ticker.percentage;
-    }
-    return '?';
-  }
-
   render() {
     return [
       <ion-header>
@@ -131,32 +109,6 @@ export class AppExchangeDetail {
       </ion-header>,
 
       <ion-content>
-        {/* <ion-item-divider color="light">Total Balance</ion-item-divider>
-        <ion-grid>
-          <ion-row>
-            <ion-col col-g>
-              <b>mBTC: </b>
-              {numeral(this.getTotal('btc') * 1000).format('0,0.0000')}
-            </ion-col>
-            <ion-col col-g>
-              <b>EUR: </b>
-              {numeral(this.getTotal('eur')).format('0,0.00')}
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col col-g>
-              <b>USD: </b>
-              {numeral(this.getTotal('usd')).format('0,0.00')}
-            </ion-col>
-            <ion-col col-g>
-              <b>GBP: </b>
-              {numeral(this.getTotal('gbp')).format('0,0.00')}
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-        <ion-item-divider color="light">Balance distribution</ion-item-divider>
-        <div id="pie" /> */}
-        {/* <ion-item-divider color="light">Individual Balances</ion-item-divider> */}
         <app-exchangebalances exchangeId={this.exchangeId} />
       </ion-content>,
       <ion-footer>

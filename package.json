@@ -20,7 +20,6 @@
     "@stencil/core": "^0.9.6",
     "@stencil/redux": "^0.0.3",
     "@stencil/router": "^0.2.1",
-    "axios": "^0.18.0",
     "highcharts": "^6.1.0",
     "localforage": "^1.7.1",
     "localforage-cordovasqlitedriver": "^1.7.0",

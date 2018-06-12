@@ -23,7 +23,7 @@ export class AppExchanges {
   @State() conversionRates: BtcPrice;
   @State() totalBalance: number;
   @State() tickers: any[];
-  @State() segment = 'Overview';
+  @State() segment = '1';
 
   chart;
 
@@ -81,7 +81,7 @@ export class AppExchanges {
         return TICKERSERVICE.getTickersFromStore();
       })
       .then((tickers) => {
-        this.appSetTickers(tickers);
+        tickers ? this.appSetTickers(tickers) : this.appSetTickers([]);
         return BALANCESERVICE.getTotalBalances();
       })
       .then((totalBalances) => {
@@ -160,30 +160,20 @@ export class AppExchanges {
     return CURRENCYSERVICE.convertToBase(sum, this.conversionRates, this.baseCurrency);
   }
 
-  getBtcValue(balance: Balance, tickerData) {
+  getBtcStats(balance: Balance, tickerData): { price: number; balance: number; change: number } {
+    let stats = { price: 0, balance: 0, change: 0 };
     const innerTicker = tickerData.find((t) => t.symbol === `${balance.currency}/BTC`);
     if (balance.currency === 'BTC') {
-      return balance.balance;
+      stats.balance = balance.balance;
+      stats.price = 1;
     }
     // TODO fiat
     if (innerTicker) {
-      return balance.balance * innerTicker.last;
-    } else {
-      return 0;
+      stats.balance = balance.balance * innerTicker.last;
+      stats.price = innerTicker.last;
+      stats.change = innerTicker.percentage;
     }
-  }
-
-  getBtcPrice(balance: Balance, tickerData) {
-    const innerTicker = tickerData.find((t) => t.symbol === `${balance.currency}/BTC`);
-    if (balance.currency === 'BTC') {
-      return 1;
-    }
-    // TODO fiat
-    if (innerTicker) {
-      return innerTicker.last;
-    } else {
-      return 0;
-    }
+    return stats;
   }
 
   refreshBalances() {
@@ -212,21 +202,21 @@ export class AppExchanges {
                     tickers: tickerData[index].data,
                   });
                   const currentExchange = this.exchanges.filter((e) => e.key && e.secret)[index];
-                  currentExchange.balances = balanceData[index].data.filter((b) => b.balance > 0).map((balance: Balance) => {
-                    const btcbalance = this.getBtcValue(balance, tickerData[index].data);
-                    const btcprice = this.getBtcPrice(balance, tickerData[index].data);
-                    tempTotalBtcBalance += btcbalance;
+                  currentExchange.balances = balanceData[index].data.filter((b) => +b.balance > 0).map((balance: Balance) => {
+                    const btc = this.getBtcStats(balance, tickerData[index].data);
+                    tempTotalBtcBalance += btc.balance;
                     return {
                       name: balance.currency,
-                      y: CURRENCYSERVICE.convertToBase(btcbalance, this.conversionRates, this.baseCurrency),
-                      btc: btcbalance,
-                      mbtc: btcbalance * priceData.mBTC,
-                      usd: btcbalance * priceData.USD,
-                      eur: btcbalance * priceData.EUR,
-                      gbp: btcbalance * priceData.GBP,
+                      y: CURRENCYSERVICE.convertToBase(btc.balance, this.conversionRates, this.baseCurrency),
+                      btc: btc.balance,
+                      mbtc: btc.balance * priceData.mBTC,
+                      usd: btc.balance * priceData.USD,
+                      eur: btc.balance * priceData.EUR,
+                      gbp: btc.balance * priceData.GBP,
                       balance: balance.balance,
                       currency: balance.currency,
-                      btcprice: btcprice,
+                      btcprice: btc.price,
+                      change: btc.change,
                     };
                   });
                 }
@@ -269,7 +259,7 @@ export class AppExchanges {
       <ion-header>
         <ion-toolbar color="dark">
           <ion-buttons slot="start">
-            <ion-button shape="round" color="light" disabled={this.isLoading} onClick={() => this.refreshBalances()}>
+            <ion-button icon-only disabled={this.isLoading} onClick={() => this.refreshBalances()}>
               <ion-icon name="md-refresh" padding />
             </ion-button>
           </ion-buttons>
@@ -288,24 +278,23 @@ export class AppExchanges {
       </ion-header>,
       <ion-content>
         <ion-segment color="light" padding value={this.segment}>
-          <ion-segment-button value="Overview" onClick={() => (this.segment = 'Overview')}>
-            Overview
+          <ion-segment-button value="1" onClick={() => (this.segment = '1')}>
+            Distribution
           </ion-segment-button>
-          <ion-segment-button value="Exchanges" onClick={() => (this.segment = 'Exchanges')}>
-            Exchanges
+          <ion-segment-button value="2" onClick={() => (this.segment = '2')}>
+            Balances
           </ion-segment-button>
-          <ion-segment-button value="Wallets" onClick={() => (this.segment = 'Wallets')}>
-            Wallets
+          <ion-segment-button value="3" onClick={() => (this.segment = '3')}>
+            Market
           </ion-segment-button>
         </ion-segment>
+        {!this.isLoading && this.segment === '1' && <app-sunburst exchanges={this.exchanges} />}
         <ion-list>
-          {!this.isLoading && this.segment === 'Overview' && <app-sunburst />}
-
           {!this.isLoading &&
-            this.segment === 'Exchanges' &&
+            this.segment === '2' &&
             this.exchanges.filter((e) => e.key && e.secret).map((exchange) => (
               <ion-item lines="full" href={`/exchanges/${exchange.id}`}>
-                <ion-avatar item-start>
+                <ion-avatar item-start margin-right>
                   <img src={exchange.icon} />
                 </ion-avatar>
                 <ion-label>{exchange.id}</ion-label>

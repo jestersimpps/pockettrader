@@ -52,48 +52,38 @@ export class AppExchangeBalances {
     return sum;
   }
 
-  getPercentage(currency) {
-    const ticker = this.tickers.find((e) => e.exchangeId === this.exchangeId).tickers.find((t) => {
-      return t.base === currency;
-    });
-    if (ticker) {
-      return ticker.percentage;
-    }
-    return '?';
-  }
-
   render() {
     return [
       <ion-list>
         {this.exchange &&
           this.exchange.balances &&
           this.tickers.length &&
-          this.exchange.balances.map((balance) => (
+          this.exchange.balances.filter((b) => +b.btcprice > 0.00001).map((balance) => (
             <ion-item lines="full" href={`/pair/${this.exchange.id}/${balance.currency}`}>
               <ion-grid>
                 <ion-row>
-                  <ion-col col-g class="lineText">
+                  <ion-col col-3 class="lineText">
                     <b>{balance.currency}</b>
                   </ion-col>
-                  <ion-col col-g text-center class="lineText">
-                  {`${numeral(CURRENCYSERVICE.convertToBase(balance.btc, this.conversionRates, this.baseCurrency)).format(
-                      this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00',
-                    )} ${this.baseCurrency}`}
-                  </ion-col>
-                  <ion-col col-g text-right class="lineText">
-                    <ion-badge color={this.getPercentage(balance.currency) > 0 ? 'success' : 'danger'}>
-                      {numeral(this.getPercentage(balance.currency)).format('0,0.00')} %
+
+                  <ion-col col-9 text-right class="lineText">
+                    <ion-badge color="light">
+                      {`${numeral(CURRENCYSERVICE.convertToBase(balance.btc, this.conversionRates, this.baseCurrency)).format(
+                        this.baseCurrency === Currency.btc ? '0,0.000000' : '0,0.00',
+                      )} ${this.baseCurrency}`}
                     </ion-badge>
                   </ion-col>
                 </ion-row>
                 <ion-row>
-                  <ion-col col-g class="lineText">
+                  <ion-col col-3 class="lineText">
+                    <ion-badge color={balance.change > 0 ? 'success' : 'danger'}>{numeral(balance.change).format('0,0.00')} %</ion-badge>
+                  </ion-col>
+                  <ion-col col-3 text-center class="lineText">
                     <span>{numeral(balance.balance).format('0,0.00')}</span>
                   </ion-col>
-                  <ion-col col-g text-right class="lineText">
-                   
-                     {`${numeral(CURRENCYSERVICE.convertToBase(balance.btcprice, this.conversionRates, this.baseCurrency)).format(
-                      this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00',
+                  <ion-col col-6 text-right class="lineText">
+                    {`${numeral(CURRENCYSERVICE.convertToBase(balance.btcprice, this.conversionRates, this.baseCurrency)).format(
+                      this.baseCurrency === Currency.btc ? '0,0.000000' : '0,0.00',
                     )} ${this.baseCurrency}`}
                   </ion-col>
                 </ion-row>

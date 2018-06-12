@@ -31,6 +31,7 @@ import '@ionic/core';
 import 'ionicons';
 
 import {
+  Exchange,
   ExchangeId,
 } from './services/exchange.service';
 
@@ -203,7 +204,7 @@ declare global {
 
   namespace StencilComponents {
     interface AppSunburst {
-
+      'exchanges': Exchange[];
     }
   }
 
@@ -226,7 +227,7 @@ declare global {
   }
   namespace JSXElements {
     export interface AppSunburstAttributes extends HTMLAttributes {
-
+      'exchanges'?: Exchange[];
     }
   }
 }

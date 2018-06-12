@@ -13,6 +13,7 @@ export class Balance {
   eur: number;
   gbp: number;
   btcprice: number;
+  change: number;
 }
 
 export class Balances {
@@ -35,7 +36,7 @@ export class BalanceService {
   setTotalBalances(totalbalances: [number, number][]): void {
     STORAGE.set(`totalbalances`, totalbalances);
   }
-  
+
   setBalances(balances: Balances): void {
     STORAGE.set(`balances`, balances);
   }

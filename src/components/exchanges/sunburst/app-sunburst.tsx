@@ -1,7 +1,6 @@
-import { Component, State, Prop } from '@stencil/core';
+import { Component, Prop } from '@stencil/core';
 import { Exchange } from '../../../services/exchange.service';
-import { Store } from '@stencil/redux';
-// import numeral from 'numeral';
+import numeral from 'numeral';
 
 declare const d3;
 
@@ -10,36 +9,28 @@ declare const d3;
   styleUrl: 'app-sunburst.css',
 })
 export class AppSunburst {
-  @Prop({ context: 'store' })
-  store: Store;
-  @State() exchanges: Exchange[] = [];
-
-  componentWillLoad() {
-    this.store.mapStateToProps(this, (state) => {
-      const {
-        app: { exchanges },
-      } = state;
-      return {
-        exchanges,
-      };
-    });
-  }
+  @Prop() exchanges: Exchange[] = [];
 
   componentDidLoad() {
     const nodeData = {
       name: 'All Balances',
+      change:
+        this.exchanges.reduce(
+          (a, b) =>
+            a +
+            (b.balances.reduce((c, d) => c + d.change * d.btc, 0) / b.balances.reduce((a, b) => a + b.btc, 0)) *
+              b.balances.reduce((a, b) => a + b.btc, 0),
+          0,
+        ) / this.exchanges.reduce((a, b) => a + b.balances.reduce((a, b) => a + b.btc, 0), 0),
       children: [
         ...this.exchanges.map((e) => {
           return {
             name: e.id,
-            balance: e.balances.reduce(function(prev, cur) {
-              return prev + cur.balance;
-            }, 0),
-            value: e.balances.reduce(function(prev, cur) {
-              return prev + cur.btc;
-            }, 0),
+            balance: e.balances.reduce((a, b) => a + b.balance, 0),
+            value: e.balances.reduce((a, b) => a + b.btc, 0),
+            change: e.balances.reduce((a, b) => a + b.change * b.btc, 0) / e.balances.reduce((a, b) => a + b.btc, 0),
             children: e.balances.map((b) => {
-              return { name: b.currency, size: b.btc, balance: b.balance, value: b.btc };
+              return { name: b.currency, size: b.btc, balance: b.balance, value: b.btc, change: b.change };
             }),
           };
         }),
@@ -54,37 +45,11 @@ export class AppSunburst {
       height = window.innerHeight,
       maxRadius = Math.min(width, height) / 1.4;
     const formatNumber = d3.format(',d');
-    const color = function(d) {
-      let colors;
-
-      if (!d.parent) {
-        colors = d3.scaleOrdinal(['#488aff', '#32db64', '#ffce00', '#f53d3d', '#989aa2']);
-        d.color = '#131722';
-      } else if (d.children) {
-        let startColor = d3.hcl(d.color).darker(),
-          endColor = d3.hcl(d.color).brighter();
-
-        colors = d3
-          .scaleLinear()
-          .interpolate(d3.interpolateHcl)
-          .range([startColor.toString(), endColor.toString()])
-          .domain([0, d.children.length + 1]);
-      }
-
-      if (d.children) {
-        d.children
-          .map(function(child, i) {
-            return { value: child.value, idx: i };
-          })
-          .sort(function(a, b) {
-            return b.value - a.value;
-          })
-          .forEach(function(child, i) {
-            d.children[child.idx].color = colors(i);
-          });
-      }
-      return d.color;
-    };
+    const max = Math.max(...this.exchanges.map((e) => Math.max(...e.balances.map((b) => b.change))));
+    let color = d3
+      .scaleLinear()
+      .domain([-max, 0, max])
+      .range(['#f53d3d', '#131722', '#28e070']);
 
     const x = d3
       .scaleLinear()
@@ -156,7 +121,7 @@ export class AppSunburst {
     newSlice
       .append('path')
       .attr('class', 'main-arc')
-      .attr('fill', color)
+      .attr('fill', (d) => color(d.data.change))
       .attr('d', arc);
 
     newSlice
@@ -175,7 +140,7 @@ export class AppSunburst {
       .append('textPath')
       .attr('startOffset', '50%')
       .attr('xlink:href', (_, i) => `#hiddenArc${i}`)
-      .text((d) => `${d.data.name}`);
+      .text((d) => `${d.data.name} (${numeral(d.data.change).format('0.0')}%)`);
 
     function focusOn(d = { x0: 0, x1: 1, y0: 0, y1: 1 }) {
       // Reset to top-level if no data point specified

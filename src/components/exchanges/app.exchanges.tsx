@@ -256,19 +256,18 @@ export class AppExchanges {
       <ion-header>
         <ion-toolbar color="dark">
           <ion-buttons slot="start">
-            <ion-button icon-only disabled={this.isLoading} onClick={() => this.refreshBalances()}>
-              <ion-icon name="md-refresh" padding />
+            <ion-button icon-only href="/settings">
+              <ion-icon name="md-menu" padding />
             </ion-button>
           </ion-buttons>
-
           <ion-title text-center>
             <ion-badge color="light">
               {`${numeral(this.totalBalance).format(this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00')} ${this.baseCurrency}`}
             </ion-badge>
           </ion-title>
           <ion-buttons slot="end">
-            <ion-button icon-only href="/settings">
-              <ion-icon name="md-menu" padding />
+            <ion-button icon-only disabled={this.isLoading} onClick={() => this.refreshBalances()}>
+              <ion-icon name="md-refresh" class={this.isLoading ? 'spin' : ''} padding />
             </ion-button>
           </ion-buttons>
         </ion-toolbar>

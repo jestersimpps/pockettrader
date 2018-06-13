@@ -53,13 +53,6 @@ export class AppSunburst {
 
     const partition = d3.partition();
 
-    const arc = d3
-      .arc()
-      .startAngle((d) => x(d.x0))
-      .endAngle((d) => x(d.x1))
-      .innerRadius((d) => Math.max(0, y(d.y0)))
-      .outerRadius((d) => Math.max(0, y(d.y1)));
-
     const middleArcLine = (d) => {
       const halfPi = Math.PI / 2;
       const angles = [x(d.x0) - halfPi, x(d.x1) - halfPi];
@@ -109,11 +102,35 @@ export class AppSunburst {
 
     newSlice.append('title').text((d) => d.data.name + '\n' + formatNumber(d.value));
 
+    const arc = d3
+      .arc()
+      .startAngle((d) => x(d.x0))
+      .endAngle((d) => x(d.x1))
+      .innerRadius((d) => Math.max(0, y(d.y0)))
+      .outerRadius((d) => Math.max(0, y(d.y1)));
+
     newSlice
       .append('path')
       .attr('class', 'main-arc')
       .attr('fill', (d) => color(d.data.change))
-      .attr('d', arc);
+      .transition()
+      .duration(function(d) {
+        return 2000 * (d.x1 - d.x0);
+      })
+      .attrTween('d', function(d) {
+        if (d.parent) {
+          var i = d3.interpolate(d.x0, d.x1);
+          return function(t) {
+            d.x1 = i(t);
+            return arc(d);
+          };
+        } else {
+          return function() {
+            return arc(d);
+          };
+        }
+      });
+    // .attr('d', arc);
 
     newSlice
       .append('path')

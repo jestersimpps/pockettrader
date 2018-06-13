@@ -36,9 +36,11 @@ export class AppKeys {
         <ion-list>
           {this.exchanges.map((exchange) => (
             <ion-item lines="full" href={`/settings/keys/${exchange.id}`}>
-              <ion-thumbnail item-start margin-right>
-                <img src={exchange.icon} />
-              </ion-thumbnail>
+              {exchange.key && exchange.secret ? (
+                <ion-icon name="checkmark" item-start margin-right />
+              ) : (
+                <ion-icon name="close" item-start margin-right />
+              )}
               <ion-label>{exchange.id}</ion-label>
             </ion-item>
           ))}

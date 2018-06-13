@@ -50,7 +50,6 @@ export class AppExchangeKeys {
     exchange.key = null;
     exchange.secret = null;
     this.appSetExchanges(this.exchanges);
-    this.exchange = this.exchanges.find((e) => e.id === this.exchangeId);
   }
 
   render() {
@@ -77,9 +76,11 @@ export class AppExchangeKeys {
       </ion-content>,
       <ion-footer>
         <ion-toolbar>
-          <ion-button icon-left color="danger" class="full" onClick={() => this.deleteKeys(this.exchange)}>
-            Delete keys
-          </ion-button>
+          <ion-nav-pop>
+            <ion-button icon-left color="danger" class="full" onClick={() => this.deleteKeys(this.exchange)}>
+              Delete keys
+            </ion-button>
+          </ion-nav-pop>
         </ion-toolbar>
       </ion-footer>,
     ];

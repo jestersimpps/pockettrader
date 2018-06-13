@@ -62,11 +62,11 @@ export class AppExchangeBalances {
             <ion-item lines="full" href={`/pair/${this.exchange.id}/${balance.currency}`}>
               <ion-grid>
                 <ion-row>
-                  <ion-col col-3 class="lineText">
-                    <b>{balance.currency}</b>
+                  <ion-col col-6 class="lineText">
+                    <img class="cicon" src={`https://github.com/cjdowner/cryptocurrency-icons/raw/master/32/icon/${balance.currency.toLowerCase()}.png`} />
+                    <b class="ctext" >{balance.currency}</b>
                   </ion-col>
-
-                  <ion-col col-9 text-right class="lineText">
+                  <ion-col col-6 text-right class="lineText">
                     <ion-badge color="light">
                       {`${numeral(CURRENCYSERVICE.convertToBase(balance.btc, this.conversionRates, this.baseCurrency)).format(
                         this.baseCurrency === Currency.btc ? '0,0.000000' : '0,0.00',
@@ -76,7 +76,7 @@ export class AppExchangeBalances {
                 </ion-row>
                 <ion-row>
                   <ion-col col-3 class="lineText">
-                    <ion-badge color={balance.change > 0 ? 'success' : 'danger'}>{numeral(balance.change).format('0,0.00')} %</ion-badge>
+                    <b style={{ color: balance.change > 0 ? '#10dc60' : '#f53d3d' }}>{numeral(balance.change).format('0,0.00')} %</b>
                   </ion-col>
                   <ion-col col-3 text-center class="lineText">
                     <span>{numeral(balance.balance).format('0,0.00')}</span>

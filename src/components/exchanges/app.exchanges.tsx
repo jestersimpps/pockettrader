@@ -202,23 +202,28 @@ export class AppExchanges {
                     tickers: tickerData[index].data,
                   });
                   const currentExchange = this.exchanges.filter((e) => e.key && e.secret)[index];
-                  currentExchange.balances = balanceData[index].data.filter((b) => +b.balance > 0).map((balance: Balance) => {
-                    const btc = this.getBtcStats(balance, tickerData[index].data);
-                    tempTotalBtcBalance += btc.balance;
-                    return {
-                      name: balance.currency,
-                      y: CURRENCYSERVICE.convertToBase(btc.balance, this.conversionRates, this.baseCurrency),
-                      btc: btc.balance,
-                      mbtc: btc.balance * priceData.mBTC,
-                      usd: btc.balance * priceData.USD,
-                      eur: btc.balance * priceData.EUR,
-                      gbp: btc.balance * priceData.GBP,
-                      balance: balance.balance,
-                      currency: balance.currency,
-                      btcprice: btc.price,
-                      change: btc.change,
-                    };
-                  });
+                  currentExchange.balances = balanceData[index].data
+
+                    .map((balance: Balance) => {
+                      const btc = this.getBtcStats(balance, tickerData[index].data);
+                      tempTotalBtcBalance += btc.balance;
+                      return {
+                        name: balance.currency,
+                        y: CURRENCYSERVICE.convertToBase(btc.balance, this.conversionRates, this.baseCurrency),
+                        btc: btc.balance,
+                        mbtc: btc.balance * priceData.mBTC,
+                        usd: btc.balance * priceData.USD,
+                        eur: btc.balance * priceData.EUR,
+                        gbp: btc.balance * priceData.GBP,
+                        balance: balance.balance,
+                        currency: balance.currency,
+                        btcprice: btc.price,
+                        change: btc.change,
+                      };
+                    })
+                    .filter((b) => {
+                      return +b.usd > 0.01; // leave out dust balances
+                    });
                 }
                 this.appSetTickers(tickers);
                 this.setNewTotalBalance(tempTotalBtcBalance);
@@ -279,13 +284,13 @@ export class AppExchanges {
       <ion-content>
         <ion-segment color="light" padding value={this.segment}>
           <ion-segment-button value="1" onClick={() => (this.segment = '1')}>
-            Distribution
+            Overview
           </ion-segment-button>
           <ion-segment-button value="2" onClick={() => (this.segment = '2')}>
             Balances
           </ion-segment-button>
           <ion-segment-button value="3" onClick={() => (this.segment = '3')}>
-            Market
+            Markets
           </ion-segment-button>
         </ion-segment>
         {!this.isLoading && this.segment === '1' && <app-sunburst exchanges={this.exchanges} />}
@@ -294,9 +299,9 @@ export class AppExchanges {
             this.segment === '2' &&
             this.exchanges.filter((e) => e.key && e.secret).map((exchange) => (
               <ion-item lines="full" href={`/exchanges/${exchange.id}`}>
-                <ion-avatar item-start margin-right>
+                <ion-thumbnail item-start margin-right>
                   <img src={exchange.icon} />
-                </ion-avatar>
+                </ion-thumbnail>
                 <ion-label>{exchange.id}</ion-label>
                 {!this.isLoading && (
                   <ion-badge color="light" item-end>

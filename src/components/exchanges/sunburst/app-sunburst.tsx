@@ -14,14 +14,6 @@ export class AppSunburst {
   componentDidLoad() {
     const nodeData = {
       name: 'All Balances',
-      change:
-        this.exchanges.reduce(
-          (a, b) =>
-            a +
-            (b.balances.reduce((c, d) => c + d.change * d.btc, 0) / b.balances.reduce((a, b) => a + b.btc, 0)) *
-              b.balances.reduce((a, b) => a + b.btc, 0),
-          0,
-        ) / this.exchanges.reduce((a, b) => a + b.balances.reduce((a, b) => a + b.btc, 0), 0),
       children: [
         ...this.exchanges.map((e) => {
           return {
@@ -46,10 +38,11 @@ export class AppSunburst {
       maxRadius = Math.min(width, height) / 1.4;
     const formatNumber = d3.format(',d');
     const max = Math.max(...this.exchanges.map((e) => Math.max(...e.balances.map((b) => b.change))));
+    const min = Math.min(...this.exchanges.map((e) => Math.min(...e.balances.map((b) => b.change))));
     let color = d3
       .scaleLinear()
-      .domain([-max, 0, max])
-      .range(['#f53d3d', '#131722', '#28e070']);
+      .domain([min, 0, max])
+      .range(['#f53d3d', '#131722', '#10dc60']);
 
     const x = d3
       .scaleLinear()
@@ -57,8 +50,6 @@ export class AppSunburst {
       .clamp(true);
 
     const y = d3.scaleLinear().range([maxRadius * 0.1, maxRadius]);
-
-    // const color = d3.scaleOrdinal(d3.schemeCategory20);
 
     const partition = d3.partition();
 

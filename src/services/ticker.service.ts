@@ -7,6 +7,13 @@ export class Ticker {
   exchangeId: ExchangeId;
   tickers: any[];
 }
+export class Wallet {
+  id: number;
+  name: string;
+  symbol: string;
+  amount: number;
+}
+
 export class TickerService {
   getTickersFromStore(): Promise<Ticker[]> {
     return STORAGE.get('tickers');
@@ -22,4 +29,5 @@ export class TickerService {
   getTicker(exchangeId: ExchangeId, pair: string) {
     return axios.get(`http://lightningassets.com/exchangeapi/${exchangeId}/ticker/data?symbol=${pair}`);
   }
+
 }

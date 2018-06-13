@@ -16,7 +16,7 @@ export enum ExchangeId {
   bittrex = 'bittrex',
 }
 
-export const Exchanges: Exchange[] = [
+export const DefaultExchanges: Exchange[] = [
   {
     id: ExchangeId.kraken,
     icon: 'https://cryptocoincharts.info/img/exchanges/kraken.svg',

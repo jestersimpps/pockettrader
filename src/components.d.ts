@@ -71,6 +71,39 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface AppEditwallet {
+      'walletId': number;
+    }
+  }
+
+  interface HTMLAppEditwalletElement extends StencilComponents.AppEditwallet, HTMLStencilElement {}
+
+  var HTMLAppEditwalletElement: {
+    prototype: HTMLAppEditwalletElement;
+    new (): HTMLAppEditwalletElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-editwallet': HTMLAppEditwalletElement;
+  }
+  interface ElementTagNameMap {
+    'app-editwallet': HTMLAppEditwalletElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-editwallet': JSXElements.AppEditwalletAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppEditwalletAttributes extends HTMLAttributes {
+      'walletId'?: number;
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface AppExchangebalances {
       'exchangeId': ExchangeId;
     }

@@ -4,7 +4,7 @@ import highcharts from '../../global/highcharts';
 import numeral from 'numeral';
 import { Currency, BtcPrice } from '../../services/currency.service';
 import { Balance } from '../../services/balance.service';
-import { Exchanges, Exchange, ExchangeId } from '../../services/exchange.service';
+import { Exchange, ExchangeId } from '../../services/exchange.service';
 import { appSetExchanges, appSetBaseCurrency, appSetConversionRates, appSetTickers, appSetTotalBalances } from '../../actions/app';
 import { Store, Action } from '@stencil/redux';
 import { Ticker } from '../../services/ticker.service';
@@ -18,7 +18,7 @@ export class AppExchanges {
   store: Store;
 
   @State() exchanges: Exchange[] = [];
-  @State() isLoading = true;
+  @State() isLoading = false;
   @State() baseCurrency: Currency;
   @State() conversionRates: BtcPrice;
   @State() totalBalance: number;
@@ -59,42 +59,7 @@ export class AppExchanges {
   }
 
   componentDidLoad() {
-    EXCHANGESERVICE.getExchanges()
-      .then((exchanges) => {
-        if (!exchanges) {
-          this.appSetExchanges(Exchanges);
-        } else {
-          this.appSetExchanges(exchanges);
-        }
-        return CURRENCYSERVICE.getBaseCurrency();
-      })
-      .then((baseCurrency) => {
-        if (!baseCurrency) {
-          this.appSetBaseCurrency(Currency.mbtc);
-        } else {
-          this.appSetBaseCurrency(baseCurrency);
-        }
-        return CURRENCYSERVICE.getConversionRates();
-      })
-      .then((conversionRates) => {
-        this.appSetConversionRates(conversionRates);
-        return TICKERSERVICE.getTickersFromStore();
-      })
-      .then((tickers) => {
-        tickers ? this.appSetTickers(tickers) : this.appSetTickers([]);
-        return BALANCESERVICE.getTotalBalances();
-      })
-      .then((totalBalances) => {
-        if (!totalBalances) {
-          totalBalances = [];
-          this.totalBalance = 0;
-          BALANCESERVICE.setTotalBalances([]);
-        } else {
-          this.updateTotalBalance();
-        }
-        // this.drawChart(totalBalances);
-        this.isLoading = false;
-      });
+    this.updateTotalBalance();
   }
 
   updateTotalBalance() {

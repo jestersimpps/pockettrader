@@ -137,6 +137,39 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface AppExchangekeys {
+      'exchangeId': ExchangeId;
+    }
+  }
+
+  interface HTMLAppExchangekeysElement extends StencilComponents.AppExchangekeys, HTMLStencilElement {}
+
+  var HTMLAppExchangekeysElement: {
+    prototype: HTMLAppExchangekeysElement;
+    new (): HTMLAppExchangekeysElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-exchangekeys': HTMLAppExchangekeysElement;
+  }
+  interface ElementTagNameMap {
+    'app-exchangekeys': HTMLAppExchangekeysElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-exchangekeys': JSXElements.AppExchangekeysAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppExchangekeysAttributes extends HTMLAttributes {
+      'exchangeId'?: ExchangeId;
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface AppExchanges {
 
     }
@@ -361,6 +394,39 @@ declare global {
   }
   namespace JSXElements {
     export interface AppSettingsAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppWallets {
+
+    }
+  }
+
+  interface HTMLAppWalletsElement extends StencilComponents.AppWallets, HTMLStencilElement {}
+
+  var HTMLAppWalletsElement: {
+    prototype: HTMLAppWalletsElement;
+    new (): HTMLAppWalletsElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-wallets': HTMLAppWalletsElement;
+  }
+  interface ElementTagNameMap {
+    'app-wallets': HTMLAppWalletsElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-wallets': JSXElements.AppWalletsAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppWalletsAttributes extends HTMLAttributes {
 
     }
   }

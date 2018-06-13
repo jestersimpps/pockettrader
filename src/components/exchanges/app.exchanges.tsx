@@ -271,8 +271,6 @@ export class AppExchanges {
             </ion-button>
           </ion-buttons>
         </ion-toolbar>
-      </ion-header>,
-      <ion-content>
         <ion-segment color="light" padding value={this.segment}>
           <ion-segment-button value="1" onClick={() => (this.segment = '1')}>
             Overview
@@ -284,6 +282,8 @@ export class AppExchanges {
             Markets
           </ion-segment-button>
         </ion-segment>
+      </ion-header>,
+      <ion-content>
         {!this.isLoading && this.segment === '1' && <app-sunburst exchanges={this.exchanges} />}
         <ion-list>
           {!this.isLoading &&

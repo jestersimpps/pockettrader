@@ -25,6 +25,7 @@ export class MyApp {
           <ion-route url="/pair/:exchangeId/:pair" component="app-pair" />
           <ion-route url="/settings/" component="app-settings" />
           <ion-route url="/settings/keys" component="app-keys" />
+          <ion-route url="/settings/keys/:exchangeId" component="app-exchangekeys" />
           <ion-route url="/settings/basecurrency" component="app-basecurrency" />
         </ion-router>
         <ion-nav />

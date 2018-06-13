@@ -115,22 +115,15 @@ export class AppSunburst {
       .attr('fill', (d) => color(d.data.change))
       .transition()
       .duration(function(d) {
-        return 2000 * (d.x1 - d.x0);
+        return 1000 * (d.x1 - d.x0);
       })
       .attrTween('d', function(d) {
-        if (d.parent) {
           var i = d3.interpolate(d.x0, d.x1);
           return function(t) {
             d.x1 = i(t);
             return arc(d);
           };
-        } else {
-          return function() {
-            return arc(d);
-          };
-        }
       });
-    // .attr('d', arc);
 
     newSlice
       .append('path')

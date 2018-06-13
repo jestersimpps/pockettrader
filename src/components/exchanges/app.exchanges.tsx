@@ -1,13 +1,13 @@
 import { Component, State, Prop } from '@stencil/core';
 import { CURRENCYSERVICE, BALANCESERVICE, EXCHANGESERVICE, TICKERSERVICE } from '../../services/globals';
-import highcharts from '../../global/highcharts';
 import numeral from 'numeral';
 import { Currency, BtcPrice } from '../../services/currency.service';
 import { Balance } from '../../services/balance.service';
 import { Exchange, ExchangeId } from '../../services/exchange.service';
-import { appSetExchanges, appSetBaseCurrency, appSetConversionRates, appSetTickers, appSetTotalBalances } from '../../actions/app';
+import { appSetExchanges, appSetBaseCurrency, appSetConversionRates, appSetTickers, appSetTotalBalances, appSetWallets } from '../../actions/app';
 import { Store, Action } from '@stencil/redux';
 import { Ticker } from '../../services/ticker.service';
+import { Wallet } from '../../services/wallets.service';
 
 @Component({
   tag: 'app-exchanges',
@@ -23,6 +23,8 @@ export class AppExchanges {
   @State() conversionRates: BtcPrice;
   @State() totalBalance: number;
   @State() tickers: any[];
+  @State() wallets: Wallet[];
+  @State() activeWallets: Wallet[];
   @State() segment = '1';
 
   chart;
@@ -32,17 +34,19 @@ export class AppExchanges {
   appSetConversionRates: Action;
   appSetTickers: Action;
   appSetTotalBalances: Action;
+  appSetWallets: Action;
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { exchanges, baseCurrency, conversionRates, tickers },
+        app: { exchanges, baseCurrency, conversionRates, tickers, wallets },
       } = state;
       return {
         exchanges,
         baseCurrency,
         conversionRates,
         tickers,
+        wallets,
       };
     });
     this.store.mapDispatchToProps(this, {
@@ -51,6 +55,7 @@ export class AppExchanges {
       appSetConversionRates,
       appSetTickers,
       appSetTotalBalances,
+      appSetWallets,
     });
   }
 
@@ -65,55 +70,6 @@ export class AppExchanges {
   updateTotalBalance() {
     BALANCESERVICE.getTotalBalances().then((totalBalances) => {
       this.totalBalance = CURRENCYSERVICE.convertToBase(BALANCESERVICE.getLatestTotal(totalBalances), this.conversionRates, this.baseCurrency);
-    });
-  }
-
-  drawChart(totalBalances) {
-    this.chart = highcharts.chart('spline', {
-      chart: {
-        type: 'spline',
-      },
-
-      title: {
-        text: '',
-      },
-      xAxis: {
-        type: 'datetime',
-        dateTimeLabelFormats: {
-          // don't display the dummy year
-          month: '%e. %b',
-          year: '%b',
-        },
-        title: {
-          text: 'Date',
-        },
-      },
-      yAxis: {
-        title: {
-          text: `Balance (BTC)`,
-        },
-      },
-      tooltip: {
-        headerFormat: '<b>{series.name}</b><br>',
-        pointFormat: '<b>Time:</b> {point.x:%e %b %Y, %H:%M}<br><b>Balance:</b> {point.y:.8f} BTC',
-      },
-
-      plotOptions: {
-        spline: {
-          marker: {
-            enabled: true,
-            radius: 2,
-            // fillColor: '#488aff',
-          },
-        },
-      },
-      colors: ['#000'],
-      series: [
-        {
-          name: 'Total BTC Balance over time',
-          data: totalBalances,
-        },
-      ],
     });
   }
 
@@ -138,54 +94,74 @@ export class AppExchanges {
     let exchangeIds: ExchangeId[] = [];
     let tickerPromises = [];
     let balancePromises = [];
+    let walletPromises = [];
     let tickers: Ticker[] = [];
+    let wallets: Wallet[] = [];
 
     this.exchanges.filter((e) => e.key && e.secret).forEach((exchange) => {
       exchangeIds.push(exchange.id);
       tickerPromises.push(TICKERSERVICE.getTickers(exchange.id));
       balancePromises.push(BALANCESERVICE.getBalances(exchange));
     });
+    this.wallets.forEach((wallet) => walletPromises.push(TICKERSERVICE.getCoinmarketcapTicker(wallet.id)));
 
     CURRENCYSERVICE.getConversionRates()
       .then((priceData) => {
         Promise.all(tickerPromises)
           .then((tickerData) => {
-            Promise.all(balancePromises)
-              .then((balanceData) => {
-                let tempTotalBtcBalance = 0;
-                for (let index = 0; index < exchangeIds.length; index++) {
-                  tickers.push({
-                    exchangeId: exchangeIds[index],
-                    tickers: tickerData[index].data,
-                  });
-                  const currentExchange = this.exchanges.filter((e) => e.key && e.secret)[index];
-                  currentExchange.balances = balanceData[index].data
-
-                    .map((balance: Balance) => {
-                      const btc = this.getBtcStats(balance, tickerData[index].data);
-                      tempTotalBtcBalance += btc.balance;
+            Promise.all(walletPromises)
+              .then((walletData) => {
+                Promise.all(balancePromises)
+                  .then((balanceData) => {
+                    let tempTotalBtcBalance = 0;
+                    for (let index = 0; index < exchangeIds.length; index++) {
+                      tickers.push({
+                        exchangeId: exchangeIds[index],
+                        tickers: tickerData[index].data,
+                      });
+                      const currentExchange = this.exchanges.filter((e) => e.key && e.secret)[index];
+                      currentExchange.balances = balanceData[index].data
+                        .map((balance: Balance) => {
+                          const btc = this.getBtcStats(balance, tickerData[index].data);
+                          tempTotalBtcBalance += btc.balance;
+                          return {
+                            name: balance.currency,
+                            y: CURRENCYSERVICE.convertToBase(btc.balance, this.conversionRates, this.baseCurrency),
+                            btc: btc.balance,
+                            mbtc: btc.balance * priceData.mBTC,
+                            usd: btc.balance * priceData.USD,
+                            eur: btc.balance * priceData.EUR,
+                            gbp: btc.balance * priceData.GBP,
+                            balance: balance.balance,
+                            currency: balance.currency,
+                            btcprice: btc.price,
+                            change: btc.change,
+                          };
+                        })
+                        .filter((b) => {
+                          return +b.usd > 0.01; // leave out dust balances
+                        });
+                    }
+                    console.log(walletData);
+                    wallets.map((wallet, index) => {
                       return {
-                        name: balance.currency,
-                        y: CURRENCYSERVICE.convertToBase(btc.balance, this.conversionRates, this.baseCurrency),
-                        btc: btc.balance,
-                        mbtc: btc.balance * priceData.mBTC,
-                        usd: btc.balance * priceData.USD,
-                        eur: btc.balance * priceData.EUR,
-                        gbp: btc.balance * priceData.GBP,
-                        balance: balance.balance,
-                        currency: balance.currency,
-                        btcprice: btc.price,
-                        change: btc.change,
+                        ...wallet,
+                        amount: wallet.amount,
+                        btcprice: +walletData[index].data.data.quotes.BTC.price,
+                        change: +walletData[index].data.data.quotes.BTC.percent_change_24h,
+                        total: wallet.amount * +walletData[index].data.data.quotes.BTC.price,
                       };
-                    })
-                    .filter((b) => {
-                      return +b.usd > 0.01; // leave out dust balances
                     });
-                }
-                this.appSetTickers(tickers);
-                this.setNewTotalBalance(tempTotalBtcBalance);
-                EXCHANGESERVICE.setExchanges(this.exchanges);
-                this.isLoading = false;
+                    this.appSetTickers(tickers);
+                    this.appSetWallets(wallets);
+                    this.setNewTotalBalance(tempTotalBtcBalance);
+                    EXCHANGESERVICE.setExchanges(this.exchanges);
+                    this.isLoading = false;
+                  })
+                  .catch((error) => {
+                    console.error(error.message);
+                    this.isLoading = false;
+                  });
               })
               .catch((error) => {
                 console.error(error.message);
@@ -252,22 +228,38 @@ export class AppExchanges {
         {!this.isLoading && this.segment === '1' && <app-sunburst exchanges={this.exchanges} />}
         <ion-list>
           {!this.isLoading &&
-            this.segment === '2' &&
-            this.exchanges.filter((e) => e.key && e.secret).map((exchange) => (
-              <ion-item lines="full" href={`/exchanges/${exchange.id}`}>
-                <ion-thumbnail item-start margin-right>
-                  <img src={exchange.icon} />
-                </ion-thumbnail>
-                <ion-label>{exchange.id}</ion-label>
-                {!this.isLoading && (
-                  <ion-badge color="light" item-end>
-                    {`${numeral(CURRENCYSERVICE.getBtcTotal(exchange, this.conversionRates, this.baseCurrency)).format(
-                      this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00',
-                    )} ${this.baseCurrency}`}
-                  </ion-badge>
-                )}
-              </ion-item>
-            ))}
+            this.segment === '2' && [
+              <ion-list-header color="dark">Exchanges </ion-list-header>,
+              this.exchanges.filter((e) => e.key && e.secret).map((exchange) => (
+                <ion-item lines="full" href={`/exchanges/${exchange.id}`}>
+                  <ion-thumbnail item-start margin-right>
+                    <img src={exchange.icon} />
+                  </ion-thumbnail>
+                  <ion-label>{exchange.id}</ion-label>
+                  {!this.isLoading && (
+                    <ion-badge color="light" item-end>
+                      {`${numeral(CURRENCYSERVICE.getBaseTotal(exchange, this.conversionRates, this.baseCurrency)).format(
+                        this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00',
+                      )} ${this.baseCurrency}`}
+                    </ion-badge>
+                  )}
+                </ion-item>
+              )),
+              <ion-list-header color="dark">Wallets </ion-list-header>,
+              this.wallets.map((wallet) => (
+                <ion-item lines="full">
+                  <ion-thumbnail item-start margin-right>
+                    <img src={wallet.icon} />
+                  </ion-thumbnail>
+                  <ion-label>{wallet.symbol}</ion-label>
+                  {!this.isLoading && (
+                    <ion-badge color="light" item-end>
+                      {`${numeral(wallet.total).format(this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00')} ${this.baseCurrency}`}
+                    </ion-badge>
+                  )}
+                </ion-item>
+              )),
+            ]}
         </ion-list>
       </ion-content>,
       // <ion-footer>

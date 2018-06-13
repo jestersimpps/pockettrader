@@ -7,6 +7,10 @@ export class Wallet {
   name: string;
   symbol: string;
   amount: number;
+  icon: string;
+  btcprice: number;
+  total: number;
+  change: number;
 }
 
 export class WalletService {

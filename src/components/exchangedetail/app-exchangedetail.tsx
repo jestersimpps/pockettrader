@@ -51,7 +51,7 @@ export class AppExchangeDetail {
           <ion-buttons padding slot="end">
             <ion-badge slot="end" color="light">
               {this.exchange &&
-                `${numeral(CURRENCYSERVICE.getBtcTotal(this.exchange, this.conversionRates, this.baseCurrency)).format(
+                `${numeral(CURRENCYSERVICE.getBaseTotal(this.exchange, this.conversionRates, this.baseCurrency)).format(
                   this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00',
                 )} ${this.baseCurrency}`}
             </ion-badge>

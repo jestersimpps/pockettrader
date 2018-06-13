@@ -54,17 +54,7 @@ export class MyApp {
       })
       .then((wallets) => {
         if (!wallets) {
-          WALLETSERVICE.getCoinmarketCapListings().then((response) => {
-            console.log(response);
-            this.appSetWallets(
-              response.data.data.map((w) => {
-                return {
-                  ...w,
-                  value: 0,
-                };
-              }),
-            );
-          });
+          this.appSetWallets([]);
         } else {
           this.appSetWallets(wallets);
         }

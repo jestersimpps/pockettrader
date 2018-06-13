@@ -47,7 +47,7 @@ export class CurrencyService {
     return btcValue * conversionRates[`${baseCurrency}`];
   }
 
-  getBtcTotal(exchange: Exchange, conversionRates: BtcPrice, baseCurrency: Currency) {
+  getBaseTotal(exchange: Exchange, conversionRates: BtcPrice, baseCurrency: Currency) {
     let sum = 0;
     exchange.balances.forEach((balance: Balance) => {
       sum += balance.btc;

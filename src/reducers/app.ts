@@ -3,7 +3,8 @@ import { TypeKeys, ActionTypes } from '../actions/index';
 import { Exchange } from '../services/exchange.service';
 import { EXCHANGESERVICE, CURRENCYSERVICE, TICKERSERVICE, WALLETSERVICE } from '../services/globals';
 import { Currency } from '../services/currency.service';
-import { Ticker, Wallet } from '../services/ticker.service';
+import { Ticker } from '../services/ticker.service';
+import { Wallet } from '../services/wallets.service';
 
 interface AppState {
   exchanges: Exchange[];

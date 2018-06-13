@@ -1,12 +1,10 @@
 import { Component, Prop, State } from '@stencil/core';
-// import highcharts from '../../global/highcharts';
-// import numeral from 'numeral';
 import { Exchange, ExchangeId } from '../../services/exchange.service';
-// import { CURRENCYSERVICE } from '../../services/globals';
 import { Store, Action } from '@stencil/redux';
-import { appSetExchanges, appSetBaseCurrency, appSetConversionRates } from '../../actions/app';
 import { Currency, BtcPrice } from '../../services/currency.service';
 import { Ticker } from '../../services/ticker.service';
+import numeral from 'numeral';
+import { CURRENCYSERVICE } from '../../services/globals';
 
 @Component({
   tag: 'app-exchangedetail',
@@ -39,62 +37,7 @@ export class AppExchangeDetail {
         tickers,
       };
     });
-    this.store.mapDispatchToProps(this, {
-      appSetExchanges,
-      appSetBaseCurrency,
-      appSetConversionRates,
-    });
-  }
-
-  componentDidLoad() {
     this.exchange = this.exchanges.find((e) => e.id === this.exchangeId);
-    // highcharts.chart('pie', {
-    //   chart: {
-    //     plotBackgroundColor: '#fff',
-    //     plotBorderWidth: null,
-    //     plotShadow: false,
-    //     type: 'pie',
-    //   },
-    //   title: {
-    //     text: ``,
-    //   },
-    //   tooltip: {
-    //     pointFormat: `{series.name}: <b>{point.percentage:.1f} %</b>
-    //       <br>{point.balance:.8f}  <b>{point.currency}</b>
-    //       <br>{point.usd:.8f}  <b>USD</b>
-    //       <br>{point.eur:.8f}  <b>EUR</b>
-    //       <br>{point.gbp:.8f}  <b>GBP</b>
-    //       `,
-    //   },
-    //   plotOptions: {
-    //     pie: {
-    //       allowPointSelect: true,
-    //       cursor: 'pointer',
-    //       dataLabels: {
-    //         enabled: true,
-    //         format: `<b>{point.name}</b><br>{point.percentage:.1f} % `,
-    //         distance: 0,
-    //       },
-    //     },
-    //   },
-    //   series: [
-    //     {
-    //       name: 'Balances',
-    //       data: this.exchange.balances.map((balance) => {
-    //         return {
-    //           name: balance.currency,
-    //           y: balance.btc,
-    //           btc: balance.btc,
-    //           usd: balance.usd,
-    //           eur: balance.eur,
-    //           gbp: balance.gbp,
-    //           balance: balance.balance,
-    //           currency: balance.currency,
-    //         };
-    //       }),
-    //     },
-    //   ],
-    // });
   }
 
   render() {
@@ -104,7 +47,15 @@ export class AppExchangeDetail {
           <ion-buttons slot="start">
             <ion-back-button defaultHref="/" />
           </ion-buttons>
-          <ion-title>{this.exchange.id}</ion-title>
+          <ion-title>{this.exchangeId}</ion-title>
+          <ion-buttons padding slot="end">
+            <ion-badge slot="end" color="light">
+              {this.exchange &&
+                `${numeral(CURRENCYSERVICE.getBtcTotal(this.exchange, this.conversionRates, this.baseCurrency)).format(
+                  this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00',
+                )} ${this.baseCurrency}`}
+            </ion-badge>
+          </ion-buttons>
         </ion-toolbar>
       </ion-header>,
 
@@ -113,7 +64,7 @@ export class AppExchangeDetail {
       </ion-content>,
       <ion-footer>
         <ion-toolbar>
-          <ion-button icon-left color="dark" class="full" disabled>
+          <ion-button icon-left color="light" class="full" disabled>
             Trade
           </ion-button>
         </ion-toolbar>

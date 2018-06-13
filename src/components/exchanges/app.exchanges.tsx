@@ -152,14 +152,6 @@ export class AppExchanges {
     });
   }
 
-  getBtcTotal(exchange) {
-    let sum = 0;
-    exchange.balances.forEach((balance: Balance) => {
-      sum += balance.btc;
-    });
-    return CURRENCYSERVICE.convertToBase(sum, this.conversionRates, this.baseCurrency);
-  }
-
   getBtcStats(balance: Balance, tickerData): { price: number; balance: number; change: number } {
     let stats = { price: 0, balance: 0, change: 0 };
     const innerTicker = tickerData.find((t) => t.symbol === `${balance.currency}/BTC`);
@@ -305,7 +297,9 @@ export class AppExchanges {
                 <ion-label>{exchange.id}</ion-label>
                 {!this.isLoading && (
                   <ion-badge color="light" item-end>
-                    {`${numeral(this.getBtcTotal(exchange)).format(this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00')} ${this.baseCurrency}`}
+                    {`${numeral(CURRENCYSERVICE.getBtcTotal(exchange, this.conversionRates, this.baseCurrency)).format(
+                      this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00',
+                    )} ${this.baseCurrency}`}
                   </ion-badge>
                 )}
               </ion-item>

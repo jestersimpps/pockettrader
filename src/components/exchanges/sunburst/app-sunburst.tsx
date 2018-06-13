@@ -42,7 +42,7 @@ export class AppSunburst {
     let color = d3
       .scaleLinear()
       .domain([min, 0, max])
-      .range(['#f53d3d', '#131722', '#10dc60']);
+      .range(['#f53d3d', '#000', '#10dc60']);
 
     const x = d3
       .scaleLinear()
@@ -88,7 +88,7 @@ export class AppSunburst {
       .append('svg')
       .style('width', '100vw')
       .style('height', '400px')
-      .style('background', '#131722')
+      .style('background', '#000')
       .attr('viewBox', `${-width / 2} ${-height / 2} ${width} ${height}`)
       .on('click', () => focusOn()); // Reset zoom on canvas click
 

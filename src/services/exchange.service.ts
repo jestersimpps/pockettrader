@@ -56,4 +56,5 @@ export class ExchangeService {
   setExchanges(exchanges: Exchange[]): void {
     STORAGE.set(`exchanges`, exchanges);
   }
+  
 }

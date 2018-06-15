@@ -21,7 +21,7 @@ export class AppExchanges {
   @State() isLoading = false;
   @State() baseCurrency: Currency;
   @State() conversionRates: BtcPrice;
-  @State() totalBalance: number;
+  @State() totalBalance: number = 0;
   @State() tickers: any[];
   @State() wallets: Wallet[];
   @State() activeWallets: Wallet[];
@@ -59,17 +59,25 @@ export class AppExchanges {
     });
   }
 
-  componentDidUpdate() {
-    this.updateTotalBalance();
-  }
-
   componentDidLoad() {
     this.updateTotalBalance();
   }
 
   updateTotalBalance() {
     BALANCESERVICE.getTotalBalances().then((totalBalances) => {
-      this.totalBalance = CURRENCYSERVICE.convertToBase(BALANCESERVICE.getLatestTotal(totalBalances), this.conversionRates, this.baseCurrency);
+      this.totalBalance += +CURRENCYSERVICE.convertToBase(BALANCESERVICE.getLatestTotal(totalBalances), this.conversionRates, this.baseCurrency);
+    });
+  }
+
+  setNewTotalBalance(totalBtcBalance: number) {
+    this.totalBalance = CURRENCYSERVICE.convertToBase(totalBtcBalance, this.conversionRates, this.baseCurrency) || 0;
+    BALANCESERVICE.getTotalBalances().then((totalBalances) => {
+      if (totalBtcBalance && totalBtcBalance > 0) {
+        let now = new Date().getTime();
+        BALANCESERVICE.setTotalBalances([...totalBalances, [now, totalBtcBalance]]);
+        this.appSetTotalBalances([...totalBalances, [now, totalBtcBalance]]);
+        // this.chart.series[0].addPoint([now, totalBtcBalance]);
+      }
     });
   }
 
@@ -103,7 +111,7 @@ export class AppExchanges {
       tickerPromises.push(TICKERSERVICE.getTickers(exchange.id));
       balancePromises.push(BALANCESERVICE.getBalances(exchange));
     });
-    this.wallets.forEach((wallet) => walletPromises.push(TICKERSERVICE.getCoinmarketcapTicker(wallet.id)));
+    this.wallets.filter((w) => w.amount > 0).forEach((wallet) => walletPromises.push(TICKERSERVICE.getCoinmarketcapTicker(wallet.id)));
 
     CURRENCYSERVICE.getConversionRates()
       .then((priceData) => {
@@ -142,15 +150,14 @@ export class AppExchanges {
                           return +b.usd > 0.01; // leave out dust balances
                         });
                     }
-                    console.log(walletData);
-                    wallets.map((wallet, index) => {
-                      return {
+                    this.wallets.forEach((wallet, index) => {
+                      wallets.push({
                         ...wallet,
-                        amount: wallet.amount,
                         btcprice: +walletData[index].data.data.quotes.BTC.price,
                         change: +walletData[index].data.data.quotes.BTC.percent_change_24h,
-                        total: wallet.amount * +walletData[index].data.data.quotes.BTC.price,
-                      };
+                        total: +wallet.amount * +walletData[index].data.data.quotes.BTC.price,
+                      });
+                      tempTotalBtcBalance += +wallet.amount * +walletData[index].data.data.quotes.BTC.price;
                     });
                     this.appSetTickers(tickers);
                     this.appSetWallets(wallets);
@@ -177,19 +184,6 @@ export class AppExchanges {
         console.error(error.message);
         this.isLoading = false;
       });
-  }
-
-  setNewTotalBalance(totalBtcBalance: number) {
-    this.totalBalance = CURRENCYSERVICE.convertToBase(totalBtcBalance, this.conversionRates, this.baseCurrency) || 0;
-    BALANCESERVICE.getTotalBalances().then((totalBalances) => {
-      if (totalBtcBalance && totalBtcBalance > 0) {
-        let now = new Date().getTime();
-        BALANCESERVICE.setTotalBalances([...totalBalances, [now, totalBtcBalance]]);
-        this.appSetTotalBalances([...totalBalances, [now, totalBtcBalance]]);
-
-        // this.chart.series[0].addPoint([now, totalBtcBalance]);
-      }
-    });
   }
 
   render() {
@@ -246,15 +240,17 @@ export class AppExchanges {
                 </ion-item>
               )),
               <ion-list-header color="dark">Wallets </ion-list-header>,
-              this.wallets.map((wallet) => (
+              this.wallets.filter((w) => w.amount > 0).map((wallet) => (
                 <ion-item lines="full">
                   <ion-thumbnail item-start margin-right>
                     <img src={wallet.icon} />
                   </ion-thumbnail>
-                  <ion-label>{wallet.symbol}</ion-label>
+                  <ion-label>{wallet.name}</ion-label>
                   {!this.isLoading && (
                     <ion-badge color="light" item-end>
-                      {`${numeral(wallet.total).format(this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00')} ${this.baseCurrency}`}
+                      {`${numeral(CURRENCYSERVICE.convertToBase(wallet.total, this.conversionRates, this.baseCurrency)).format(
+                        this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00',
+                      )} ${this.baseCurrency}`}
                     </ion-badge>
                   )}
                 </ion-item>

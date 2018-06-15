@@ -26,6 +26,7 @@ export class AppBaseCurrency {
     this.store.mapDispatchToProps(this, {
       appSetBaseCurrency,
     });
+    
   }
 
   render() {
@@ -40,28 +41,30 @@ export class AppBaseCurrency {
       </ion-header>,
       <ion-content>
         {this.baseCurrency && (
-          <ion-list>
-            <ion-item lines="full">
-              <ion-label>mBTC</ion-label>
-              <ion-radio checked={this.baseCurrency === Currency.mbtc} value="mBTC" onClick={() => this.appSetBaseCurrency(Currency.mbtc)} />
-            </ion-item>
-            <ion-item lines="full">
-              <ion-label>BTC</ion-label>
-              <ion-radio checked={this.baseCurrency === Currency.btc} value="BTC" onClick={() => this.appSetBaseCurrency(Currency.btc)} />
-            </ion-item>
-            <ion-item lines="full">
-              <ion-label>USD</ion-label>
-              <ion-radio checked={this.baseCurrency === Currency.usd} value="USD" onClick={() => this.appSetBaseCurrency(Currency.usd)} />
-            </ion-item>
-            <ion-item lines="full">
-              <ion-label>EUR</ion-label>
-              <ion-radio checked={this.baseCurrency === Currency.eur} value="EUR" onClick={() => this.appSetBaseCurrency(Currency.eur)} />
-            </ion-item>
-            <ion-item lines="full">
-              <ion-label>GBP</ion-label>
-              <ion-radio checked={this.baseCurrency === Currency.gbp} value="GBP" onClick={() => this.appSetBaseCurrency(Currency.gbp)} />
-            </ion-item>
-          </ion-list>
+          <ion-nav-pop>
+            <ion-list>
+              <ion-item lines="full">
+                <ion-label>mBTC</ion-label>
+                <ion-radio checked={this.baseCurrency === Currency.mbtc} value="mBTC" onClick={() => this.appSetBaseCurrency(Currency.mbtc)} />
+              </ion-item>
+              <ion-item lines="full">
+                <ion-label>BTC</ion-label>
+                <ion-radio checked={this.baseCurrency === Currency.btc} value="BTC" onClick={() => this.appSetBaseCurrency(Currency.btc)} />
+              </ion-item>
+              <ion-item lines="full">
+                <ion-label>USD</ion-label>
+                <ion-radio checked={this.baseCurrency === Currency.usd} value="USD" onClick={() => this.appSetBaseCurrency(Currency.usd)} />
+              </ion-item>
+              <ion-item lines="full">
+                <ion-label>EUR</ion-label>
+                <ion-radio checked={this.baseCurrency === Currency.eur} value="EUR" onClick={() => this.appSetBaseCurrency(Currency.eur)} />
+              </ion-item>
+              <ion-item lines="full">
+                <ion-label>GBP</ion-label>
+                <ion-radio checked={this.baseCurrency === Currency.gbp} value="GBP" onClick={() => this.appSetBaseCurrency(Currency.gbp)} />
+              </ion-item>
+            </ion-list>
+          </ion-nav-pop>
         )}
       </ion-content>,
     ];

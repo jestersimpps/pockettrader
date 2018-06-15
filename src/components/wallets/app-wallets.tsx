@@ -9,8 +9,9 @@ import { WALLETSERVICE } from '../../services/globals';
 export class AppWallets {
   @Prop({ context: 'store' })
   store: Store;
+  cryptos: Wallet[] = [];
   @State() wallets: Wallet[] = [];
-  @State() cryptos: Wallet[] = [];
+  @State() visibleCryptos: Wallet[] = [];
   @State() filteredWallets: Wallet[] = [];
 
   componentWillLoad() {
@@ -31,9 +32,11 @@ export class AppWallets {
     const val = e.target.value;
     // if the value is an empty string don't filter the items
     if (val && val.trim() != '') {
-      this.cryptos = this.cryptos.filter((item) => {
+      this.visibleCryptos = this.cryptos.filter((item) => {
         return item.symbol.toLowerCase().indexOf(val.toLowerCase()) > -1 || item.name.toLowerCase().indexOf(val.toLowerCase()) > -1;
       });
+    } else {
+      this.visibleCryptos = [];
     }
   }
 
@@ -47,27 +50,26 @@ export class AppWallets {
             </ion-buttons>
             <ion-title>Wallets</ion-title>
           </ion-toolbar>
-          <ion-searchbar onIonInput={(e) => this.onIonInput(e)} />
+          <ion-searchbar onIonChange={(e) => this.onIonInput(e)} placeholder="Enter Symbol to Add Holdings..." />
         </ion-header>,
         <ion-content>
           <ion-list>
-            {this.wallets.map((wallet) => (
-              <ion-item lines="full" href={`/settings/wallets/${wallet.id}`}>
-                <ion-label>
-                  {wallet.symbol} - {wallet.name}
-                </ion-label>
-                <ion-label text-right>{wallet.amount}</ion-label>
-              </ion-item>
-            ))}
-            {this.cryptos.length
-              ? this.cryptos.slice(0, 20).map((crypto) => (
+            {this.visibleCryptos.length
+              ? this.visibleCryptos.slice(0, 20).map((crypto) => (
                   <ion-item lines="full" href={`/settings/wallets/${crypto.id}`}>
                     <ion-label>
                       {crypto.symbol} - {crypto.name}
                     </ion-label>
                   </ion-item>
                 ))
-              : ''}}
+              : this.wallets.filter((w) => w.amount > 0).map((wallet) => (
+                  <ion-item lines="full" href={`/settings/wallets/${wallet.id}`}>
+                    <ion-label>
+                      {wallet.symbol} - {wallet.name}
+                    </ion-label>
+                    <ion-label text-right>{wallet.amount}</ion-label>
+                  </ion-item>
+                ))}
           </ion-list>
         </ion-content>,
       ]

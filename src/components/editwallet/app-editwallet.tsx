@@ -51,10 +51,10 @@ export class AppEditwallet {
   changeValue(ev) {
     let wallet = this.wallets.find((w) => w.id === this.walletId);
     if (wallet) {
-      wallet.amount = +ev.target.value;
+      wallet.amount = +ev.target.value > 0 ? +ev.target.value : null;
       this.appSetWallets(this.wallets);
     } else {
-      this.wallet.amount = +ev.target.value;
+      this.wallet.amount = +ev.target.value > 0 ? +ev.target.value : null;
       this.appSetWallets([...this.wallets, this.wallet]);
     }
   }
@@ -78,6 +78,15 @@ export class AppEditwallet {
             </ion-item>
           </ion-list>
         </ion-content>,
+        <ion-footer>
+          <ion-toolbar>
+            <ion-nav-pop>
+              <ion-button icon-left color="light" class="full">
+                Set
+              </ion-button>
+            </ion-nav-pop>
+          </ion-toolbar>
+        </ion-footer>,
       ]
     );
   }

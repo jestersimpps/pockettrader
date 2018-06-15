@@ -36,7 +36,6 @@ export class AppSunburst {
     const width = window.innerWidth,
       height = window.innerHeight,
       maxRadius = Math.min(width, height) / 1.4;
-    const formatNumber = d3.format(',d');
     const max = Math.max(...this.exchanges.map((e) => Math.max(...e.balances.map((b) => b.change))));
     const min = Math.min(...this.exchanges.map((e) => Math.min(...e.balances.map((b) => b.change))));
     let color = d3
@@ -100,8 +99,6 @@ export class AppSunburst {
         focusOn(d);
       });
 
-    newSlice.append('title').text((d) => d.data.name + '\n' + formatNumber(d.value));
-
     const arc = d3
       .arc()
       .startAngle((d) => x(d.x0))
@@ -118,11 +115,11 @@ export class AppSunburst {
         return 1000 * (d.x1 - d.x0);
       })
       .attrTween('d', function(d) {
-          var i = d3.interpolate(d.x0, d.x1);
-          return function(t) {
-            d.x1 = i(t);
-            return arc(d);
-          };
+        var i = d3.interpolate(d.x0, d.x1);
+        return function(t) {
+          d.x1 = i(t);
+          return arc(d);
+        };
       });
 
     newSlice
@@ -144,8 +141,6 @@ export class AppSunburst {
       .text((d) => `${d.data.name} (${numeral(d.data.change).format('0.0')}%)`);
 
     function focusOn(d = { x0: 0, x1: 1, y0: 0, y1: 1 }) {
-      // Reset to top-level if no data point specified
-
       const transition = svg
         .transition()
         .duration(500)

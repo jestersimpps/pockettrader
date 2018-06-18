@@ -34,6 +34,16 @@ import {
   Exchange,
   ExchangeId,
 } from './services/exchange.service';
+import {
+  Wallet,
+} from './services/wallets.service';
+import {
+  ConversionRates,
+  Currency,
+} from './services/currency.service';
+import {
+  Balance,
+} from './services/balance.service';
 
 declare global {
 
@@ -271,6 +281,7 @@ declare global {
   namespace StencilComponents {
     interface AppSunburst {
       'exchanges': Exchange[];
+      'wallets': Wallet[];
     }
   }
 
@@ -294,6 +305,7 @@ declare global {
   namespace JSXElements {
     export interface AppSunburstAttributes extends HTMLAttributes {
       'exchanges'?: Exchange[];
+      'wallets'?: Wallet[];
     }
   }
 }
@@ -428,6 +440,150 @@ declare global {
   namespace JSXElements {
     export interface AppSettingsAttributes extends HTMLAttributes {
 
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppBalanceitem {
+      'baseCurrency': Currency;
+      'conversionRates': ConversionRates;
+      'cryptodata': Wallet | Balance;
+      'exchangeId': ExchangeId;
+    }
+  }
+
+  interface HTMLAppBalanceitemElement extends StencilComponents.AppBalanceitem, HTMLStencilElement {}
+
+  var HTMLAppBalanceitemElement: {
+    prototype: HTMLAppBalanceitemElement;
+    new (): HTMLAppBalanceitemElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-balanceitem': HTMLAppBalanceitemElement;
+  }
+  interface ElementTagNameMap {
+    'app-balanceitem': HTMLAppBalanceitemElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-balanceitem': JSXElements.AppBalanceitemAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppBalanceitemAttributes extends HTMLAttributes {
+      'baseCurrency'?: Currency;
+      'conversionRates'?: ConversionRates;
+      'cryptodata'?: Wallet | Balance;
+      'exchangeId'?: ExchangeId;
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppBaseprice {
+      'baseCurrency': Currency;
+      'btcPrice': number;
+    }
+  }
+
+  interface HTMLAppBasepriceElement extends StencilComponents.AppBaseprice, HTMLStencilElement {}
+
+  var HTMLAppBasepriceElement: {
+    prototype: HTMLAppBasepriceElement;
+    new (): HTMLAppBasepriceElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-baseprice': HTMLAppBasepriceElement;
+  }
+  interface ElementTagNameMap {
+    'app-baseprice': HTMLAppBasepriceElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-baseprice': JSXElements.AppBasepriceAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppBasepriceAttributes extends HTMLAttributes {
+      'baseCurrency'?: Currency;
+      'btcPrice'?: number;
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppCryptoicon {
+      'symbol': string;
+    }
+  }
+
+  interface HTMLAppCryptoiconElement extends StencilComponents.AppCryptoicon, HTMLStencilElement {}
+
+  var HTMLAppCryptoiconElement: {
+    prototype: HTMLAppCryptoiconElement;
+    new (): HTMLAppCryptoiconElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-cryptoicon': HTMLAppCryptoiconElement;
+  }
+  interface ElementTagNameMap {
+    'app-cryptoicon': HTMLAppCryptoiconElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-cryptoicon': JSXElements.AppCryptoiconAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppCryptoiconAttributes extends HTMLAttributes {
+      'symbol'?: string;
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppExchangeitem {
+      'baseCurrency': Currency;
+      'conversionRates': ConversionRates;
+      'exchange': Exchange;
+    }
+  }
+
+  interface HTMLAppExchangeitemElement extends StencilComponents.AppExchangeitem, HTMLStencilElement {}
+
+  var HTMLAppExchangeitemElement: {
+    prototype: HTMLAppExchangeitemElement;
+    new (): HTMLAppExchangeitemElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-exchangeitem': HTMLAppExchangeitemElement;
+  }
+  interface ElementTagNameMap {
+    'app-exchangeitem': HTMLAppExchangeitemElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-exchangeitem': JSXElements.AppExchangeitemAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppExchangeitemAttributes extends HTMLAttributes {
+      'baseCurrency'?: Currency;
+      'conversionRates'?: ConversionRates;
+      'exchange'?: Exchange;
     }
   }
 }

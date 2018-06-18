@@ -1,6 +1,7 @@
 import { Component, Prop } from '@stencil/core';
 import { Exchange } from '../../../services/exchange.service';
 import numeral from 'numeral';
+import { Wallet } from '../../../services/wallets.service';
 
 declare const d3;
 
@@ -10,6 +11,7 @@ declare const d3;
 })
 export class AppSunburst {
   @Prop() exchanges: Exchange[] = [];
+  @Prop() wallets: Wallet[] = [];
 
   componentDidLoad() {
     const nodeData = {
@@ -19,16 +21,21 @@ export class AppSunburst {
           return {
             name: e.id,
             balance: e.balances.reduce((a, b) => a + b.balance, 0),
-            value: e.balances.reduce((a, b) => a + b.btc, 0),
-            change: e.balances.reduce((a, b) => a + b.change * b.btc, 0) / e.balances.reduce((a, b) => a + b.btc, 0),
+            value: e.balances.reduce((a, b) => a + b.btcAmount, 0),
+            change: e.balances.reduce((a, b) => a + b.change * b.btcAmount, 0) / e.balances.reduce((a, b) => a + b.btcAmount, 0),
             children: e.balances.map((b) => {
-              return { name: b.currency, size: b.btc, balance: b.balance, value: b.btc, change: b.change };
+              return { name: b.symbol, size: b.btcAmount, balance: b.balance, value: b.btcAmount, change: b.change };
             }),
           };
         }),
         {
           name: 'Wallets',
-          children: [],
+          balance: this.wallets.reduce((a, b) => a + b.balance, 0),
+          value: this.wallets.reduce((a, b) => a + b.btcAmount, 0),
+          change: this.wallets.reduce((a, b) => a + b.change * b.btcAmount, 0) / this.wallets.reduce((a, b) => a + b.btcAmount, 0),
+          children: this.wallets.map((w) => {
+            return { name: w.symbol, size: w.btcAmount, balance: w.balance, value: w.btcAmount, change: w.change };
+          }),
         },
       ],
     };
@@ -111,8 +118,11 @@ export class AppSunburst {
       .attr('class', 'main-arc')
       .attr('fill', (d) => color(d.data.change))
       .transition()
+      // .delay(function(d,i) {
+      //   return 500 * (d.y1 - d.y0) * i;
+      // })
       .duration(function(d) {
-        return 1000 * (d.x1 - d.x0);
+        return 2000 * (d.y1 - d.y0);
       })
       .attrTween('d', function(d) {
         var i = d3.interpolate(d.x0, d.x1);

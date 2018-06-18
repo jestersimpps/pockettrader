@@ -62,12 +62,12 @@ export class AppWallets {
                     </ion-label>
                   </ion-item>
                 ))
-              : this.wallets.filter((w) => w.amount > 0).map((wallet) => (
+              : this.wallets.filter((w) => w.balance > 0).map((wallet) => (
                   <ion-item lines="full" href={`/settings/wallets/${wallet.id}`}>
                     <ion-label>
                       {wallet.symbol} - {wallet.name}
                     </ion-label>
-                    <ion-label text-right>{wallet.amount}</ion-label>
+                    <ion-label text-right>{wallet.balance}</ion-label>
                   </ion-item>
                 ))}
           </ion-list>

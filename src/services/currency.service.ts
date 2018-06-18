@@ -12,7 +12,7 @@ export enum Currency {
   gbp = 'GBP',
 }
 
-export class BtcPrice {
+export class ConversionRates {
   mBTC: number;
   BTC: number;
   USD: number;
@@ -25,9 +25,9 @@ export class CurrencyService {
     return STORAGE.get('basecurrency');
   }
 
-  getConversionRates(): Promise<BtcPrice> {
+  getConversionRates(): Promise<ConversionRates> {
     return axios.get(`https://api.coindesk.com/v1/bpi/currentprice.json`).then((response) => {
-      const conversionRates = <BtcPrice>{
+      const conversionRates = <ConversionRates>{
         mBTC: 1000,
         BTC: 1,
         USD: +response.data.bpi.USD.rate_float,
@@ -43,14 +43,14 @@ export class CurrencyService {
     STORAGE.set('basecurrency', currency);
   }
 
-  convertToBase(btcValue: number, conversionRates: BtcPrice, baseCurrency: Currency): number {
+  convertToBase(btcValue: number, conversionRates: ConversionRates, baseCurrency: Currency): number {
     return btcValue * conversionRates[`${baseCurrency}`];
   }
 
-  getBaseTotal(exchange: Exchange, conversionRates: BtcPrice, baseCurrency: Currency) {
+  getBaseTotal(exchange: Exchange, conversionRates: ConversionRates, baseCurrency: Currency) {
     let sum = 0;
     exchange.balances.forEach((balance: Balance) => {
-      sum += balance.btc;
+      sum += balance.btcAmount;
     });
     return this.convertToBase(sum, conversionRates, baseCurrency);
   }

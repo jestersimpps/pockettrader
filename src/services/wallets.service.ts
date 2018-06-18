@@ -6,10 +6,9 @@ export class Wallet {
   id: number;
   name: string;
   symbol: string;
-  amount: number;
-  icon: string;
-  btcprice: number;
-  total: number;
+  balance: number;
+  btcPrice: number;
+  btcAmount: number;
   change: number;
 }
 

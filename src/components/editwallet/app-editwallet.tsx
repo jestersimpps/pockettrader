@@ -38,10 +38,9 @@ export class AppEditwallet {
           id: response.data.data.id,
           name: response.data.data.name,
           symbol: response.data.data.symbol,
-          amount: 0,
-          icon: `https://github.com/cjdowner/cryptocurrency-icons/raw/master/32/icon/${response.data.data.symbol.toLowerCase()}.png`,
-          btcprice: response.data.data.quotes.BTC.price,
-          total: 0,
+          balance: 0,
+          btcPrice: response.data.data.quotes.BTC.price,
+          btcAmount: 0,
           change: +response.data.data.quotes.BTC.percent_change_24h,
         };
       });
@@ -51,10 +50,10 @@ export class AppEditwallet {
   changeValue(ev) {
     let wallet = this.wallets.find((w) => w.id === this.walletId);
     if (wallet) {
-      wallet.amount = +ev.target.value > 0 ? +ev.target.value : null;
+      wallet.balance = +ev.target.value > 0 ? +ev.target.value : null;
       this.appSetWallets(this.wallets);
     } else {
-      this.wallet.amount = +ev.target.value > 0 ? +ev.target.value : null;
+      this.wallet.balance = +ev.target.value > 0 ? +ev.target.value : null;
       this.appSetWallets([...this.wallets, this.wallet]);
     }
   }
@@ -74,7 +73,7 @@ export class AppEditwallet {
           <ion-list>
             <ion-item lines="full">
               <ion-label>Amount</ion-label>
-              <ion-input name="key" type="number" value={`${this.wallet.amount}`} onInput={(ev) => this.changeValue(ev)} />
+              <ion-input name="key" type="number" value={`${this.wallet.balance}`} onInput={(ev) => this.changeValue(ev)} />
             </ion-item>
           </ion-list>
         </ion-content>,

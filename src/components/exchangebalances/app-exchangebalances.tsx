@@ -1,7 +1,7 @@
 import { Component, Prop, State } from '@stencil/core';
 import { Exchange, ExchangeId } from '../../services/exchange.service';
 import { Store } from '@stencil/redux';
-import { Currency, ConversionRates } from '../../services/currency.service';
+import { Currency } from '../../services/currency.service';
 import { Ticker } from '../../services/ticker.service';
 
 @Component({
@@ -17,7 +17,6 @@ export class AppExchangeBalances {
   @State() exchange: Exchange = new Exchange();
   @State() tickers: Ticker[] = [];
   @State() baseCurrency: Currency;
-  @State() conversionRates: ConversionRates;
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
@@ -45,14 +44,7 @@ export class AppExchangeBalances {
           this.tickers.length &&
           this.exchange.balances
             .filter((b) => +b.btcPrice > 0.00001)
-            .map((balance) => (
-              <app-balanceitem
-                exchangeId={this.exchangeId}
-                baseCurrency={this.baseCurrency}
-                cryptodata={balance}
-                conversionRates={this.conversionRates}
-              />
-            ))}
+            .map((balance) => <app-balanceitem exchangeId={this.exchangeId} baseCurrency={this.baseCurrency} cryptodata={balance} />)}
       </ion-list>,
     ];
   }

@@ -2,7 +2,7 @@ import { Component, Prop } from '@stencil/core';
 import numeral from 'numeral';
 import { Wallet } from '../../../services/wallets.service';
 import { ExchangeId } from '../../../services/exchange.service';
-import { Currency, ConversionRates } from '../../../services/currency.service';
+import { Currency } from '../../../services/currency.service';
 import { Balance } from '../../../services/balance.service';
 import { CURRENCYSERVICE } from '../../../services/globals';
 
@@ -14,7 +14,6 @@ export class AppBalanceItem {
   @Prop() exchangeId: ExchangeId;
   @Prop() baseCurrency: Currency;
   @Prop() cryptodata: Wallet | Balance;
-  @Prop() conversionRates: ConversionRates;
 
   render() {
     return [
@@ -27,13 +26,13 @@ export class AppBalanceItem {
             </ion-col>
             <ion-col col-4 text-center class="lineText">
                 <app-baseprice
-                  btcPrice={CURRENCYSERVICE.convertToBase(this.cryptodata.btcAmount, this.conversionRates, this.baseCurrency)}
+                  btcPrice={CURRENCYSERVICE.convertToBase(this.cryptodata.btcAmount, this.baseCurrency)}
                   baseCurrency={this.baseCurrency}
                 />
             </ion-col>
             <ion-col col-4 text-right class="lineText">
               <app-baseprice
-                btcPrice={CURRENCYSERVICE.convertToBase(this.cryptodata.btcPrice, this.conversionRates, this.baseCurrency)}
+                btcPrice={CURRENCYSERVICE.convertToBase(this.cryptodata.btcPrice, this.baseCurrency)}
                 baseCurrency={this.baseCurrency}
               />
             </ion-col>

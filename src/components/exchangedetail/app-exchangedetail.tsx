@@ -1,8 +1,7 @@
 import { Component, Prop, State } from '@stencil/core';
 import { Exchange, ExchangeId } from '../../services/exchange.service';
-import { Store, Action } from '@stencil/redux';
-import { Currency, ConversionRates } from '../../services/currency.service';
-import { Ticker } from '../../services/ticker.service';
+import { Store } from '@stencil/redux';
+import { Currency } from '../../services/currency.service';
 import { CURRENCYSERVICE } from '../../services/globals';
 
 @Component({
@@ -16,24 +15,16 @@ export class AppExchangeDetail {
 
   @State() exchanges: Exchange[] = [];
   @State() exchange: Exchange = new Exchange();
-  @State() tickers: Ticker[] = [];
   @State() baseCurrency: Currency;
-  @State() conversionRates: ConversionRates;
-
-  appSetExchanges: Action;
-  appSetBaseCurrency: Action;
-  appSetConversionRates: Action;
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { exchanges, baseCurrency, conversionRates, tickers },
+        app: { exchanges, baseCurrency },
       } = state;
       return {
         exchanges,
         baseCurrency,
-        conversionRates,
-        tickers,
       };
     });
     this.exchange = this.exchanges.find((e) => e.id === this.exchangeId);
@@ -49,10 +40,7 @@ export class AppExchangeDetail {
           <ion-title>{this.exchangeId}</ion-title>
           <ion-buttons padding slot="end">
             <ion-badge slot="end" color="light">
-              <app-baseprice
-                btcPrice={CURRENCYSERVICE.getBaseTotal(this.exchange, this.conversionRates, this.baseCurrency)}
-                baseCurrency={this.baseCurrency}
-              />
+              <app-baseprice btcPrice={CURRENCYSERVICE.getBaseTotal(this.exchange, this.baseCurrency)} baseCurrency={this.baseCurrency} />
             </ion-badge>
           </ion-buttons>
         </ion-toolbar>

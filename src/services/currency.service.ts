@@ -4,38 +4,65 @@ import { Balance } from './balance.service';
 
 declare const axios;
 
-export enum Currency {
-  mbtc = 'mBTC',
-  btc = 'BTC',
-  usd = 'USD',
-  eur = 'EUR',
-  gbp = 'GBP',
-}
-
-export class ConversionRates {
-  mBTC: number;
-  BTC: number;
-  USD: number;
-  EUR: number;
-  GBP: number;
+export class Currency {
+  id: string;
+  symbol: string;
+  conversionRate: number;
 }
 
 export class CurrencyService {
+  currencies = [
+    {
+      id: `mBTC`,
+      symbol: `mBTC`,
+      conversionRate: 1000,
+    },
+    {
+      id: `BTC`,
+      symbol: `BTC`,
+      conversionRate: 1,
+    },
+    {
+      id: `EUR`,
+      symbol: `€`,
+      conversionRate: null,
+    },
+    {
+      id: `USD`,
+      symbol: `$`,
+      conversionRate: null,
+    },
+    {
+      id: `GBP`,
+      symbol: `£`,
+      conversionRate: null,
+    },
+  ];
+
   getBaseCurrency(): Promise<Currency> {
     return STORAGE.get('basecurrency');
   }
 
-  getConversionRates(): Promise<ConversionRates> {
+  getConversionRates(): Promise<Currency[]> {
     return axios.get(`https://api.coindesk.com/v1/bpi/currentprice.json`).then((response) => {
-      const conversionRates = <ConversionRates>{
-        mBTC: 1000,
-        BTC: 1,
-        USD: +response.data.bpi.USD.rate_float,
-        EUR: +response.data.bpi.EUR.rate_float,
-        GBP: +response.data.bpi.GBP.rate_float,
-      };
-      STORAGE.set('conversionrates', conversionRates);
-      return conversionRates;
+      this.currencies.map((c) => {
+        switch (c.id) {
+          case 'USD':
+            c.conversionRate = +response.data.bpi.USD.rate_float;
+            break;
+          case 'EUR':
+            c.conversionRate = +response.data.bpi.EUR.rate_float;
+            break;
+          case 'GBP':
+            c.conversionRate = +response.data.bpi.GBP.rate_float;
+            break;
+
+          default:
+            break;
+        }
+      });
+      STORAGE.set('currencies', this.currencies);
+      return this.currencies;
     });
   }
 
@@ -43,15 +70,15 @@ export class CurrencyService {
     STORAGE.set('basecurrency', currency);
   }
 
-  convertToBase(btcValue: number, conversionRates: ConversionRates, baseCurrency: Currency): number {
-    return btcValue * conversionRates[`${baseCurrency}`];
+  convertToBase(btcValue: number, baseCurrency: Currency): number {
+    return btcValue * this.currencies.find((c) => c.id === baseCurrency.id).conversionRate;
   }
 
-  getBaseTotal(exchange: Exchange, conversionRates: ConversionRates, baseCurrency: Currency) {
+  getBaseTotal(exchange: Exchange, baseCurrency: Currency) {
     let sum = 0;
     exchange.balances.forEach((balance: Balance) => {
       sum += balance.btcAmount;
     });
-    return this.convertToBase(sum, conversionRates, baseCurrency);
+    return this.convertToBase(sum, baseCurrency);
   }
 }

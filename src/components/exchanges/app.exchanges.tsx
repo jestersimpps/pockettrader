@@ -1,8 +1,8 @@
 import { Component, State, Prop } from '@stencil/core';
 import { CURRENCYSERVICE, BALANCESERVICE, TICKERSERVICE } from '../../services/globals';
-import { Currency, ConversionRates } from '../../services/currency.service';
+import { Currency } from '../../services/currency.service';
 import { Exchange, ExchangeId } from '../../services/exchange.service';
-import { appSetExchanges, appSetBaseCurrency, appSetConversionRates, appSetTickers, appSetTotalBalances, appSetWallets } from '../../actions/app';
+import { appSetExchanges, appSetBaseCurrency, appSetCurrencies, appSetTickers, appSetTotalBalances, appSetWallets } from '../../actions/app';
 import { Store, Action } from '@stencil/redux';
 import { Ticker } from '../../services/ticker.service';
 import { Wallet } from '../../services/wallets.service';
@@ -18,7 +18,6 @@ export class AppExchanges {
   @State() exchanges: Exchange[] = [];
   @State() isLoading = false;
   @State() baseCurrency: Currency;
-  @State() conversionRates: ConversionRates;
   @State() totalBalance: number = 0;
   @State() tickers: any[];
   @State() wallets: Wallet[];
@@ -36,12 +35,12 @@ export class AppExchanges {
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { exchanges, baseCurrency, conversionRates, tickers, wallets },
+        app: { exchanges, baseCurrency, currencies, tickers, wallets },
       } = state;
       return {
         exchanges,
         baseCurrency,
-        conversionRates,
+        currencies,
         tickers,
         wallets,
       };
@@ -49,7 +48,7 @@ export class AppExchanges {
     this.store.mapDispatchToProps(this, {
       appSetExchanges,
       appSetBaseCurrency,
-      appSetConversionRates,
+      appSetCurrencies,
       appSetTickers,
       appSetTotalBalances,
       appSetWallets,
@@ -62,12 +61,12 @@ export class AppExchanges {
 
   updateTotalBalance() {
     BALANCESERVICE.getTotalBalances().then((totalBalances) => {
-      this.totalBalance += +CURRENCYSERVICE.convertToBase(BALANCESERVICE.getLatestTotal(totalBalances), this.conversionRates, this.baseCurrency);
+      this.totalBalance += +CURRENCYSERVICE.convertToBase(BALANCESERVICE.getLatestTotal(totalBalances), this.baseCurrency);
     });
   }
 
   addTotalBalance(totalBtcBalance: number) {
-    this.totalBalance = CURRENCYSERVICE.convertToBase(totalBtcBalance, this.conversionRates, this.baseCurrency) || 0;
+    this.totalBalance = CURRENCYSERVICE.convertToBase(totalBtcBalance, this.baseCurrency) || 0;
     BALANCESERVICE.getTotalBalances().then((totalBalances) => {
       if (totalBtcBalance && totalBtcBalance > 0) {
         let now = new Date().getTime();
@@ -113,7 +112,7 @@ export class AppExchanges {
 
     CURRENCYSERVICE.getConversionRates()
       .then((priceData) => {
-        appSetConversionRates(priceData);
+        appSetCurrencies(priceData);
         Promise.all(tickerPromises)
           .then((tickerData) => {
             Promise.all(walletPromises)
@@ -228,13 +227,11 @@ export class AppExchanges {
               <ion-list-header color="dark">Exchanges </ion-list-header>,
               this.exchanges
                 .filter((e) => e.key && e.secret)
-                .map((exchange) => <app-exchangeitem exchange={exchange} conversionRates={this.conversionRates} baseCurrency={this.baseCurrency} />),
+                .map((exchange) => <app-exchangeitem exchange={exchange} baseCurrency={this.baseCurrency} />),
               <ion-list-header color="dark">Wallets </ion-list-header>,
               this.wallets
                 .filter((w) => w.balance > 0)
-                .map((wallet) => (
-                  <app-balanceitem exchangeId={null} baseCurrency={this.baseCurrency} cryptodata={wallet} conversionRates={this.conversionRates} />
-                )),
+                .map((wallet) => <app-balanceitem exchangeId={null} baseCurrency={this.baseCurrency} cryptodata={wallet} />),
             ]}
         </ion-list>
       </ion-content>,

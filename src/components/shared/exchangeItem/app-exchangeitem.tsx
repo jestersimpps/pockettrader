@@ -1,6 +1,6 @@
 import { Component, Prop } from '@stencil/core';
 import { Exchange } from '../../../services/exchange.service';
-import { Currency, ConversionRates } from '../../../services/currency.service';
+import { Currency } from '../../../services/currency.service';
 import { CURRENCYSERVICE } from '../../../services/globals';
 
 @Component({
@@ -9,7 +9,6 @@ import { CURRENCYSERVICE } from '../../../services/globals';
 })
 export class AppExchangeItem {
   @Prop() exchange: Exchange;
-  @Prop() conversionRates: ConversionRates;
   @Prop() baseCurrency: Currency;
 
   render() {
@@ -21,7 +20,7 @@ export class AppExchangeItem {
         <ion-label>{this.exchange.id}</ion-label>
         <ion-badge color="light" item-end>
           <app-baseprice
-            btcPrice={CURRENCYSERVICE.getBaseTotal(this.exchange, this.conversionRates, this.baseCurrency)}
+            btcPrice={CURRENCYSERVICE.getBaseTotal(this.exchange, this.baseCurrency)}
             baseCurrency={this.baseCurrency}
           />
         </ion-badge>

@@ -2,6 +2,7 @@ import { Component, State, Prop } from '@stencil/core';
 import { Currency } from '../../services/currency.service';
 import { Store, Action } from '@stencil/redux';
 import { appSetBaseCurrency } from '../../actions/app';
+import { CURRENCYSERVICE } from '../../services/globals';
 
 @Component({
   tag: 'app-basecurrency',
@@ -26,7 +27,6 @@ export class AppBaseCurrency {
     this.store.mapDispatchToProps(this, {
       appSetBaseCurrency,
     });
-    
   }
 
   render() {
@@ -43,26 +43,16 @@ export class AppBaseCurrency {
         {this.baseCurrency && (
           <ion-nav-pop>
             <ion-list>
-              <ion-item lines="full">
-                <ion-label>mBTC</ion-label>
-                <ion-radio checked={this.baseCurrency === Currency.mbtc} value={Currency.mbtc} onClick={() => this.appSetBaseCurrency(Currency.mbtc)} />
-              </ion-item>
-              <ion-item lines="full">
-                <ion-label>BTC</ion-label>
-                <ion-radio checked={this.baseCurrency === Currency.btc} value={Currency.btc} onClick={() => this.appSetBaseCurrency(Currency.btc)} />
-              </ion-item>
-              <ion-item lines="full">
-                <ion-label>USD</ion-label>
-                <ion-radio checked={this.baseCurrency === Currency.usd} value={Currency.usd} onClick={() => this.appSetBaseCurrency(Currency.usd)} />
-              </ion-item>
-              <ion-item lines="full">
-                <ion-label>EUR</ion-label>
-                <ion-radio checked={this.baseCurrency === Currency.eur} value={Currency.eur} onClick={() => this.appSetBaseCurrency(Currency.eur)} />
-              </ion-item>
-              <ion-item lines="full">
-                <ion-label>GBP</ion-label>
-                <ion-radio checked={this.baseCurrency === Currency.gbp} value={Currency.gbp} onClick={() => this.appSetBaseCurrency(Currency.gbp)} />
-              </ion-item>
+              {CURRENCYSERVICE.currencies.map((currency) => (
+                <ion-item lines="full">
+                  <ion-label>{currency.id}</ion-label>
+                  <ion-radio
+                    checked={this.baseCurrency.id === currency.id}
+                    value={currency.id}
+                    onClick={() => this.appSetBaseCurrency(currency)}
+                  />
+                </ion-item>
+              ))}
             </ion-list>
           </ion-nav-pop>
         )}

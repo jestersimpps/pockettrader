@@ -38,7 +38,6 @@ import {
   Wallet,
 } from './services/wallets.service';
 import {
-  ConversionRates,
   Currency,
 } from './services/currency.service';
 import {
@@ -450,7 +449,6 @@ declare global {
   namespace StencilComponents {
     interface AppBalanceitem {
       'baseCurrency': Currency;
-      'conversionRates': ConversionRates;
       'cryptodata': Wallet | Balance;
       'exchangeId': ExchangeId;
     }
@@ -476,7 +474,6 @@ declare global {
   namespace JSXElements {
     export interface AppBalanceitemAttributes extends HTMLAttributes {
       'baseCurrency'?: Currency;
-      'conversionRates'?: ConversionRates;
       'cryptodata'?: Wallet | Balance;
       'exchangeId'?: ExchangeId;
     }
@@ -557,7 +554,6 @@ declare global {
   namespace StencilComponents {
     interface AppExchangeitem {
       'baseCurrency': Currency;
-      'conversionRates': ConversionRates;
       'exchange': Exchange;
     }
   }
@@ -582,7 +578,6 @@ declare global {
   namespace JSXElements {
     export interface AppExchangeitemAttributes extends HTMLAttributes {
       'baseCurrency'?: Currency;
-      'conversionRates'?: ConversionRates;
       'exchange'?: Exchange;
     }
   }

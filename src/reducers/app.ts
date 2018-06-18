@@ -1,5 +1,4 @@
 import { BALANCESERVICE } from './../services/globals';
-import { ConversionRates } from './../services/currency.service';
 import { TypeKeys, ActionTypes } from '../actions/index';
 import { Exchange } from '../services/exchange.service';
 import { EXCHANGESERVICE, CURRENCYSERVICE, TICKERSERVICE, WALLETSERVICE } from '../services/globals';
@@ -11,7 +10,7 @@ interface AppState {
   exchanges: Exchange[];
   baseCurrency: Currency;
   totalBalances: [number, number][];
-  conversionRates: ConversionRates;
+  currencies: Currency[];
   ticker: any;
   tickers: Ticker[];
   wallets: Wallet[];
@@ -20,9 +19,9 @@ interface AppState {
 const getInitialState = () => {
   return {
     exchanges: [],
-    baseCurrency: Currency.mbtc,
+    baseCurrency: CURRENCYSERVICE.currencies[0],
     totalBalances: [],
-    conversionRates: <ConversionRates>{},
+    currencies: <Currency[]>[],
     ticker: {},
     tickers: [],
     wallets: [],
@@ -39,7 +38,7 @@ const app = (state: AppState = getInitialState(), action: ActionTypes) => {
       CURRENCYSERVICE.setBaseCurrency(action.data);
       return { ...state, baseCurrency: action.data };
     }
-    case TypeKeys.APP_SET_CONVERSIONRATES: {
+    case TypeKeys.APP_SET_CURRENCIES: {
       return { ...state, conversionRates: action.data };
     }
     case TypeKeys.APP_SET_TICKER: {

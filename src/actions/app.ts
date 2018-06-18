@@ -17,9 +17,9 @@ export const appSetBaseCurrency = (data: any) => async (dispatch, _getState) => 
     data: data,
   });
 };
-export const appSetConversionRates = (data: any) => async (dispatch, _getState) => {
+export const appSetCurrencies = (data: any) => async (dispatch, _getState) => {
   return dispatch({
-    type: TypeKeys.APP_SET_CONVERSIONRATES,
+    type: TypeKeys.APP_SET_CURRENCIES,
     data: data,
   });
 };

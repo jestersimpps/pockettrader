@@ -2,9 +2,8 @@ import '@ionic/core';
 import { Component, Prop } from '@stencil/core';
 import { Store, Action } from '@stencil/redux';
 import { configureStore } from '../../store';
-import { Currency } from '../../services/currency.service';
 import { DefaultExchanges } from '../../services/exchange.service';
-import { appSetExchanges, appSetBaseCurrency, appSetConversionRates, appSetTickers, appSetTotalBalances, appSetWallets } from '../../actions/app';
+import { appSetExchanges, appSetBaseCurrency, appSetCurrencies, appSetTickers, appSetTotalBalances, appSetWallets } from '../../actions/app';
 import { CURRENCYSERVICE, BALANCESERVICE, EXCHANGESERVICE, TICKERSERVICE, WALLETSERVICE } from '../../services/globals';
 
 @Component({
@@ -17,7 +16,7 @@ export class MyApp {
 
   appSetExchanges: Action;
   appSetBaseCurrency: Action;
-  appSetConversionRates: Action;
+  appSetCurrencies: Action;
   appSetTickers: Action;
   appSetTotalBalances: Action;
   appSetWallets: Action;
@@ -28,7 +27,7 @@ export class MyApp {
     this.store.mapDispatchToProps(this, {
       appSetExchanges,
       appSetBaseCurrency,
-      appSetConversionRates,
+      appSetCurrencies,
       appSetTickers,
       appSetTotalBalances,
       appSetWallets,
@@ -46,7 +45,7 @@ export class MyApp {
       })
       .then((baseCurrency) => {
         if (!baseCurrency) {
-          this.appSetBaseCurrency(Currency.mbtc);
+          this.appSetBaseCurrency(CURRENCYSERVICE.currencies[0]);
         } else {
           this.appSetBaseCurrency(baseCurrency);
         }
@@ -60,8 +59,8 @@ export class MyApp {
         }
         return CURRENCYSERVICE.getConversionRates();
       })
-      .then((conversionRates) => {
-        this.appSetConversionRates(conversionRates);
+      .then((currencies) => {
+        this.appSetCurrencies(currencies);
         return TICKERSERVICE.getTickersFromStore();
       })
       .then((tickers) => {

@@ -11,6 +11,6 @@ export class AppBasePrice {
   @Prop() baseCurrency: Currency;
 
   render() {
-    return [`${this.baseCurrency} ${numeral(this.btcPrice).format(this.baseCurrency === Currency.btc ? '0,0.0000' : '0,0.00')}`];
+    return [`${this.baseCurrency.symbol} ${numeral(this.btcPrice).format(this.baseCurrency.id === `BTC` ? '0,0.0000' : '0,0.00')}`];
   }
 }

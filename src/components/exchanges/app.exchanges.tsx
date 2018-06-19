@@ -167,22 +167,22 @@ export class AppExchanges {
                     this.isLoading = false;
                   })
                   .catch((error) => {
-                    console.error(error.message);
+                    window.alert(error.message);
                     this.isLoading = false;
                   });
               })
               .catch((error) => {
-                console.error(error.message);
+                window.alert(error.message);
                 this.isLoading = false;
               });
           })
           .catch((error) => {
-            console.error(error.message);
+            window.alert(error.message);
             this.isLoading = false;
           });
       })
       .catch((error) => {
-        console.error(error.message);
+        window.alert(error.message);
         this.isLoading = false;
       });
   }
@@ -192,8 +192,8 @@ export class AppExchanges {
       <ion-header>
         <ion-toolbar color="dark">
           <ion-buttons slot="start">
-            <ion-button icon-only href="/settings">
-              <ion-icon name="md-menu" padding />
+            <ion-button icon-only href="/settings" padding>
+              <ion-icon name="menu" />
             </ion-button>
           </ion-buttons>
           <ion-title text-center>
@@ -202,19 +202,19 @@ export class AppExchanges {
             </ion-badge>
           </ion-title>
           <ion-buttons slot="end">
-            <ion-button icon-only>
-              <ion-icon name="md-stats" padding />
+            <ion-button icon-only padding>
+              <ion-icon name="stats" />
             </ion-button>
-            <ion-button icon-only disabled={this.isLoading} onClick={() => this.refreshBalances()}>
-              <ion-icon name="md-refresh" class={this.isLoading ? 'spin' : ''} padding />
+            <ion-button icon-only disabled={this.isLoading} onClick={() => this.refreshBalances()} padding>
+              <ion-icon name="refresh" class={this.isLoading ? 'spin' : ''} />
             </ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>,
       <ion-content>
-        <ion-refresher slot="fixed" onIonRefresh={() => this.refreshBalances()}>
+        {/* <ion-refresher slot="fixed" onIonRefresh={() => this.refreshBalances()}>
           <ion-refresher-content />
-        </ion-refresher>
+        </ion-refresher> */}
         {!this.isLoading && this.segment === '1' && <app-sunburst exchanges={this.exchanges} wallets={this.wallets} />}
         <ion-list>
           {!this.isLoading &&
@@ -234,14 +234,14 @@ export class AppExchanges {
             ]}
         </ion-list>
       </ion-content>,
-      <ion-footer class="minFooterHeight">
-        <ion-segment color="light" padding value={this.segment}>
+      <ion-footer>
+        <ion-segment color="dark" padding value={this.segment}>
           <ion-segment-button value="1" onClick={() => (this.segment = '1')}>
-            <ion-icon name="md-pie" />
+            <ion-icon name="pie" />
             <ion-label class="segment-text">Overview</ion-label>
           </ion-segment-button>
           <ion-segment-button value="2" onClick={() => (this.segment = '2')}>
-            <ion-icon name="md-list-box" />
+            <ion-icon name="list-box" />
             <ion-label class="segment-text">Balances</ion-label>
           </ion-segment-button>
           {/* <ion-segment-button value="3" onClick={() => (this.segment = '3')}>

@@ -76,7 +76,7 @@ export class AppSplineChart {
           data: this.totalBalances.map((b) => {
             b[1] = +CURRENCYSERVICE.convertToBase(b[1], this.baseCurrency);
             return b;
-          }),
+          }).slice(-30),
         },
       ],
     });

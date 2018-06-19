@@ -11,7 +11,6 @@ interface AppState {
   baseCurrency: Currency;
   totalBalances: [number, number][];
   currencies: Currency[];
-  ticker: any;
   tickers: Ticker[];
   wallets: Wallet[];
 }
@@ -22,7 +21,6 @@ const getInitialState = () => {
     baseCurrency: CURRENCYSERVICE.currencies[0],
     totalBalances: [],
     currencies: <Currency[]>[],
-    ticker: {},
     tickers: [],
     wallets: [],
   };
@@ -40,9 +38,6 @@ const app = (state: AppState = getInitialState(), action: ActionTypes) => {
     }
     case TypeKeys.APP_SET_CURRENCIES: {
       return { ...state, conversionRates: action.data };
-    }
-    case TypeKeys.APP_SET_TICKER: {
-      return { ...state, ticker: action.data };
     }
     case TypeKeys.APP_SET_TICKERS: {
       TICKERSERVICE.setTickers(action.data);

@@ -44,6 +44,34 @@ export class BalanceService {
     });
   }
 
+  // getBalances(exchange: Exchange): Promise<any[]> {
+  //   switch (exchange.id) {
+  //     case ExchangeId.bittrex:
+  //       return new BittrexWrapper().getBalances({
+  //         key: exchange.key,
+  //         secret: exchange.secret,
+  //       });
+  //     case ExchangeId.binance:
+  //       return new BinanceWrapper().getBalances({
+  //         key: exchange.key,
+  //         secret: exchange.secret,
+  //       });
+  //     case ExchangeId.kraken:
+  //       return new KrakenWrapper().getBalances({
+  //         key: exchange.key,
+  //         secret: exchange.secret,
+  //       });
+  //     case ExchangeId.poloniex:
+  //       return new PoloniexWrapper().getBalances({
+  //         key: exchange.key,
+  //         secret: exchange.secret,
+  //       });
+
+  //     default:
+  //       break;
+  //   }
+  // }
+
   getBalancesFromStore(): Promise<Balances> {
     return STORAGE.get('balances');
   }

@@ -229,8 +229,12 @@ export class AppExchanges {
           ]}
         </ion-list>
       </ion-content>,
-      <ion-footer>
-        <ion-segment color="dark" padding value={this.segment}>
+      <ion-footer class="footerHeight">
+        <ion-tabs color="dark">
+          <ion-tab icon="pie" label="Overview" onIonSelect={() => (this.segment = '1')} active={this.segment == '1'} />
+          <ion-tab icon="list-box" label="Balances" onIonSelect={() => (this.segment = '2')} active={this.segment == '2'} />
+        </ion-tabs>
+        {/* <ion-segment color="dark" padding value={this.segment}>
           <ion-segment-button value="1" onClick={() => (this.segment = '1')}>
             <ion-icon name="pie" />
             <ion-label class="segment-text">Overview</ion-label>
@@ -239,10 +243,7 @@ export class AppExchanges {
             <ion-icon name="list-box" />
             <ion-label class="segment-text">Balances</ion-label>
           </ion-segment-button>
-          {/* <ion-segment-button value="3" onClick={() => (this.segment = '3')}>
-            Markets
-          </ion-segment-button>  */}
-        </ion-segment>
+        </ion-segment> */}
       </ion-footer>,
     ];
   }

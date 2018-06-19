@@ -1,8 +1,7 @@
 import { Component, Prop, State } from '@stencil/core';
 import { TICKERSERVICE } from '../../services/globals';
 import { ExchangeId } from '../../services/exchange.service';
-import { Store, Action } from '@stencil/redux';
-import { appSetTicker } from '../../actions/app';
+import { Store } from '@stencil/redux';
 
 declare const TradingView: any;
 
@@ -19,36 +18,21 @@ export class AppPair {
   @State() ticker;
   tradingviewWidget;
 
-  appSetTicker: Action;
-  componentWillLoad() {
-    this.store.mapStateToProps(this, (state) => {
-      const {
-        app: { ticker },
-      } = state;
-      return {
-        ticker,
-      };
-    });
-    this.store.mapDispatchToProps(this, {
-      appSetTicker,
-    });
-  }
-
   componentDidLoad() {
     TICKERSERVICE.getTicker(this.exchangeId, `${this.pair}/BTC`).then((response) => {
-      this.appSetTicker(response.data);
+      this.ticker = response.data;
+      this.showChart();
     });
-    this.showChart();
   }
 
   showChart() {
     this.tradingviewWidget = new TradingView.widget({
       container_id: 'tvChart',
       autosize: true,
-      symbol: `${this.exchangeId}:${this.pair}BTC`,
+      symbol: `${this.exchangeId}:${this.ticker.base}BTC`,
       interval: '60',
       timezone: 'Etc/UTC',
-      theme: 'Dark',
+      theme: 'Light',
       style: '1',
       locale: 'en',
       toolbar_bg: '#fff',
@@ -68,101 +52,16 @@ export class AppPair {
       height: `${window.innerHeight - 44}px`,
     };
     return [
-      <ion-header>
+      this.ticker && <ion-header>
         <ion-toolbar color="dark">
           <ion-buttons slot="start">
             <ion-back-button defaultHref={`/exchanges/${this.exchangeId}`} />
           </ion-buttons>
-          <ion-title>{`${this.exchangeId} - ${this.pair}/BTC`}</ion-title>
+          <ion-title>{`${this.exchangeId} - ${this.ticker.base}/BTC`}</ion-title>
         </ion-toolbar>
       </ion-header>,
       <div id="tvChart" class="tvchart" style={styles} />,
       <ion-content />,
-      // <ion-footer>
-      //   <ion-toolbar>
-      //     <ion-grid>
-      //       <ion-row class="buttonRow">
-      //         <ion-col col-12>
-      //           <ion-label>
-      //             <b>Buy</b> 21.438 <b>{this.pair}</b> at {this.ticker.last} BTC{' '}
-      //           </ion-label>
-      //         </ion-col>
-      //       </ion-row>
-
-      //       <ion-row class="buttonRow">
-      //         <ion-col col-2>
-      //           <ion-button color="danger" class="full">
-      //             Buy
-      //           </ion-button>
-      //         </ion-col>
-      //         <ion-col col-2>
-      //           <ion-button color="danger" class="full">
-      //             Low
-      //           </ion-button>
-      //         </ion-col>
-      //         <ion-col col-2>
-      //           <ion-button color="warning" class="full">
-      //             Last
-      //           </ion-button>
-      //         </ion-col>
-      //         <ion-col col-2>
-      //           <ion-button color="success" class="full">
-      //             High
-      //           </ion-button>
-      //         </ion-col>
-      //         <ion-col col-4>
-      //           <ion-input type="text" value={this.ticker.last} class="inputbox" />
-      //         </ion-col>
-      //       </ion-row>
-      //       <ion-row class="buttonRow">
-      //         <ion-col col-2>
-      //           <ion-button color="success" class="full">
-      //             Sell
-      //           </ion-button>
-      //         </ion-col>
-      //         <ion-col col-6 />
-      //         <ion-col col-4>
-      //           <ion-button color="success" class="full">
-      //             Execute
-      //           </ion-button>
-      //         </ion-col>
-      //       </ion-row>
-      //       <ion-row class="buttonRow">
-      //         <ion-col col-2>
-      //           <ion-button color="primary" class="full">
-      //             10%
-      //           </ion-button>
-      //         </ion-col>
-      //         <ion-col col-2>
-      //           <ion-button color="primary" class="full">
-      //             30%
-      //           </ion-button>
-      //         </ion-col>
-      //         <ion-col col-2>
-      //           <ion-button color="primary" class="full">
-      //             50%
-      //           </ion-button>
-      //         </ion-col>
-      //         <ion-col col-2>
-      //           <ion-button color="primary" class="full">
-      //             70%
-      //           </ion-button>
-      //         </ion-col>
-      //         <ion-col col-2>
-      //           <ion-button color="primary" class="full">
-      //             90%
-      //           </ion-button>
-      //         </ion-col>
-      //         <ion-col col-2>
-      //           <ion-button color="primary" class="full">
-      //             100%
-      //           </ion-button>
-      //         </ion-col>
-      //       </ion-row>
-      //       <br />
-      //     </ion-grid>
-      //   </ion-toolbar>
-      // </ion-footer>,
     ];
   }
 }

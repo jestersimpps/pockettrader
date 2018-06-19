@@ -23,12 +23,6 @@ export const appSetCurrencies = (data: any) => async (dispatch, _getState) => {
     data: data,
   });
 };
-export const appSetTicker = (data: any) => async (dispatch, _getState) => {
-  return dispatch({
-    type: TypeKeys.APP_SET_TICKER,
-    data: data,
-  });
-};
 export const appSetTickers = (data: Ticker[]) => async (dispatch, _getState) => {
   return dispatch({
     type: TypeKeys.APP_SET_TICKERS,

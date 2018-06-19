@@ -144,10 +144,10 @@ export class AppExchanges {
                     }
                     // refresh wallets
                     for (let index = 0; index < scopedWallets.length; index++) {
-                      (scopedWallets[index].btcPrice = +walletData[index].data.data.quotes.BTC.price),
-                        (scopedWallets[index].btcAmount = ++scopedWallets[index].balance * +walletData[index].data.data.quotes.BTC.price),
-                        (scopedWallets[index].change = +(+walletData[index].data.data.quotes.BTC.percent_change_24h)),
-                        (tempTotalBtcBalance += +scopedWallets[index].balance * +walletData[index].data.data.quotes.BTC.price);
+                      scopedWallets[index].btcPrice = +walletData[index].data.data.quotes.BTC.price;
+                      scopedWallets[index].btcAmount = +scopedWallets[index].balance * +walletData[index].data.data.quotes.BTC.price;
+                      scopedWallets[index].change = +walletData[index].data.data.quotes.BTC.percent_change_24h;
+                      tempTotalBtcBalance += +scopedWallets[index].balance * +walletData[index].data.data.quotes.BTC.price;
                     }
                     this.appSetTickers(scopedTickers);
                     this.appSetWallets(scopedWallets);

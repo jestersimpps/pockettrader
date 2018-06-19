@@ -1,3 +1,6 @@
 .full {
   width: 100%;
 }
+.minFooterHeight{
+  min-height: 50px;
+}

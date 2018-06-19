@@ -48,9 +48,9 @@ export class AppWallets {
             <ion-buttons slot="start">
               <ion-back-button defaultHref="/" />
             </ion-buttons>
-            <ion-title>Wallets</ion-title>
+            <ion-searchbar color="light" onIonChange={(e) => this.onIonInput(e)} placeholder="Enter Symbol to Add Holdings..." />
+
           </ion-toolbar>
-          <ion-searchbar onIonChange={(e) => this.onIonInput(e)} placeholder="Enter Symbol to Add Holdings..." />
         </ion-header>,
         <ion-content>
           <ion-list>
@@ -72,6 +72,7 @@ export class AppWallets {
                 ))}
           </ion-list>
         </ion-content>,
+        
       ]
     );
   }

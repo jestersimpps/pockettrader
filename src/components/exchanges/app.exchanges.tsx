@@ -202,39 +202,53 @@ export class AppExchanges {
             </ion-badge>
           </ion-title>
           <ion-buttons slot="end">
+            <ion-button icon-only>
+              <ion-icon name="md-stats" padding />
+            </ion-button>
             <ion-button icon-only disabled={this.isLoading} onClick={() => this.refreshBalances()}>
               <ion-icon name="md-refresh" class={this.isLoading ? 'spin' : ''} padding />
             </ion-button>
           </ion-buttons>
         </ion-toolbar>
-        <ion-segment color="light" padding value={this.segment}>
-          <ion-segment-button value="1" onClick={() => (this.segment = '1')}>
-            Overview
-          </ion-segment-button>
-          <ion-segment-button value="2" onClick={() => (this.segment = '2')}>
-            Balances
-          </ion-segment-button>
-          {/* <ion-segment-button value="3" onClick={() => (this.segment = '3')}>
-            Markets
-          </ion-segment-button> */}
-        </ion-segment>
       </ion-header>,
       <ion-content>
+        <ion-refresher slot="fixed" onIonRefresh={() => this.refreshBalances()}>
+          <ion-refresher-content />
+        </ion-refresher>
         {!this.isLoading && this.segment === '1' && <app-sunburst exchanges={this.exchanges} wallets={this.wallets} />}
         <ion-list>
           {!this.isLoading &&
             this.segment === '2' && [
-              <ion-list-header color="dark">Exchanges </ion-list-header>,
+              <ion-list-header color="dark">
+                <b> Exchanges</b>{' '}
+              </ion-list-header>,
               this.exchanges
                 .filter((e) => e.key && e.secret)
                 .map((exchange) => <app-exchangeitem exchange={exchange} baseCurrency={this.baseCurrency} />),
-              <ion-list-header color="dark">Wallets </ion-list-header>,
+              <ion-list-header color="dark">
+                <b>Wallets </b>
+              </ion-list-header>,
               this.wallets
                 .filter((w) => w.balance > 0)
                 .map((wallet) => <app-balanceitem exchangeId={null} baseCurrency={this.baseCurrency} cryptodata={wallet} />),
             ]}
         </ion-list>
       </ion-content>,
+      <ion-footer class="minFooterHeight">
+        <ion-segment color="light" padding value={this.segment}>
+          <ion-segment-button value="1" onClick={() => (this.segment = '1')}>
+            <ion-icon name="md-pie" />
+            <ion-label class="segment-text">Overview</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="2" onClick={() => (this.segment = '2')}>
+            <ion-icon name="md-list-box" />
+            <ion-label class="segment-text">Balances</ion-label>
+          </ion-segment-button>
+          {/* <ion-segment-button value="3" onClick={() => (this.segment = '3')}>
+            Markets
+          </ion-segment-button>  */}
+        </ion-segment>
+      </ion-footer>,
     ];
   }
 }

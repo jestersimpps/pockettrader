@@ -23,8 +23,6 @@ export class AppExchanges {
   @State() wallets: Wallet[];
   @State() segment = '1';
 
-  chart;
-
   appSetExchanges: Action;
   appSetBaseCurrency: Action;
   appSetConversionRates: Action;
@@ -69,10 +67,9 @@ export class AppExchanges {
     this.totalBalance = CURRENCYSERVICE.convertToBase(totalBtcBalance, this.baseCurrency) || 0;
     BALANCESERVICE.getTotalBalances().then((totalBalances) => {
       if (totalBtcBalance && totalBtcBalance > 0) {
-        let now = new Date().getTime();
+        let now = Math.round(new Date().getTime() / 1000);
         BALANCESERVICE.setTotalBalances([...totalBalances, [now, totalBtcBalance]]);
         this.appSetTotalBalances([...totalBalances, [now, totalBtcBalance]]);
-        // this.chart.series[0].addPoint([now, totalBtcBalance]);
       }
     });
   }
@@ -202,9 +199,9 @@ export class AppExchanges {
             </ion-badge>
           </ion-title>
           <ion-buttons slot="end">
-            <ion-button icon-only padding>
+            {/* <ion-button icon-only padding>
               <ion-icon name="stats" />
-            </ion-button>
+            </ion-button> */}
             <ion-button icon-only disabled={this.isLoading} onClick={() => this.refreshBalances()} padding>
               <ion-icon name="refresh" class={this.isLoading ? 'spin' : ''} />
             </ion-button>
@@ -212,26 +209,24 @@ export class AppExchanges {
         </ion-toolbar>
       </ion-header>,
       <ion-content>
-        {/* <ion-refresher slot="fixed" onIonRefresh={() => this.refreshBalances()}>
-          <ion-refresher-content />
-        </ion-refresher> */}
-        {!this.isLoading && this.segment === '1' && <app-sunburst exchanges={this.exchanges} wallets={this.wallets} />}
+        {this.segment === '1' &&
+          !this.isLoading && [
+            <ion-list-header color="dark">Distribution</ion-list-header>,
+            <app-sunburst exchanges={this.exchanges} wallets={this.wallets} />,
+            <ion-list-header color="dark">Total Balance ({this.baseCurrency.id})</ion-list-header>,
+            <app-splinechart />,
+          ]}
         <ion-list>
-          {!this.isLoading &&
-            this.segment === '2' && [
-              <ion-list-header color="dark">
-                <b> Exchanges</b>{' '}
-              </ion-list-header>,
-              this.exchanges
-                .filter((e) => e.key && e.secret)
-                .map((exchange) => <app-exchangeitem exchange={exchange} baseCurrency={this.baseCurrency} />),
-              <ion-list-header color="dark">
-                <b>Wallets </b>
-              </ion-list-header>,
-              this.wallets
-                .filter((w) => w.balance > 0)
-                .map((wallet) => <app-balanceitem exchangeId={null} baseCurrency={this.baseCurrency} cryptodata={wallet} />),
-            ]}
+          {this.segment === '2' && [
+            <ion-list-header color="dark">Exchanges</ion-list-header>,
+            this.exchanges
+              .filter((e) => e.key && e.secret)
+              .map((exchange) => <app-exchangeitem exchange={exchange} baseCurrency={this.baseCurrency} />),
+            <ion-list-header color="dark">Wallets</ion-list-header>,
+            this.wallets
+              .filter((w) => w.balance > 0)
+              .map((wallet) => <app-balanceitem exchangeId={null} baseCurrency={this.baseCurrency} cryptodata={wallet} />),
+          ]}
         </ion-list>
       </ion-content>,
       <ion-footer>

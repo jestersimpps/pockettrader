@@ -278,6 +278,39 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface AppSplinechart {
+
+    }
+  }
+
+  interface HTMLAppSplinechartElement extends StencilComponents.AppSplinechart, HTMLStencilElement {}
+
+  var HTMLAppSplinechartElement: {
+    prototype: HTMLAppSplinechartElement;
+    new (): HTMLAppSplinechartElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-splinechart': HTMLAppSplinechartElement;
+  }
+  interface ElementTagNameMap {
+    'app-splinechart': HTMLAppSplinechartElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-splinechart': JSXElements.AppSplinechartAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppSplinechartAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface AppSunburst {
       'exchanges': Exchange[];
       'wallets': Wallet[];

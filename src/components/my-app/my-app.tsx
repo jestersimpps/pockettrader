@@ -1,5 +1,5 @@
 import '@ionic/core';
-import { Component, Prop } from '@stencil/core';
+import { Component, Prop, State } from '@stencil/core';
 import { Store, Action } from '@stencil/redux';
 import { configureStore } from '../../store';
 import { DefaultExchanges } from '../../services/exchange.service';
@@ -13,6 +13,7 @@ import { CURRENCYSERVICE, BALANCESERVICE, EXCHANGESERVICE, TICKERSERVICE, WALLET
 export class MyApp {
   @Prop({ context: 'store' })
   store: Store;
+  @State() loading = 1;
 
   appSetExchanges: Action;
   appSetBaseCurrency: Action;
@@ -32,53 +33,41 @@ export class MyApp {
       appSetTotalBalances,
       appSetWallets,
     });
-
     // Load in app state from storage
     EXCHANGESERVICE.getExchanges()
       .then((exchanges) => {
-        if (!exchanges) {
-          this.appSetExchanges(DefaultExchanges);
-        } else {
-          this.appSetExchanges(exchanges);
-        }
+        exchanges ? this.appSetExchanges(exchanges) : this.appSetExchanges(DefaultExchanges);
+        this.loading = 2;
         return CURRENCYSERVICE.getBaseCurrency();
       })
       .then((baseCurrency) => {
-        if (!baseCurrency) {
-          this.appSetBaseCurrency(CURRENCYSERVICE.currencies[0]);
-        } else {
-          this.appSetBaseCurrency(baseCurrency);
-        }
+        baseCurrency ? this.appSetBaseCurrency(baseCurrency) : this.appSetBaseCurrency(CURRENCYSERVICE.currencies[0]);
+        this.loading = 3;
         return WALLETSERVICE.getWalletsFromStorage();
       })
       .then((wallets) => {
-        if (!wallets) {
-          this.appSetWallets([]);
-        } else {
-          this.appSetWallets(wallets);
-        }
+        wallets ? this.appSetWallets(wallets) : this.appSetWallets([]);
+        this.loading = 4;
         return CURRENCYSERVICE.getConversionRates();
       })
       .then((currencies) => {
         this.appSetCurrencies(currencies);
+        this.loading = 5;
         return TICKERSERVICE.getTickersFromStore();
       })
       .then((tickers) => {
         tickers ? this.appSetTickers(tickers) : this.appSetTickers([]);
+        this.loading = 6;
         return BALANCESERVICE.getTotalBalances();
       })
       .then((totalBalances) => {
-        if (!totalBalances) {
-          totalBalances = [];
-          BALANCESERVICE.setTotalBalances([]);
-        } else {
-          BALANCESERVICE.setTotalBalances(totalBalances);
-        }
+        totalBalances ? this.appSetTotalBalances(totalBalances) : this.appSetTotalBalances([]);
+        this.loading = 0;
       });
   }
 
   render() {
-    return (
+    return !this.loading ? (
       <ion-app>
         <ion-router useHash={false}>
           <ion-route url="/" component="app-exchanges" />
@@ -93,6 +82,18 @@ export class MyApp {
         </ion-router>
         <ion-nav />
       </ion-app>
+    ) : (
+      [
+        <div class="progress" text-center>
+          Loading
+          {this.loading == 1 && ' exchanges...'}
+          {this.loading == 2 && ' basecurrency...'}
+          {this.loading == 3 && ' wallets...'}
+          {this.loading == 4 && ' conversionrates...'}
+          {this.loading == 5 && ' tickers...'}
+          {this.loading == 6 && ' balances...'}
+        </div>,
+      ]
     );
   }
 }

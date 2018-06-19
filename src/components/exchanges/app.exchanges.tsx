@@ -67,7 +67,7 @@ export class AppExchanges {
     this.totalBalance = CURRENCYSERVICE.convertToBase(totalBtcBalance, this.baseCurrency) || 0;
     BALANCESERVICE.getTotalBalances().then((totalBalances) => {
       if (totalBtcBalance && totalBtcBalance > 0) {
-        let now = Math.round(new Date().getTime() / 1000);
+        let now = Math.round(new Date().getTime());
         BALANCESERVICE.setTotalBalances([...totalBalances, [now, totalBtcBalance]]);
         this.appSetTotalBalances([...totalBalances, [now, totalBtcBalance]]);
       }
@@ -190,7 +190,7 @@ export class AppExchanges {
         <ion-toolbar color="dark">
           <ion-buttons slot="start">
             <ion-button icon-only href="/settings" padding>
-              <ion-icon name="menu" />
+              <ion-icon name="options" />
             </ion-button>
           </ion-buttons>
           <ion-title text-center>
@@ -199,9 +199,6 @@ export class AppExchanges {
             </ion-badge>
           </ion-title>
           <ion-buttons slot="end">
-            {/* <ion-button icon-only padding>
-              <ion-icon name="stats" />
-            </ion-button> */}
             <ion-button icon-only disabled={this.isLoading} onClick={() => this.refreshBalances()} padding>
               <ion-icon name="refresh" class={this.isLoading ? 'spin' : ''} />
             </ion-button>
@@ -234,16 +231,6 @@ export class AppExchanges {
           <ion-tab icon="pie" label="Overview" onIonSelect={() => (this.segment = '1')} active={this.segment == '1'} />
           <ion-tab icon="list-box" label="Balances" onIonSelect={() => (this.segment = '2')} active={this.segment == '2'} />
         </ion-tabs>
-        {/* <ion-segment color="dark" padding value={this.segment}>
-          <ion-segment-button value="1" onClick={() => (this.segment = '1')}>
-            <ion-icon name="pie" />
-            <ion-label class="segment-text">Overview</ion-label>
-          </ion-segment-button>
-          <ion-segment-button value="2" onClick={() => (this.segment = '2')}>
-            <ion-icon name="list-box" />
-            <ion-label class="segment-text">Balances</ion-label>
-          </ion-segment-button>
-        </ion-segment> */}
       </ion-footer>,
     ];
   }

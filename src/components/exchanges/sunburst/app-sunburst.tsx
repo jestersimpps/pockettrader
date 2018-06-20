@@ -16,6 +16,7 @@ export class AppSunburst {
   componentDidLoad() {
     const nodeData = {
       name: 'All Balances',
+      change: 0,
       children: [
         ...this.exchanges.map((e) => {
           return {

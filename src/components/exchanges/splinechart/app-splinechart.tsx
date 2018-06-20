@@ -73,13 +73,18 @@ export class AppSplineChart {
       series: [
         {
           name: `Total ${this.baseCurrency.id} Balance over time`,
-          data: this.totalBalances.map((b) => {
-            b[1] = +CURRENCYSERVICE.convertToBase(b[1], this.baseCurrency);
-            return b;
-          }).slice(-30),
+          data: this.balancePoints(),
         },
       ],
     });
+  }
+
+  balancePoints() {
+    const balances = [];
+    this.totalBalances.forEach((b) => {
+      balances.push([b[0], +CURRENCYSERVICE.convertToBase(b[1], this.baseCurrency)]);
+    });
+    return balances.slice(-30);
   }
 
   render() {

@@ -8,9 +8,6 @@ export class AppCryptoIcon {
   @Prop() symbol: string;
 
   render() {
-    return [
-      <span class={`icon icon-${this.symbol.toLowerCase()}`} />,
-      // <img src={`https://github.com/cjdowner/cryptocurrency-icons/raw/master/32/icon/${this.symbol.toLowerCase()}.png`} />
-    ];
+    return [<img src={`/assets/icon/${this.symbol.toLowerCase()}.svg`} />];
   }
 }

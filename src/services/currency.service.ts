@@ -1,4 +1,3 @@
-import { Exchange } from './exchange.service';
 import { STORAGE } from './storage';
 import { Balance } from './balance.service';
 
@@ -74,9 +73,9 @@ export class CurrencyService {
     return btcValue * this.currencies.find((c) => c.id === baseCurrency.id).conversionRate;
   }
 
-  getBaseTotal(exchange: Exchange, baseCurrency: Currency) {
+  getBaseTotal(balances: Balance[], baseCurrency: Currency) {
     let sum = 0;
-    exchange.balances.forEach((balance: Balance) => {
+    balances.forEach((balance: Balance) => {
       sum += balance.btcAmount;
     });
     return this.convertToBase(sum, baseCurrency);

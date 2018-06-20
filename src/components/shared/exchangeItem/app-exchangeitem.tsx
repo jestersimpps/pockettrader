@@ -20,7 +20,7 @@ export class AppExchangeItem {
         <ion-label>{this.exchange.id}</ion-label>
         <ion-badge color="light" item-end>
           <app-baseprice
-            btcPrice={CURRENCYSERVICE.getBaseTotal(this.exchange, this.baseCurrency)}
+            btcPrice={CURRENCYSERVICE.getBaseTotal(this.exchange.balances, this.baseCurrency)}
             baseCurrency={this.baseCurrency}
           />
         </ion-badge>

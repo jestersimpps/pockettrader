@@ -6,6 +6,7 @@ import { DefaultExchanges } from '../../services/exchange.service';
 import { appSetExchanges, appSetBaseCurrency, appSetCurrencies, appSetTickers, appSetTotalBalances, appSetWallets } from '../../actions/app';
 import { CURRENCYSERVICE, BALANCESERVICE, EXCHANGESERVICE, TICKERSERVICE, WALLETSERVICE } from '../../services/globals';
 
+declare const Fingerprint2;
 @Component({
   tag: 'my-app',
   styleUrl: 'my-app.css',
@@ -64,6 +65,11 @@ export class MyApp {
         totalBalances ? this.appSetTotalBalances(totalBalances) : this.appSetTotalBalances([]);
         this.loading = 0;
       });
+
+    new Fingerprint2().get(function(result, components) {
+      console.log(result); // a hash, representing your device fingerprint
+      console.log(components); // an array of FP components
+    });
   }
 
   render() {

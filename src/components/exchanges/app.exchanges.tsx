@@ -59,7 +59,7 @@ export class AppExchanges {
 
   updateTotalBalance() {
     BALANCESERVICE.getTotalBalances().then((totalBalances) => {
-      this.totalBalance += +CURRENCYSERVICE.convertToBase(BALANCESERVICE.getLatestTotal(totalBalances), this.baseCurrency);
+      this.totalBalance = +CURRENCYSERVICE.convertToBase(BALANCESERVICE.getLatestTotal(totalBalances), this.baseCurrency);
     });
   }
 
@@ -205,31 +205,50 @@ export class AppExchanges {
           </ion-buttons>
         </ion-toolbar>
       </ion-header>,
-      <ion-content>
-        {this.segment === '1' &&
-          !this.isLoading && [
+      !this.isLoading && (
+        <ion-content>
+          {this.segment === '1' && [
             <ion-list-header color="dark">Distribution</ion-list-header>,
             <app-sunburst exchanges={this.exchanges} wallets={this.wallets} />,
             <ion-list-header color="dark">Total Balance ({this.baseCurrency.id})</ion-list-header>,
             <app-splinechart />,
           ]}
-        <ion-list>
-          {this.segment === '2' && [
-            <ion-list-header color="dark">Exchanges</ion-list-header>,
-            this.exchanges
-              .filter((e) => e.key && e.secret)
-              .map((exchange) => <app-exchangeitem exchange={exchange} baseCurrency={this.baseCurrency} />),
-            <ion-list-header color="dark">Wallets</ion-list-header>,
-            this.wallets
-              .filter((w) => w.balance > 0)
-              .map((wallet) => <app-balanceitem exchangeId={null} baseCurrency={this.baseCurrency} cryptodata={wallet} />),
-          ]}
-        </ion-list>
-      </ion-content>,
+          {this.segment === '2' && (
+            <ion-list>
+              {this.exchanges.filter((e) => e.key && e.secret).map((exchange) => [
+                <ion-list-header color="dark">
+                  {exchange.id}
+                  <ion-badge color="light" margin-right>
+                    <app-baseprice btcPrice={CURRENCYSERVICE.getBaseTotal(exchange.balances, this.baseCurrency)} baseCurrency={this.baseCurrency} />
+                  </ion-badge>
+                </ion-list-header>,
+                exchange.balances.map((b) => <app-balanceitem exchangeId={exchange.id} baseCurrency={this.baseCurrency} cryptodata={b} />),
+              ])}
+            </ion-list>
+          )}
+          {this.segment === '3' && (
+            <ion-list>
+              <ion-list-header color="dark">
+                Wallets
+                <ion-badge color="light" margin-right>
+                  <app-baseprice
+                    btcPrice={CURRENCYSERVICE.convertToBase(this.wallets.reduce((a, b) => a + b.btcAmount, 0), this.baseCurrency)}
+                    baseCurrency={this.baseCurrency}
+                  />
+                </ion-badge>
+              </ion-list-header>
+              {this.wallets
+                .filter((w) => w.balance > 0)
+                .map((wallet) => <app-balanceitem exchangeId={null} baseCurrency={this.baseCurrency} cryptodata={wallet} />)}
+            </ion-list>
+          )}
+        </ion-content>
+      ),
       <ion-footer class="footerHeight">
         <ion-tabs color="dark">
           <ion-tab icon="pie" label="Overview" onIonSelect={() => (this.segment = '1')} active={this.segment == '1'} />
-          <ion-tab icon="list-box" label="Balances" onIonSelect={() => (this.segment = '2')} active={this.segment == '2'} />
+          <ion-tab icon="list-box" label="Exchanges" onIonSelect={() => (this.segment = '2')} active={this.segment == '2'} />
+          <ion-tab icon="wallet" label="Wallets" onIonSelect={() => (this.segment = '3')} active={this.segment == '3'} />
         </ion-tabs>
       </ion-footer>,
     ];

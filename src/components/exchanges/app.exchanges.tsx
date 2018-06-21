@@ -205,17 +205,17 @@ export class AppExchanges {
           </ion-buttons>
         </ion-toolbar>
       </ion-header>,
-      !this.isLoading && (
-        <ion-content>
-          {this.segment === '1' && [
-            <ion-list-header color="dark">Distribution</ion-list-header>,
-            <app-sunburst exchanges={this.exchanges} wallets={this.wallets} />,
-            <ion-list-header color="dark">Total Balance ({this.baseCurrency.id})</ion-list-header>,
-            <app-splinechart />,
-          ]}
-          {this.segment === '2' && (
-            <ion-list>
-              {this.exchanges.filter((e) => e.key && e.secret).map((exchange) => [
+      <ion-content>
+        {!this.isLoading && (
+          <ion-list>
+            {this.segment === '1' && [
+              <ion-list-header color="dark">Distribution</ion-list-header>,
+              <app-sunburst exchanges={this.exchanges} wallets={this.wallets} />,
+              <ion-list-header color="dark">Total Balance ({this.baseCurrency.id})</ion-list-header>,
+              <app-splinechart />,
+            ]}
+            {this.segment === '2' &&
+              this.exchanges.filter((e) => e.key && e.secret).map((exchange) => [
                 <ion-list-header color="dark">
                   {exchange.id}
                   <ion-badge color="light" margin-right>
@@ -224,10 +224,7 @@ export class AppExchanges {
                 </ion-list-header>,
                 exchange.balances.map((b) => <app-balanceitem exchangeId={exchange.id} baseCurrency={this.baseCurrency} cryptodata={b} />),
               ])}
-            </ion-list>
-          )}
-          {this.segment === '3' && (
-            <ion-list>
+            {this.segment === '3' && [
               <ion-list-header color="dark">
                 Wallets
                 <ion-badge color="light" margin-right>
@@ -236,14 +233,14 @@ export class AppExchanges {
                     baseCurrency={this.baseCurrency}
                   />
                 </ion-badge>
-              </ion-list-header>
-              {this.wallets
+              </ion-list-header>,
+              this.wallets
                 .filter((w) => w.balance > 0)
-                .map((wallet) => <app-balanceitem exchangeId={null} baseCurrency={this.baseCurrency} cryptodata={wallet} />)}
-            </ion-list>
-          )}
-        </ion-content>
-      ),
+                .map((wallet) => <app-balanceitem exchangeId={null} baseCurrency={this.baseCurrency} cryptodata={wallet} />),
+            ]}
+          </ion-list>
+        )}
+      </ion-content>,
       <ion-footer class="footerHeight">
         <ion-tabs color="dark">
           <ion-tab icon="pie" label="Overview" onIonSelect={() => (this.segment = '1')} active={this.segment == '1'} />

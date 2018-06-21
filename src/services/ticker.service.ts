@@ -17,11 +17,11 @@ export class TickerService {
   }
 
   getTickers(exchangeId: ExchangeId) {
-    return axios.get(`http://lightningassets.com/exchangeapi/${exchangeId}/tickers`);
+    return axios.get(`https://lightningassets.com/exchangeapi/${exchangeId}/tickers`);
   }
 
   getTicker(exchangeId: ExchangeId, pair: string) {
-    return axios.get(`http://lightningassets.com/exchangeapi/${exchangeId}/ticker/data?symbol=${pair}`);
+    return axios.get(`https://lightningassets.com/exchangeapi/${exchangeId}/ticker/data?symbol=${pair}`);
   }
   getCoinmarketcapTicker(tickerId: number) {
     return axios.get(`https://api.coinmarketcap.com/v2/ticker/${tickerId}/?convert=BTC`);

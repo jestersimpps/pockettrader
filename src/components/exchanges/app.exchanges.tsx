@@ -200,7 +200,7 @@ export class AppExchanges {
           </ion-title>
           <ion-buttons slot="end">
             <ion-button icon-only disabled={this.isLoading} onClick={() => this.refreshBalances()} padding>
-              <ion-icon name="refresh" class={this.isLoading ? 'spin' : ''} />
+              <ion-icon name="sync" class={this.isLoading ? 'spin' : ''} />
             </ion-button>
           </ion-buttons>
         </ion-toolbar>

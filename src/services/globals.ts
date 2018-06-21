@@ -1,3 +1,4 @@
+import { TokenService } from './token.service';
 import { WalletService } from './wallets.service';
 import { BalanceService } from './balance.service';
 import { CurrencyService } from './currency.service';
@@ -8,3 +9,4 @@ export const BALANCESERVICE: BalanceService = new BalanceService();
 export const EXCHANGESERVICE: ExchangeService = new ExchangeService();
 export const TICKERSERVICE: TickerService = new TickerService();
 export const WALLETSERVICE: WalletService = new WalletService();
+export const TOKENSERVICE: TokenService = new TokenService();

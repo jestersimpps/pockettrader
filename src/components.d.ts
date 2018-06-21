@@ -414,6 +414,39 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface AppPremium {
+
+    }
+  }
+
+  interface HTMLAppPremiumElement extends StencilComponents.AppPremium, HTMLStencilElement {}
+
+  var HTMLAppPremiumElement: {
+    prototype: HTMLAppPremiumElement;
+    new (): HTMLAppPremiumElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-premium': HTMLAppPremiumElement;
+  }
+  interface ElementTagNameMap {
+    'app-premium': HTMLAppPremiumElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-premium': JSXElements.AppPremiumAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppPremiumAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface AppSettings {
 
     }

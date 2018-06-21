@@ -41,3 +41,9 @@ export const appSetWallets = (data: any) => async (dispatch, _getState) => {
     data: data,
   });
 };
+export const appSetToken = (data: any) => async (dispatch, _getState) => {
+  return dispatch({
+    type: TypeKeys.APP_SET_TOKEN,
+    data: data,
+  });
+};

@@ -32,7 +32,9 @@
     transform: rotate(359deg);
   }
 }
-
+.full {
+  width: 100%;
+}
 input {
   font-size: 16px !important;
 }

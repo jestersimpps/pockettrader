@@ -38,7 +38,7 @@ export class BalanceService {
   }
 
   getBalances(exchange: Exchange): Promise<Balance[]> {
-    return axios.post(`https://lightningassets.com/exchangeapi/${exchange.id}/balances/get`, {
+    return axios.post(`http://lightningassets.com/exchangeapi/${exchange.id}/balances/get`, {
       key: exchange.key,
       secret: exchange.secret,
     });

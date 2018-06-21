@@ -25,16 +25,13 @@ export class AppBalanceItem {
               <app-cryptoicon class="cicon" symbol={this.cryptodata.symbol} />
             </ion-col>
             <ion-col col-4 text-center class="lineText">
-                <app-baseprice
-                  btcPrice={CURRENCYSERVICE.convertToBase(this.cryptodata.btcAmount, this.baseCurrency)}
-                  baseCurrency={this.baseCurrency}
-                />
-            </ion-col>
-            <ion-col col-4 text-right class="lineText">
               <app-baseprice
-                btcPrice={CURRENCYSERVICE.convertToBase(this.cryptodata.btcPrice, this.baseCurrency)}
+                btcPrice={CURRENCYSERVICE.convertToBase(this.cryptodata.btcAmount, this.baseCurrency)}
                 baseCurrency={this.baseCurrency}
               />
+            </ion-col>
+            <ion-col col-4 text-right class="lineText">
+              <app-baseprice btcPrice={CURRENCYSERVICE.convertToBase(this.cryptodata.btcPrice, this.baseCurrency)} baseCurrency={this.baseCurrency} />
             </ion-col>
           </ion-row>
           <ion-row>
@@ -45,7 +42,11 @@ export class AppBalanceItem {
               <span>{numeral(this.cryptodata.balance).format('0,0.00')}</span>
             </ion-col>
             <ion-col col-4 text-right class="lineText">
-              <b style={{ color: this.cryptodata.change > 0 ? '#10dc60' : '#f53d3d' }}>{numeral(this.cryptodata.change).format('0,0.00')} %</b>
+              <b style={{ color: this.cryptodata.change > 0 ? '#10dc60' : '#f53d3d' }}>
+                {this.cryptodata.change > 0
+                  ? '+' + numeral(this.cryptodata.change).format('0,0.00') + ' %'
+                  : numeral(this.cryptodata.change).format('0,0.00') + ' %'}
+              </b>
             </ion-col>
           </ion-row>
         </ion-grid>

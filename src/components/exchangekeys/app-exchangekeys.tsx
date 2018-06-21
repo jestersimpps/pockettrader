@@ -77,8 +77,8 @@ export class AppExchangeKeys {
       <ion-footer>
         <ion-toolbar>
           <ion-nav-pop>
-            <ion-button icon-left color="danger" class="full" onClick={() => this.deleteKeys(this.exchange)}>
-              Delete keys
+            <ion-button icon-left color="light" expand="block">
+              Set
             </ion-button>
           </ion-nav-pop>
         </ion-toolbar>

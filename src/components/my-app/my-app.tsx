@@ -77,7 +77,6 @@ export class MyApp {
       <ion-app>
         <ion-router useHash={false}>
           <ion-route url="/" component="app-exchanges" />
-          <ion-route url="/exchanges/:exchangeId" component="app-exchangedetail" />
           <ion-route url="/pair/:exchangeId/:pair" component="app-pair" />
           <ion-route url="/settings/" component="app-settings" />
           <ion-route url="/settings/keys" component="app-keys" />

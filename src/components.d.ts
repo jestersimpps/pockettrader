@@ -146,39 +146,6 @@ declare global {
 declare global {
 
   namespace StencilComponents {
-    interface AppExchangedetail {
-      'exchangeId': ExchangeId;
-    }
-  }
-
-  interface HTMLAppExchangedetailElement extends StencilComponents.AppExchangedetail, HTMLStencilElement {}
-
-  var HTMLAppExchangedetailElement: {
-    prototype: HTMLAppExchangedetailElement;
-    new (): HTMLAppExchangedetailElement;
-  };
-  interface HTMLElementTagNameMap {
-    'app-exchangedetail': HTMLAppExchangedetailElement;
-  }
-  interface ElementTagNameMap {
-    'app-exchangedetail': HTMLAppExchangedetailElement;
-  }
-  namespace JSX {
-    interface IntrinsicElements {
-      'app-exchangedetail': JSXElements.AppExchangedetailAttributes;
-    }
-  }
-  namespace JSXElements {
-    export interface AppExchangedetailAttributes extends HTMLAttributes {
-      'exchangeId'?: ExchangeId;
-    }
-  }
-}
-
-
-declare global {
-
-  namespace StencilComponents {
     interface AppExchangekeys {
       'exchangeId': ExchangeId;
     }
@@ -612,6 +579,41 @@ declare global {
     export interface AppExchangeitemAttributes extends HTMLAttributes {
       'baseCurrency'?: Currency;
       'exchange'?: Exchange;
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppTrade {
+      'exchangeId': ExchangeId;
+      'pair': any;
+    }
+  }
+
+  interface HTMLAppTradeElement extends StencilComponents.AppTrade, HTMLStencilElement {}
+
+  var HTMLAppTradeElement: {
+    prototype: HTMLAppTradeElement;
+    new (): HTMLAppTradeElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-trade': HTMLAppTradeElement;
+  }
+  interface ElementTagNameMap {
+    'app-trade': HTMLAppTradeElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-trade': JSXElements.AppTradeAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppTradeAttributes extends HTMLAttributes {
+      'exchangeId'?: ExchangeId;
+      'pair'?: any;
     }
   }
 }

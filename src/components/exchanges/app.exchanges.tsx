@@ -190,7 +190,7 @@ export class AppExchanges {
         <ion-toolbar color="dark">
           <ion-buttons slot="start">
             <ion-button icon-only href="/settings" padding>
-              <ion-icon name="options" />
+              <ion-icon name="switch" />
             </ion-button>
           </ion-buttons>
           <ion-title text-center>

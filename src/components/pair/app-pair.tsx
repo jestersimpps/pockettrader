@@ -15,13 +15,14 @@ export class AppPair {
   @Prop() exchangeId: ExchangeId;
   @Prop() pair: string;
 
+  @State() segment: number = 1;
   @State() ticker;
   tradingviewWidget;
 
   componentDidLoad() {
     TICKERSERVICE.getTicker(this.exchangeId, `${this.pair}/BTC`).then((response) => {
       this.ticker = response.data;
-      this.showChart();
+      this.switchSegment(1);
     });
   }
 
@@ -44,24 +45,57 @@ export class AppPair {
       details: false,
       hideideas: true,
       show_popup_button: false,
+      save_image: false,
+      allow_symbol_change: false,
     });
+  }
+
+  switchSegment(segment: number) {
+    this.segment = segment;
+    switch (segment) {
+      case 1:
+        this.showChart();
+        break;
+
+      default:
+        break;
+    }
   }
 
   render() {
     const styles = {
-      height: `${window.innerHeight - 44}px`,
+      height: `${window.innerHeight - 73}px`,
     };
     return [
-      this.ticker && <ion-header>
-        <ion-toolbar color="dark">
-          <ion-buttons slot="start">
-            <ion-back-button defaultHref={`/exchanges/${this.exchangeId}`} />
-          </ion-buttons>
-          <ion-title>{`${this.exchangeId} - ${this.ticker.base}/BTC`}</ion-title>
-        </ion-toolbar>
-      </ion-header>,
-      <div id="tvChart" class="tvchart" style={styles} />,
-      <ion-content />,
+      this.ticker && (
+        <ion-header>
+          <ion-toolbar color="dark">
+            <ion-buttons slot="start">
+              <ion-back-button defaultHref={`/exchanges`} />
+            </ion-buttons>
+            <ion-title>{`${this.exchangeId} - ${this.ticker.base}/BTC`}</ion-title>
+          </ion-toolbar>
+          <ion-segment color="dark">
+            <ion-segment-button checked={this.segment === 1} onIonSelect={() => this.switchSegment(1)}>
+              <ion-icon name="stats" />
+              Chart
+            </ion-segment-button>
+            <ion-segment-button checked={this.segment === 2} onIonSelect={() => this.switchSegment(2)} disabled>
+              <ion-icon name="paper" />
+              News
+            </ion-segment-button>
+            <ion-segment-button checked={this.segment === 3} onIonSelect={() => this.switchSegment(3)}>
+              <ion-icon name="swap" />
+              Trade
+            </ion-segment-button>
+            <ion-segment-button checked={this.segment === 4} onIonSelect={() => this.switchSegment(4)}>
+              <ion-icon name="list" />
+              Orders
+            </ion-segment-button>
+          </ion-segment>
+        </ion-header>
+      ),
+      <ion-content>{this.segment === 1 && <div id="tvChart" class="tvchart" style={styles} />}</ion-content>,
     ];
   }
 }

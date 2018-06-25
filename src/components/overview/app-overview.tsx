@@ -8,10 +8,10 @@ import { Ticker } from '../../services/ticker.service';
 import { Wallet } from '../../services/wallets.service';
 
 @Component({
-  tag: 'app-wallets',
-  styleUrl: 'app-wallets.css',
+  tag: 'app-overview',
+  styleUrl: 'app-overview.css',
 })
-export class AppWallets {
+export class AppOverview {
   @Prop({ context: 'store' })
   store: Store;
 
@@ -21,7 +21,6 @@ export class AppWallets {
   @State() totalBalance: number = 0;
   @State() tickers: any[];
   @State() wallets: Wallet[];
-  @State() segment = '1';
 
   appSetExchanges: Action;
   appSetBaseCurrency: Action;
@@ -195,10 +194,7 @@ export class AppWallets {
           </ion-buttons>
           <ion-title text-center>
             <ion-badge color="light">
-              <app-baseprice
-                btcPrice={CURRENCYSERVICE.convertToBase(this.wallets.reduce((a, b) => a + b.btcAmount, 0), this.baseCurrency)}
-                baseCurrency={this.baseCurrency}
-              />
+              <app-baseprice btcPrice={this.totalBalance} baseCurrency={this.baseCurrency} />
             </ion-badge>
           </ion-title>
           <ion-buttons slot="end">
@@ -209,11 +205,18 @@ export class AppWallets {
         </ion-toolbar>
       </ion-header>,
       <ion-content>
-        <ion-list>
-          {this.wallets
-            .filter((w) => w.balance > 0)
-            .map((wallet) => <app-balanceitem exchangeId={null} baseCurrency={this.baseCurrency} cryptodata={wallet} />)}
-        </ion-list>
+        {!this.isLoading ? (
+          <ion-list>
+            <ion-list-header color="light">Distribution</ion-list-header>
+            <app-sunburst exchanges={this.exchanges} wallets={this.wallets} />
+            <ion-list-header color="light">Total Balance ({this.baseCurrency.id})</ion-list-header>
+            <app-splinechart />
+          </ion-list>
+        ) : (
+          <div class="progress" text-center>
+            <ion-icon name="sync" class="spin" />
+          </div>
+        )}
       </ion-content>,
     ];
   }

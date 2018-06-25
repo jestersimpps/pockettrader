@@ -18,39 +18,81 @@ export class AppBalanceItem {
   render() {
     return [
       // TODO: if exchangeid == null, pick one
-      <ion-item lines="full" href={`/pair/${this.exchangeId}/${this.cryptodata.symbol}`}>
-        <ion-grid>
-          <ion-row>
-            <ion-col col-4 class="lineText">
-              <app-cryptoicon class="cicon" symbol={this.cryptodata.symbol} />
-            </ion-col>
-            <ion-col col-4 text-center class="lineText">
-              <app-baseprice
-                btcPrice={CURRENCYSERVICE.convertToBase(this.cryptodata.btcAmount, this.baseCurrency)}
-                baseCurrency={this.baseCurrency}
-              />
-            </ion-col>
-            <ion-col col-4 text-right class="lineText">
-              <app-baseprice btcPrice={CURRENCYSERVICE.convertToBase(this.cryptodata.btcPrice, this.baseCurrency)} baseCurrency={this.baseCurrency} />
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col col-4 text-left class="lineText">
-              <b class="ctext">{this.cryptodata.symbol}</b>
-            </ion-col>
-            <ion-col col-4 text-center class="lineText">
-              <span>{numeral(this.cryptodata.balance).format('0,0.00')}</span>
-            </ion-col>
-            <ion-col col-4 text-right class="lineText">
-              <b style={{ color: this.cryptodata.change > 0 ? '#10dc60' : '#f53d3d' }}>
-                {this.cryptodata.change > 0
-                  ? '+' + numeral(this.cryptodata.change).format('0,0.00') + ' %'
-                  : numeral(this.cryptodata.change).format('0,0.00') + ' %'}
-              </b>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-item>,
+      this.exchangeId === null ? (
+        <ion-item lines="full">
+          <ion-grid>
+            <ion-row>
+              <ion-col col-4 class="lineText">
+                <app-cryptoicon class="cicon" symbol={this.cryptodata.symbol} />
+              </ion-col>
+              <ion-col col-4 text-center class="lineText">
+                <app-baseprice
+                  btcPrice={CURRENCYSERVICE.convertToBase(this.cryptodata.btcAmount, this.baseCurrency)}
+                  baseCurrency={this.baseCurrency}
+                />
+              </ion-col>
+              <ion-col col-4 text-right class="lineText">
+                <app-baseprice
+                  btcPrice={CURRENCYSERVICE.convertToBase(this.cryptodata.btcPrice, this.baseCurrency)}
+                  baseCurrency={this.baseCurrency}
+                />
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col col-4 text-left class="lineText">
+                <b class="ctext">{this.cryptodata.symbol}</b>
+              </ion-col>
+              <ion-col col-4 text-center class="lineText">
+                <span>{numeral(this.cryptodata.balance).format('0,0.00')}</span>
+              </ion-col>
+              <ion-col col-4 text-right class="lineText">
+                <b style={{ color: this.cryptodata.change > 0 ? '#10dc60' : '#f53d3d' }}>
+                  {this.cryptodata.change > 0
+                    ? '+' + numeral(this.cryptodata.change).format('0,0.00') + ' %'
+                    : numeral(this.cryptodata.change).format('0,0.00') + ' %'}
+                </b>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      ) : (
+        <ion-item lines="full" href={`/pair/${this.exchangeId}/${this.cryptodata.symbol}`}>
+          <ion-grid>
+            <ion-row>
+              <ion-col col-4 class="lineText">
+                <app-cryptoicon class="cicon" symbol={this.cryptodata.symbol} />
+              </ion-col>
+              <ion-col col-4 text-center class="lineText">
+                <app-baseprice
+                  btcPrice={CURRENCYSERVICE.convertToBase(this.cryptodata.btcAmount, this.baseCurrency)}
+                  baseCurrency={this.baseCurrency}
+                />
+              </ion-col>
+              <ion-col col-4 text-right class="lineText">
+                <app-baseprice
+                  btcPrice={CURRENCYSERVICE.convertToBase(this.cryptodata.btcPrice, this.baseCurrency)}
+                  baseCurrency={this.baseCurrency}
+                />
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col col-4 text-left class="lineText">
+                <b class="ctext">{this.cryptodata.symbol}</b>
+              </ion-col>
+              <ion-col col-4 text-center class="lineText">
+                <span>{numeral(this.cryptodata.balance).format('0,0.00')}</span>
+              </ion-col>
+              <ion-col col-4 text-right class="lineText">
+                <b style={{ color: this.cryptodata.change > 0 ? '#10dc60' : '#f53d3d' }}>
+                  {this.cryptodata.change > 0
+                    ? '+' + numeral(this.cryptodata.change).format('0,0.00') + ' %'
+                    : numeral(this.cryptodata.change).format('0,0.00') + ' %'}
+                </b>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+      ),
     ];
   }
 }

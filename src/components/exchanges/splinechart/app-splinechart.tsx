@@ -84,7 +84,7 @@ export class AppSplineChart {
     this.totalBalances.forEach((b) => {
       balances.push([b[0], +CURRENCYSERVICE.convertToBase(b[1], this.baseCurrency)]);
     });
-    return balances.slice(-30);
+    return balances.slice(-100);
   }
 
   render() {

@@ -18,19 +18,19 @@ export class AppSettings {
         <ion-list>
           <ion-item lines="full" href={`/settings/keys`}>
             <ion-icon name="key" item-start margin-right />
-            <ion-label>Configure Exchanges</ion-label>
+            <ion-label>Exchange Keys</ion-label>
           </ion-item>
           <ion-item lines="full" href={`/settings/wallets`}>
-            <ion-icon name="briefcase" item-start margin-right />
-            <ion-label>Configure Wallets</ion-label>
+            <ion-icon name="wallet" item-start margin-right />
+            <ion-label>Wallet Holdings</ion-label>
           </ion-item>
           <ion-item lines="full" href={`/settings/basecurrency`}>
             <ion-icon name="logo-usd" item-start margin-right />
-            <ion-label>Set Base Currency</ion-label>
+            <ion-label>Base Currency</ion-label>
           </ion-item>
           <ion-item lines="full" href={`/settings/premium`}>
-            <ion-icon name="star" item-start margin-right />
-            <ion-label>Premium (enables trading)</ion-label>
+            <ion-icon name="swap" item-start margin-right />
+            <ion-label>Trading</ion-label>
           </ion-item>
         </ion-list>
       </ion-content>,

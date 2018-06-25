@@ -79,8 +79,12 @@ export class MyApp {
     return !this.loading ? (
       <ion-app>
         <ion-router useHash={false}>
-          <ion-route url="/" component="app-exchanges" />
+          <ion-route url="/" component="app-overview" />
           <ion-route url="/pair/:exchangeId/:pair" component="app-pair" />
+          <ion-route url="/overview" component="app-overview" />
+          <ion-route url="/exchanges" component="app-exchanges" />
+          <ion-route url="/wallets" component="app-wallets" />
+          <ion-route url="/trade" component="app-trade" />
           <ion-route url="/settings" component="app-settings" />
           <ion-route url="/settings/keys" component="app-keys" />
           <ion-route url="/settings/keys/:exchangeId" component="app-exchangekeys" />
@@ -88,8 +92,17 @@ export class MyApp {
           <ion-route url="/settings/wallets" component="app-wallets" />
           <ion-route url="/settings/wallets/:walletId" component="app-editwallet" />
           <ion-route url="/settings/premium" component="app-premium" />
+          <ion-route url="/panic" component="app-panic" />
         </ion-router>
-        <ion-nav />
+        <ion-nav animated={true} />,
+        <ion-footer class="footerHeight">
+          <ion-tabs color="light">
+            <ion-tab icon="pie" label="Overview" href="/overview" />
+            <ion-tab icon="list-box" label="Exchanges" href="/exchanges" />
+            <ion-tab icon="wallet" label="Wallets" href="/wallets" />
+            <ion-tab icon="swap" label="Trade" href="/trade" />
+          </ion-tabs>
+        </ion-footer>,
       </ion-app>
     ) : (
       [

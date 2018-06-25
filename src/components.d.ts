@@ -379,6 +379,39 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface AppOverview {
+
+    }
+  }
+
+  interface HTMLAppOverviewElement extends StencilComponents.AppOverview, HTMLStencilElement {}
+
+  var HTMLAppOverviewElement: {
+    prototype: HTMLAppOverviewElement;
+    new (): HTMLAppOverviewElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-overview': HTMLAppOverviewElement;
+  }
+  interface ElementTagNameMap {
+    'app-overview': HTMLAppOverviewElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-overview': JSXElements.AppOverviewAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppOverviewAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface AppPair {
       'exchangeId': ExchangeId;
       'pair': string;
@@ -406,6 +439,39 @@ declare global {
     export interface AppPairAttributes extends HTMLAttributes {
       'exchangeId'?: ExchangeId;
       'pair'?: string;
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppPanic {
+
+    }
+  }
+
+  interface HTMLAppPanicElement extends StencilComponents.AppPanic, HTMLStencilElement {}
+
+  var HTMLAppPanicElement: {
+    prototype: HTMLAppPanicElement;
+    new (): HTMLAppPanicElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-panic': HTMLAppPanicElement;
+  }
+  interface ElementTagNameMap {
+    'app-panic': HTMLAppPanicElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-panic': JSXElements.AppPanicAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppPanicAttributes extends HTMLAttributes {
+
     }
   }
 }
@@ -621,8 +687,7 @@ declare global {
 
   namespace StencilComponents {
     interface AppTrade {
-      'exchangeId': ExchangeId;
-      'pair': any;
+
     }
   }
 
@@ -645,8 +710,7 @@ declare global {
   }
   namespace JSXElements {
     export interface AppTradeAttributes extends HTMLAttributes {
-      'exchangeId'?: ExchangeId;
-      'pair'?: any;
+
     }
   }
 }

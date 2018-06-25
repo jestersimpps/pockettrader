@@ -21,7 +21,6 @@ export class AppExchanges {
   @State() totalBalance: number = 0;
   @State() tickers: any[];
   @State() wallets: Wallet[];
-  @State() segment = '1';
 
   appSetExchanges: Action;
   appSetBaseCurrency: Action;
@@ -195,59 +194,32 @@ export class AppExchanges {
           </ion-buttons>
           <ion-title text-center>
             <ion-badge color="light">
-              <app-baseprice btcPrice={this.totalBalance} baseCurrency={this.baseCurrency} />
+              <app-baseprice
+                btcPrice={this.totalBalance - CURRENCYSERVICE.convertToBase(this.wallets.reduce((a, b) => a + b.btcAmount, 0), this.baseCurrency)}
+                baseCurrency={this.baseCurrency}
+              />
             </ion-badge>
           </ion-title>
           <ion-buttons slot="end">
             <ion-button icon-only disabled={this.isLoading} onClick={() => this.refreshBalances()} padding>
-              <ion-icon name="sync" class={this.isLoading ? 'spin' : ''} />
+              <ion-icon name="refresh" class={this.isLoading ? 'spin' : ''} />
             </ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>,
       <ion-content>
-        {!this.isLoading && (
-          <ion-list>
-            {this.segment === '1' && [
-              <ion-list-header color="dark">Distribution</ion-list-header>,
-              <app-sunburst exchanges={this.exchanges} wallets={this.wallets} />,
-              <ion-list-header color="dark">Total Balance ({this.baseCurrency.id})</ion-list-header>,
-              <app-splinechart />,
-            ]}
-            {this.segment === '2' &&
-              this.exchanges.filter((e) => e.key && e.secret).map((exchange) => [
-                <ion-list-header color="dark">
-                  {exchange.id}
-                  <ion-badge color="light" margin-right>
-                    <app-baseprice btcPrice={CURRENCYSERVICE.getBaseTotal(exchange.balances, this.baseCurrency)} baseCurrency={this.baseCurrency} />
-                  </ion-badge>
-                </ion-list-header>,
-                exchange.balances.map((b) => <app-balanceitem exchangeId={exchange.id} baseCurrency={this.baseCurrency} cryptodata={b} />),
-              ])}
-            {this.segment === '3' && [
-              <ion-list-header color="dark">
-                Wallets
-                <ion-badge color="light" margin-right>
-                  <app-baseprice
-                    btcPrice={CURRENCYSERVICE.convertToBase(this.wallets.reduce((a, b) => a + b.btcAmount, 0), this.baseCurrency)}
-                    baseCurrency={this.baseCurrency}
-                  />
-                </ion-badge>
-              </ion-list-header>,
-              this.wallets
-                .filter((w) => w.balance > 0)
-                .map((wallet) => <app-balanceitem exchangeId={null} baseCurrency={this.baseCurrency} cryptodata={wallet} />),
-            ]}
-          </ion-list>
-        )}
+        <ion-list>
+          {this.exchanges.filter((e) => e.key && e.secret).map((exchange) => [
+            <ion-list-header color="light">
+              {exchange.id}
+              <ion-badge color="light" margin-right>
+                <app-baseprice btcPrice={CURRENCYSERVICE.getBaseTotal(exchange.balances, this.baseCurrency)} baseCurrency={this.baseCurrency} />
+              </ion-badge>
+            </ion-list-header>,
+            exchange.balances.map((b) => <app-balanceitem exchangeId={exchange.id} baseCurrency={this.baseCurrency} cryptodata={b} />),
+          ])}
+        </ion-list>
       </ion-content>,
-      <ion-footer class="footerHeight">
-        <ion-tabs color="dark">
-          <ion-tab icon="pie" label="Overview" onIonSelect={() => (this.segment = '1')} active={this.segment == '1'} />
-          <ion-tab icon="list-box" label="Exchanges" onIonSelect={() => (this.segment = '2')} active={this.segment == '2'} />
-          <ion-tab icon="wallet" label="Wallets" onIonSelect={() => (this.segment = '3')} active={this.segment == '3'} />
-        </ion-tabs>
-      </ion-footer>,
     ];
   }
 }

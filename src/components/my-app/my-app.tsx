@@ -94,9 +94,9 @@ export class MyApp {
           <ion-route url="/settings/premium" component="app-premium" />
           <ion-route url="/panic" component="app-panic" />
         </ion-router>
-        <ion-nav animated={true} />,
+        <ion-nav animated={true} margin-bottom/>,
         <ion-footer class="footerHeight">
-          <ion-tabs color="light">
+          <ion-tabs color="light" tabbarHighlight={true} useRouter={true}>
             <ion-tab icon="pie" label="Overview" href="/overview" />
             <ion-tab icon="list-box" label="Exchanges" href="/exchanges" />
             <ion-tab icon="wallet" label="Wallets" href="/wallets" />

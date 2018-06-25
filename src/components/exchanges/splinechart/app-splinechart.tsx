@@ -1,6 +1,6 @@
 import { Component, State, Prop } from '@stencil/core';
 import { Store } from '@stencil/redux';
-import highcharts from '../../../global/highcharts';
+import { highstock } from '../../../global/highcharts';
 import { CURRENCYSERVICE } from '../../../services/globals';
 import { Currency } from '../../../services/currency.service';
 
@@ -29,11 +29,10 @@ export class AppSplineChart {
   }
 
   componentDidLoad() {
-    this.chart = highcharts.chart('spline', {
-      chart: {
-        type: 'spline',
+    this.chart = highstock.stockChart('spline', {
+      rangeSelector: {
+        inputEnabled: false,
       },
-
       title: {
         text: '',
       },
@@ -84,7 +83,7 @@ export class AppSplineChart {
     this.totalBalances.forEach((b) => {
       balances.push([b[0], +CURRENCYSERVICE.convertToBase(b[1], this.baseCurrency)]);
     });
-    return balances.slice(-100);
+    return balances;
   }
 
   render() {

@@ -1,7 +1,5 @@
 import Highcharts from 'highcharts';
+import Highstock from 'highcharts/highstock';
 
-const highcharts = Highcharts;
-
-export default (function() {
-  return highcharts;
-})();
+export const highcharts = Highcharts;
+export const highstock = Highstock;

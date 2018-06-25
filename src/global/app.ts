@@ -10,5 +10,6 @@
 //});
 declare let Context: any;
 
-import highcharts from './highcharts';
+import { highcharts, highstock } from './highcharts';
 Context.highcharts = highcharts;
+Context.highstock = highstock;

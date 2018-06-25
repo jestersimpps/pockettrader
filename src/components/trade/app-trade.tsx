@@ -32,13 +32,15 @@ export class AppTrade {
         wallets,
       };
     });
-    this.pairs = this.tickers[0].tickers.sort((a, b) => {
-      var textA = a.symbol.toUpperCase();
-      var textB = b.symbol.toUpperCase();
-      return textA < textB ? -1 : textA > textB ? 1 : 0;
-    });
-    this.exchangeId = this.tickers[0].exchangeId;
-    this.getNewTicker(this.exchangeId, this.pairs[0].symbol);
+    if (this.tickers.length) {
+      this.pairs = this.tickers[0].tickers.sort((a, b) => {
+        var textA = a.symbol.toUpperCase();
+        var textB = b.symbol.toUpperCase();
+        return textA < textB ? -1 : textA > textB ? 1 : 0;
+      });
+      this.exchangeId = this.tickers[0].exchangeId;
+      this.getNewTicker(this.exchangeId, this.pairs[0].symbol);
+    }
   }
 
   exchangeSelected(e) {
@@ -69,6 +71,7 @@ export class AppTrade {
         <ion-toolbar color="dark">
           <ion-buttons slot="start">
             <ion-button fill="solid" shape="round" color="danger" href="/panic" padding>
+              <ion-icon name="alert" />
               Panic
             </ion-button>
           </ion-buttons>

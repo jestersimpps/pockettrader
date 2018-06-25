@@ -64,7 +64,7 @@ export class AppPair {
 
   render() {
     const styles = {
-      height: `${window.innerHeight - 73}px`,
+      height: `${window.innerHeight - 93}px`,
     };
     return [
       this.ticker && (
@@ -75,7 +75,7 @@ export class AppPair {
             </ion-buttons>
             <ion-title>{`${this.exchangeId} - ${this.ticker.base}/BTC`}</ion-title>
           </ion-toolbar>
-          <ion-segment color="dark">
+          {/* <ion-segment color="dark">
             <ion-segment-button checked={this.segment === 1} onIonSelect={() => this.switchSegment(1)}>
               <ion-icon name="stats" />
               Chart
@@ -92,7 +92,7 @@ export class AppPair {
               <ion-icon name="list" />
               Orders
             </ion-segment-button>
-          </ion-segment>
+          </ion-segment> */}
         </ion-header>
       ),
       <ion-content>{this.segment === 1 && <div id="tvChart" class="tvchart" style={styles} />}</ion-content>,

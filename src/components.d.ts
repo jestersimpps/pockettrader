@@ -313,6 +313,39 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface AppHoldings {
+
+    }
+  }
+
+  interface HTMLAppHoldingsElement extends StencilComponents.AppHoldings, HTMLStencilElement {}
+
+  var HTMLAppHoldingsElement: {
+    prototype: HTMLAppHoldingsElement;
+    new (): HTMLAppHoldingsElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-holdings': HTMLAppHoldingsElement;
+  }
+  interface ElementTagNameMap {
+    'app-holdings': HTMLAppHoldingsElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-holdings': JSXElements.AppHoldingsAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppHoldingsAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface AppKeys {
 
     }

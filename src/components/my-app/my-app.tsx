@@ -89,8 +89,8 @@ export class MyApp {
           <ion-route url="/settings/keys" component="app-keys" />
           <ion-route url="/settings/keys/:exchangeId" component="app-exchangekeys" />
           <ion-route url="/settings/basecurrency" component="app-basecurrency" />
-          <ion-route url="/settings/wallets" component="app-wallets" />
-          <ion-route url="/settings/wallets/:walletId" component="app-editwallet" />
+          <ion-route url="/settings/holdings" component="app-holdings" />
+          <ion-route url="/settings/holdings/:walletId" component="app-editwallet" />
           <ion-route url="/settings/premium" component="app-premium" />
           <ion-route url="/panic" component="app-panic" />
         </ion-router>

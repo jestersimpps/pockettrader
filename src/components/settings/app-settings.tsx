@@ -20,7 +20,7 @@ export class AppSettings {
             <ion-icon name="key" item-start margin-right />
             <ion-label>Exchange Keys</ion-label>
           </ion-item>
-          <ion-item lines="full" href={`/settings/wallets`}>
+          <ion-item lines="full" href={`/settings/holdings`}>
             <ion-icon name="wallet" item-start margin-right />
             <ion-label>Wallet Holdings</ion-label>
           </ion-item>

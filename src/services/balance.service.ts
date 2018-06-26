@@ -18,6 +18,7 @@ export class Balance {
 
 export class Balances {
   exchangeId: ExchangeId;
+  total: number;
   tickers: any[];
 }
 
@@ -104,9 +105,9 @@ export class BalanceService {
                       scopedExchanges[index].balances = balanceData[index].data
                         .map((balance) => {
                           const btc = this.getBtcStats(balance, tickerData[index].data);
-                          response.exchangeTotal += btc.balance;
+                          response.exchangeTotal += btc.amount;
                           return {
-                            btcAmount: balance.balance * btc.price,
+                            btcAmount: btc.amount,
                             balance: balance.balance,
                             pending: balance.pending,
                             available: balance.available,
@@ -158,18 +159,23 @@ export class BalanceService {
       });
   }
 
-  getBtcStats(balance: any, tickerData): { price: number; balance: number; change: number } {
-    let stats = { price: 0, balance: 0, change: 0 };
-    const innerTicker = tickerData.find((t) => t.symbol === `${balance.currency}/BTC`);
-    if (balance.symbol === 'BTC') {
-      stats.balance = balance.balance;
+  getBtcStats(balance: any, tickerData): { price: number; amount: number; change: number; last: number } {
+    let stats = { price: 0, amount: 0, change: 0, last: 0 };
+    const altTicker = tickerData.find((t) => t.symbol === `${balance.currency}/BTC`);
+    const fiatTicker = tickerData.find((t) => t.symbol === `BTC/${balance.currency}`);
+    if (balance.currency === 'BTC') {
+      stats.amount = balance.balance;
       stats.price = 1;
     }
-    // TODO fiat
-    if (innerTicker) {
-      stats.balance = balance.balance * innerTicker.last;
-      stats.price = innerTicker.last;
-      stats.change = innerTicker.percentage;
+    if (altTicker) {
+      stats.amount = balance.balance * altTicker.last;
+      stats.price = altTicker.last;
+      stats.change = altTicker.percentage;
+    }
+    if (fiatTicker) {
+      stats.amount = balance.balance / fiatTicker.last;
+      stats.price = 1 / fiatTicker.last;
+      stats.change = fiatTicker.percentage;
     }
     return stats;
   }

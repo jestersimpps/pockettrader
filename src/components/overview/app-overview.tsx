@@ -126,9 +126,12 @@ export class AppOverview {
         </ion-toolbar>
       </ion-header>,
       <ion-content>
+        <ion-refresher slot="fixed" onIonRefresh={() => this.refreshBalances()}>
+          <ion-refresher-content />
+        </ion-refresher>
         {!this.isLoading ? (
           <ion-list>
-            <ion-list-header color="light">Distribution & Change</ion-list-header>
+            <ion-list-header color="light">Distribution & % Change</ion-list-header>
             <app-sunburst exchanges={this.exchanges} wallets={this.wallets} />
             <ion-list-header color="light">Total Balance ({this.baseCurrency.id})</ion-list-header>
             <app-splinechart />

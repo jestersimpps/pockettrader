@@ -5,6 +5,13 @@ import { Ticker } from '../../services/ticker.service';
 import { TICKERSERVICE } from '../../services/globals';
 import numeral from 'numeral';
 
+export enum TradeAction {
+  limitbuy = 'limitbuy',
+  limitsell = 'limitsell',
+  marketbuy = 'marketbuy',
+  marketsell = 'marketsell',
+}
+
 @Component({
   tag: 'app-trade',
   styleUrl: 'app-trade.css',
@@ -18,6 +25,10 @@ export class AppTrade {
   @State() exchangeId: ExchangeId;
   @State() ticker: any;
   @State() isLoading = false;
+
+  @State() tradePrice = 0;
+  @State() tradeAmount = 0;
+  @State() tradeAction = TradeAction.limitbuy;
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
@@ -61,8 +72,16 @@ export class AppTrade {
     this.isLoading = true;
     TICKERSERVICE.getTicker(exchangeId, symbol).then((response) => {
       this.ticker = response.data;
+      this.tradePrice = response.data.last;
       this.isLoading = false;
     });
+  }
+
+  setTradePrice(e) {
+    this.tradePrice = e.target.value;
+  }
+  setTradeAmount(e) {
+    this.tradeAmount = e.target.value;
   }
 
   render() {
@@ -80,7 +99,7 @@ export class AppTrade {
       </ion-header>,
       <ion-content>
         <ion-list>
-          <ion-list-header color="light">
+          <ion-list-header color="dark">
             Pair
             {this.ticker ? (
               <ion-badge color="light" margin-right>
@@ -100,21 +119,27 @@ export class AppTrade {
             <ion-label>Select Pair</ion-label>
             <select onChange={(e) => this.pairSelected(e)}>{this.pairs.map((p) => <option value={p.symbol}>{p.symbol}</option>)}</select>
           </ion-item>
-          <ion-list-header color="light">
+          <ion-list-header color="dark">
             Price
             {this.isLoading ? (
               <ion-icon name="sync" class="spin" slot="end" margin-right />
             ) : (
               <ion-badge color="light" margin-right>
-                {numeral(this.ticker.last).format('0,0.00000000')} {this.ticker.quote}
+                {numeral(this.tradePrice).format('0,0.00000000')} {this.ticker.quote}
               </ion-badge>
             )}
           </ion-list-header>
           {this.ticker && (
             <div>
+              <ion-item lines="none" color="light">
+                <ion-label>Last price</ion-label>
+                <ion-label slot="end" text-right>
+                  {numeral(this.ticker.last).format('0,0.00000000')}
+                </ion-label>
+              </ion-item>
               <ion-item lines="none">
                 <ion-label>Set price</ion-label>
-                <ion-input name="price" type="text" value={numeral(this.ticker.last).format('0,0.00000000')} onInput={(e) => console.log(e)} />
+                <ion-input name="price" type="number" value={numeral(this.tradePrice).format('0,0.00000000')} onBlur={(e) => this.setTradePrice(e)} />
               </ion-item>
               <ion-grid>
                 <ion-row>
@@ -141,7 +166,12 @@ export class AppTrade {
                 </ion-row>
               </ion-grid>
 
-              <ion-list-header color="light">Action</ion-list-header>
+              <ion-list-header color="dark">
+                Action
+                <ion-badge color="light" margin-right>
+                  {this.tradeAction}
+                </ion-badge>
+              </ion-list-header>
               <ion-grid>
                 <ion-row>
                   <ion-col>
@@ -168,7 +198,7 @@ export class AppTrade {
                   </ion-col>
                 </ion-row>
               </ion-grid>
-              <ion-list-header color="light">
+              <ion-list-header color="dark">
                 Amount
                 {this.isLoading ? (
                   <ion-icon name="sync" class="spin" slot="end" margin-right />
@@ -180,7 +210,12 @@ export class AppTrade {
               </ion-list-header>
               <ion-item lines="none">
                 <ion-label>Set Amount</ion-label>
-                <ion-input name="price" type="text" value={numeral(0).format('0,0.00000000')} onInput={(e) => console.log(e)} />
+                <ion-input
+                  name="price"
+                  type="number"
+                  value={numeral(this.tradeAmount).format('0,0.00000000')}
+                  onBlur={(e) => this.setTradeAmount(e)}
+                />
               </ion-item>
               <ion-grid>
                 <ion-row>
@@ -236,7 +271,7 @@ export class AppTrade {
                   </ion-col>
                 </ion-row>
               </ion-grid>
-              <ion-list-header color="light">Summary</ion-list-header>
+              <ion-list-header color="dark">Summary</ion-list-header>
               <ion-button expand="block" color="success">
                 Execute
               </ion-button>

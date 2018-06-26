@@ -114,6 +114,9 @@ export class AppWallets {
         </ion-toolbar>
       </ion-header>,
       <ion-content>
+        <ion-refresher slot="fixed" onIonRefresh={() => this.refreshBalances()}>
+          <ion-refresher-content />
+        </ion-refresher>
         <ion-list>
           {this.wallets
             .filter((w) => w.balance > 0)

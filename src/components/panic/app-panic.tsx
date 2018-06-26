@@ -5,7 +5,16 @@ import { Currency } from '../../services/currency.service';
 import { Wallet } from '../../services/wallets.service';
 import { CURRENCYSERVICE, BALANCESERVICE } from '../../services/globals';
 import numeral from 'numeral';
-import { appSetExchanges, appSetBaseCurrency, appSetCurrencies, appSetTickers, appSetTotalBalances, appSetWallets } from '../../actions/app';
+import {
+  appSetExchanges,
+  appSetBaseCurrency,
+  appSetCurrencies,
+  appSetTickers,
+  appSetTotalBalances,
+  appSetWallets,
+  appSetBalances,
+} from '../../actions/app';
+import { Balances } from '../../services/balance.service';
 
 @Component({
   tag: 'app-panic',
@@ -21,7 +30,7 @@ export class AppPanic {
   @State() tickers: any[];
   @State() wallets: Wallet[];
   @State() isLoading = false;
-  @State() totalBalance: number = 0;
+  @State() balances: Balances;
 
   appSetCurrencies: Action;
   appSetExchanges: Action;
@@ -30,11 +39,12 @@ export class AppPanic {
   appSetTickers: Action;
   appSetTotalBalances: Action;
   appSetWallets: Action;
+  appSetBalances: Action;
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { exchanges, baseCurrency, currencies, tickers, wallets },
+        app: { exchanges, baseCurrency, currencies, tickers, wallets, balances },
       } = state;
       return {
         exchanges,
@@ -42,6 +52,7 @@ export class AppPanic {
         currencies,
         tickers,
         wallets,
+        balances,
       };
     });
     this.store.mapDispatchToProps(this, {
@@ -51,11 +62,8 @@ export class AppPanic {
       appSetTickers,
       appSetTotalBalances,
       appSetWallets,
+      appSetBalances,
     });
-  }
-
-  componentDidLoad() {
-    this.updateTotalBalance();
   }
 
   appSetSell(type) {
@@ -93,10 +101,7 @@ export class AppPanic {
           <ion-list-header color="light">
             Balance overview
             <ion-badge color="light" margin-right>
-              <app-baseprice
-                btcPrice={this.totalBalance - CURRENCYSERVICE.convertToBase(this.wallets.reduce((a, b) => a + b.btcAmount, 0), this.baseCurrency)}
-                baseCurrency={this.baseCurrency}
-              />
+              <app-baseprice btcPrice={CURRENCYSERVICE.convertToBase(this.balances.exchanges, this.baseCurrency)} baseCurrency={this.baseCurrency} />
             </ion-badge>
           </ion-list-header>
           <ion-item lines="full">
@@ -106,9 +111,7 @@ export class AppPanic {
                   Current Value
                 </ion-col>
                 <ion-col col-6 text-right class="lineText">
-                  {numeral(
-                    this.totalBalance - CURRENCYSERVICE.convertToBase(this.wallets.reduce((a, b) => a + b.btcAmount, 0), this.baseCurrency),
-                  ).format('0,0.00000000')}
+                  {numeral(CURRENCYSERVICE.convertToBase(this.balances.exchanges, this.baseCurrency)).format('0,0.00000000')}
                 </ion-col>
               </ion-row>
               <ion-row>
@@ -213,14 +216,7 @@ export class AppPanic {
     ];
   }
 
-  updateTotalBalance() {
-    BALANCESERVICE.getTotalBalances().then((totalBalances) => {
-      this.totalBalance = +CURRENCYSERVICE.convertToBase(BALANCESERVICE.getLatestTotal(totalBalances), this.baseCurrency);
-    });
-  }
-
   addTotalBalance(totalBtcBalance: number) {
-    this.totalBalance = CURRENCYSERVICE.convertToBase(totalBtcBalance, this.baseCurrency) || 0;
     BALANCESERVICE.getTotalBalances().then((totalBalances) => {
       if (totalBtcBalance && totalBtcBalance > 0) {
         let now = Math.round(new Date().getTime());
@@ -239,7 +235,11 @@ export class AppPanic {
         this.appSetWallets(response.wallets);
         this.appSetExchanges(response.exchanges);
         this.addTotalBalance(response.exchangeTotal + response.walletTotal);
-        this.totalBalance = response.exchangeTotal + response.walletTotal;
+        this.appSetBalances({
+          overview: response.exchangeTotal + response.walletTotal,
+          exchanges: response.exchangeTotal,
+          wallets: response.walletTotal,
+        });
       }
       this.isLoading = false;
     });

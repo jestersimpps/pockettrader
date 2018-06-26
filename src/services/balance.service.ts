@@ -17,9 +17,9 @@ export class Balance {
 }
 
 export class Balances {
-  exchangeId: ExchangeId;
-  total: number;
-  tickers: any[];
+  overview: number;
+  exchanges: number;
+  wallets: number;
 }
 
 export class RefreshResponse {
@@ -34,6 +34,10 @@ export class RefreshResponse {
 export class BalanceService {
   getTotalBalances(): Promise<[number, number][]> {
     return STORAGE.get('totalbalances');
+  }
+
+  getBalancesFromStore(): Promise<Balances> {
+    return STORAGE.get('balances');
   }
 
   getLatestTotal(totalBalances: [number, number][]): number {
@@ -56,10 +60,6 @@ export class BalanceService {
       key: exchange.key,
       secret: exchange.secret,
     });
-  }
-
-  getBalancesFromStore(): Promise<Balances> {
-    return STORAGE.get('balances');
   }
 
   refreshBalances(wallets: Wallet[], exchanges: Exchange[]): Promise<RefreshResponse> {

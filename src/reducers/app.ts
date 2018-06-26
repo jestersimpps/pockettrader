@@ -14,6 +14,11 @@ interface AppState {
   tickers: Ticker[];
   wallets: Wallet[];
   token: string;
+  balances: {
+    overview: number;
+    exchanges: number;
+    wallets: number;
+  };
 }
 
 const getInitialState = () => {
@@ -25,6 +30,7 @@ const getInitialState = () => {
     tickers: [],
     wallets: [],
     token: null,
+    balances: null,
   };
 };
 
@@ -56,6 +62,10 @@ const app = (state: AppState = getInitialState(), action: ActionTypes) => {
     case TypeKeys.APP_SET_TOKEN: {
       TOKENSERVICE.setToken(action.data);
       return { ...state, token: action.data };
+    }
+    case TypeKeys.APP_SET_BALANCES: {
+      BALANCESERVICE.setBalances(action.data);
+      return { ...state, balances: action.data };
     }
   }
 

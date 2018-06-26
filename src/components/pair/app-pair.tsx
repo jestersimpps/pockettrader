@@ -17,20 +17,52 @@ export class AppPair {
 
   @State() segment: number = 1;
   @State() ticker;
+  @State() chartID;
   tradingviewWidget;
 
   componentDidLoad() {
-    TICKERSERVICE.getTicker(this.exchangeId, `${this.pair}/BTC`).then((response) => {
-      this.ticker = response.data;
-      this.switchSegment(1);
-    });
+    console.log(this.pair);
+    switch (this.pair) {
+      case 'BTC':
+        TICKERSERVICE.getTicker(this.exchangeId, `BTC/USD`)
+          .then((response) => {
+            this.ticker = response.data;
+            this.chartID = `${this.exchangeId}:BTCUSD`;
+            this.switchSegment(1);
+          })
+          .catch(() => {
+            TICKERSERVICE.getTicker(this.exchangeId, `BTC/USDT`).then((response) => {
+              this.ticker = response.data;
+              this.chartID = `${this.exchangeId}:BTCUSDT`;
+              this.switchSegment(1);
+            });
+          });
+        break;
+      case 'USD':
+      case 'EUR':
+      case 'GBP':
+      case 'CAD':
+        TICKERSERVICE.getTicker(this.exchangeId, `BTC/${this.pair}`).then((response) => {
+          this.ticker = response.data;
+          this.chartID = `${this.exchangeId}:BTC${this.pair}`;
+          this.switchSegment(1);
+        });
+        break;
+      default:
+        TICKERSERVICE.getTicker(this.exchangeId, `${this.pair}/BTC`).then((response) => {
+          this.ticker = response.data;
+          this.chartID = `${this.exchangeId}:${this.pair}BTC`;
+          this.switchSegment(1);
+        });
+        break;
+    }
   }
 
   showChart() {
     this.tradingviewWidget = new TradingView.widget({
       container_id: 'tvChart',
       autosize: true,
-      symbol: `${this.exchangeId}:${this.ticker.base}BTC`,
+      symbol: this.chartID,
       interval: '60',
       timezone: 'Etc/UTC',
       theme: 'Light',
@@ -73,7 +105,7 @@ export class AppPair {
             <ion-buttons slot="start">
               <ion-back-button defaultHref={`/exchanges`} />
             </ion-buttons>
-            <ion-title>{`${this.exchangeId} - ${this.ticker.base}/BTC`}</ion-title>
+            <ion-title>{`${this.exchangeId} - ${this.ticker.symbol}`}</ion-title>
           </ion-toolbar>
           {/* <ion-segment color="dark">
             <ion-segment-button checked={this.segment === 1} onIonSelect={() => this.switchSegment(1)}>

@@ -47,3 +47,9 @@ export const appSetToken = (data: any) => async (dispatch, _getState) => {
     data: data,
   });
 };
+export const appSetBalances = (data: any) => async (dispatch, _getState) => {
+  return dispatch({
+    type: TypeKeys.APP_SET_BALANCES,
+    data: data,
+  });
+};

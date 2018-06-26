@@ -11,6 +11,7 @@ import {
   appSetTotalBalances,
   appSetWallets,
   appSetToken,
+  appSetBalances,
 } from '../../actions/app';
 import { CURRENCYSERVICE, BALANCESERVICE, EXCHANGESERVICE, TICKERSERVICE, WALLETSERVICE, TOKENSERVICE } from '../../services/globals';
 
@@ -29,6 +30,7 @@ export class MyApp {
   appSetTickers: Action;
   appSetTotalBalances: Action;
   appSetWallets: Action;
+  appSetBalances: Action;
   appSetToken: Action;
 
   componentWillLoad() {
@@ -42,6 +44,7 @@ export class MyApp {
       appSetTotalBalances,
       appSetWallets,
       appSetToken,
+      appSetBalances,
     });
     // Load in app state from storage
     EXCHANGESERVICE.getExchanges()
@@ -67,6 +70,10 @@ export class MyApp {
       })
       .then((totalBalances) => {
         totalBalances ? this.appSetTotalBalances(totalBalances) : this.appSetTotalBalances([]);
+        return BALANCESERVICE.getBalancesFromStore();
+      })
+      .then((balances) => {
+        balances ? this.appSetBalances(balances) : this.appSetBalances({ overview: 0, exchnges: 0, wallets: 0 });
         return TOKENSERVICE.getTokenFromStore();
       })
       .then((token) => {
@@ -94,9 +101,9 @@ export class MyApp {
           <ion-route url="/settings/premium" component="app-premium" />
           <ion-route url="/panic" component="app-panic" />
         </ion-router>
-        <ion-nav animated={true} margin-bottom/>,
+        <ion-nav animated={true} margin-bottom />,
         <ion-footer class="footerHeight">
-          <ion-tabs color="light" tabbarHighlight={true} useRouter={true} >
+          <ion-tabs color="light" tabbarHighlight={true} useRouter={true}>
             <ion-tab icon="pie" label="Overview" href="/overview" />
             <ion-tab icon="list-box" label="Exchanges" href="/exchanges" />
             <ion-tab icon="wallet" label="Wallets" href="/wallets" />

@@ -380,7 +380,11 @@ export class AppTrade {
                 </ion-label>
               </ion-item>
 
-              <ion-button expand="block" color="success">
+              <ion-button
+                expand="block"
+                color="success"
+                onClick={() => this.executeOrder(this.ticker.symbol, this.tradeAction, this.tradePrice, this.tradeAmount)}
+              >
                 Execute
               </ion-button>
             </div>
@@ -388,5 +392,9 @@ export class AppTrade {
         </ion-list>
       </ion-content>,
     ];
+  }
+
+  executeOrder(pair: string, type: string, price: number, amount: number) {
+    console.log(pair, type, price, amount);
   }
 }

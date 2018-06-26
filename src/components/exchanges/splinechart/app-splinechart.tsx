@@ -30,11 +30,43 @@ export class AppSplineChart {
 
   componentDidLoad() {
     this.chart = highstock.stockChart('spline', {
-      rangeSelector: {
-        inputEnabled: false,
-      },
       title: {
         text: '',
+      },
+      rangeSelector: {
+        inputEnabled: false,
+        selected: 2,
+        buttons: [
+          {
+            type: 'minute',
+            count: 60,
+            text: '1h',
+          },
+          {
+            type: 'day',
+            count: 1,
+            text: '1d',
+          },
+          {
+            type: 'week',
+            count: 1,
+            text: '1w',
+          },
+          {
+            type: 'month',
+            count: 1,
+            text: '1m',
+          },
+          {
+            type: 'year',
+            count: 1,
+            text: '1y',
+          },
+          {
+            type: 'all',
+            text: 'All',
+          },
+        ],
       },
       xAxis: {
         type: 'datetime',

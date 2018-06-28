@@ -1,0 +1,236 @@
+{
+  "namespace": "App",
+  "fsNamespace": "app",
+  "loader": "../app.js",
+  "global": "app.global.js",
+  "corePolyfilled": "app.dppoj9je.js",
+  "core": "app.krwiqjsv.js",
+  "components": {
+    "app-balanceitem": {
+      "md": "i3bahlsz",
+      "ios": "fsrau7wx"
+    },
+    "app-barchart": {
+      "$": "8tdkgo63"
+    },
+    "app-basecurrency": {
+      "$": "c2c7zrhd"
+    },
+    "app-baseprice": {
+      "$": "kp7biyqj"
+    },
+    "app-cryptoicon": {
+      "md": "i3bahlsz",
+      "ios": "fsrau7wx"
+    },
+    "app-editwallet": {
+      "$": "j1lzhxt1"
+    },
+    "app-exchangebalances": {
+      "$": "3rzijlfy"
+    },
+    "app-exchangeitem": {
+      "$": "9ve5yqt7"
+    },
+    "app-exchangekeys": {
+      "$": "hixsg6hn"
+    },
+    "app-exchanges": {
+      "$": "hln7jljt"
+    },
+    "app-holdings": {
+      "ios": "mgrt2euw",
+      "md": "jpneebmk"
+    },
+    "app-keys": {
+      "$": "gmsihzag"
+    },
+    "app-overview": {
+      "$": "ydwsz0lr"
+    },
+    "app-pair": {
+      "$": "1jm6jwoq"
+    },
+    "app-panic": {
+      "ios": "5nrdjshg",
+      "md": "3ntpns7h"
+    },
+    "app-premium": {
+      "$": "o6gqojmy"
+    },
+    "app-settings": {
+      "$": "bky61vik"
+    },
+    "app-splinechart": {
+      "$": "ydwsz0lr"
+    },
+    "app-sunburst": {
+      "$": "ydwsz0lr"
+    },
+    "app-trade": {
+      "$": "3zpk9g9b"
+    },
+    "app-wallets": {
+      "$": "fryes606"
+    },
+    "ion-animation-controller": {
+      "ios": "guot4rqo",
+      "md": "1m9skllu"
+    },
+    "ion-app": {
+      "ios": "guot4rqo",
+      "md": "1m9skllu"
+    },
+    "ion-back-button": {
+      "ios": "9xti0gz2",
+      "md": "ilskkk2d"
+    },
+    "ion-badge": {
+      "ios": "khbjy9w6",
+      "md": "lxsl7ctk"
+    },
+    "ion-button": {
+      "md": "9ymx9b90",
+      "ios": "szdvikge"
+    },
+    "ion-buttons": {
+      "ios": "9xti0gz2",
+      "md": "ilskkk2d"
+    },
+    "ion-col": {
+      "ios": "zxnbjul3",
+      "md": "yeyop3ij"
+    },
+    "ion-content": {
+      "ios": "9xti0gz2",
+      "md": "ilskkk2d"
+    },
+    "ion-footer": {
+      "md": "qtcbg7pm",
+      "ios": "iepfkxsw"
+    },
+    "ion-gesture": {
+      "$": "us1dimie"
+    },
+    "ion-gesture-controller": {
+      "$": "us1dimie"
+    },
+    "ion-grid": {
+      "ios": "zxnbjul3",
+      "md": "yeyop3ij"
+    },
+    "ion-header": {
+      "ios": "9xti0gz2",
+      "md": "ilskkk2d"
+    },
+    "ion-icon": {
+      "$": "kx34m7jk"
+    },
+    "ion-input": {
+      "md": "i3bahlsz",
+      "ios": "fsrau7wx"
+    },
+    "ion-item": {
+      "ios": "zxnbjul3",
+      "md": "yeyop3ij"
+    },
+    "ion-label": {
+      "md": "i3bahlsz",
+      "ios": "fsrau7wx"
+    },
+    "ion-list": {
+      "md": "i3bahlsz",
+      "ios": "fsrau7wx"
+    },
+    "ion-list-header": {
+      "md": "i3bahlsz",
+      "ios": "fsrau7wx"
+    },
+    "ion-nav": {
+      "ios": "guot4rqo",
+      "md": "1m9skllu"
+    },
+    "ion-nav-pop": {
+      "md": "i3bahlsz",
+      "ios": "fsrau7wx"
+    },
+    "ion-radio": {
+      "md": "i3bahlsz",
+      "ios": "fsrau7wx"
+    },
+    "ion-refresher": {
+      "md": "i3bahlsz",
+      "ios": "fsrau7wx"
+    },
+    "ion-refresher-content": {
+      "md": "i3bahlsz",
+      "ios": "fsrau7wx"
+    },
+    "ion-ripple-effect": {
+      "$": "hwcdpdfc"
+    },
+    "ion-route": {
+      "ios": "guot4rqo",
+      "md": "1m9skllu"
+    },
+    "ion-router": {
+      "ios": "guot4rqo",
+      "md": "1m9skllu"
+    },
+    "ion-row": {
+      "ios": "zxnbjul3",
+      "md": "yeyop3ij"
+    },
+    "ion-scroll": {
+      "md": "9yh73be9",
+      "ios": "vf4i4uxw"
+    },
+    "ion-searchbar": {
+      "ios": "mgrt2euw",
+      "md": "jpneebmk"
+    },
+    "ion-spinner": {
+      "md": "i3bahlsz",
+      "ios": "fsrau7wx"
+    },
+    "ion-status-tap": {
+      "ios": "guot4rqo",
+      "md": "1m9skllu"
+    },
+    "ion-tab": {
+      "$": "90gtnd5v"
+    },
+    "ion-tab-button": {
+      "ios": "guot4rqo",
+      "md": "1m9skllu"
+    },
+    "ion-tabbar": {
+      "ios": "guot4rqo",
+      "md": "1m9skllu"
+    },
+    "ion-tabs": {
+      "ios": "guot4rqo",
+      "md": "1m9skllu"
+    },
+    "ion-tap-click": {
+      "ios": "guot4rqo",
+      "md": "1m9skllu"
+    },
+    "ion-title": {
+      "md": "i3bahlsz",
+      "ios": "fsrau7wx"
+    },
+    "ion-toggle": {
+      "ios": "5nrdjshg",
+      "md": "3ntpns7h"
+    },
+    "ion-toolbar": {
+      "ios": "9xti0gz2",
+      "md": "ilskkk2d"
+    },
+    "my-app": {
+      "ios": "guot4rqo",
+      "md": "1m9skllu"
+    }
+  }
+}

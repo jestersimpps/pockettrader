@@ -1,0 +1,2 @@
+/*! Built with http://stenciljs.com */
+const{h:e}=window.App;function n(e,n,t,o,r){if(e)return e.attachViewToDom(n,t,r,o);if("string"!=typeof t&&!(t instanceof HTMLElement))throw new Error("framework delegate is missing");const s="string"==typeof t?n.ownerDocument.createElement(t):t;return o&&o.forEach(e=>s.classList.add(e)),r&&Object.assign(s,r),n.appendChild(s),s.componentOnReady?s.componentOnReady():Promise.resolve(s)}export{n as a};

@@ -279,7 +279,9 @@ declare global {
 
   namespace StencilComponents {
     interface AppSunburst {
+      'baseCurrency': Currency;
       'exchanges': Exchange[];
+      'totalBalance': number;
       'wallets': Wallet[];
     }
   }
@@ -303,7 +305,9 @@ declare global {
   }
   namespace JSXElements {
     export interface AppSunburstAttributes extends HTMLAttributes {
+      'baseCurrency'?: Currency;
       'exchanges'?: Exchange[];
+      'totalBalance'?: number;
       'wallets'?: Wallet[];
     }
   }

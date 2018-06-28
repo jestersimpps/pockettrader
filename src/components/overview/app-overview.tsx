@@ -120,7 +120,7 @@ export class AppOverview {
           </ion-buttons>
           <ion-title text-center>
             <ion-badge color="light">
-            <app-baseprice btcPrice={CURRENCYSERVICE.convertToBase(this.balances.overview,this.baseCurrency)} baseCurrency={this.baseCurrency} />
+              <app-baseprice btcPrice={CURRENCYSERVICE.convertToBase(this.balances.overview, this.baseCurrency)} baseCurrency={this.baseCurrency} />
             </ion-badge>
           </ion-title>
           <ion-buttons slot="end">
@@ -136,8 +136,8 @@ export class AppOverview {
         </ion-refresher>
         {!this.isLoading ? (
           <ion-list>
-            <ion-list-header color="light">Distribution & % Change</ion-list-header>
-            <app-sunburst exchanges={this.exchanges} wallets={this.wallets} />
+            <ion-list-header color="light">Distribution & 24h Change</ion-list-header>
+            <app-sunburst exchanges={this.exchanges} wallets={this.wallets} totalBalance={this.balances.overview} baseCurrency={this.baseCurrency} />
             <ion-list-header color="light">Total Balance ({this.baseCurrency.id})</ion-list-header>
             <app-splinechart />
           </ion-list>

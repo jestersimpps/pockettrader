@@ -3,8 +3,8 @@
 }
 
 .slice .main-arc {
-  stroke: #000;
-  stroke-width: 2px;
+  stroke: #fff;
+  stroke-width: 5px;
 }
 
 .slice .hidden-arc {

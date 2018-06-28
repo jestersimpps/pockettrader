@@ -271,22 +271,18 @@ export class AppTrade {
                   </ion-badge>
                 )}
               </ion-list-header>
-              {(this.tradeAction === TradeAction.limitbuy || this.tradeAction === TradeAction.marketbuy) && (
-                <ion-item lines="none">
-                  <ion-label>Available {this.ticker.quote}</ion-label>
-                  <ion-button color="light" slot="end" text-right onClick={() => (this.tradeAmount = this.quoteBalance / this.tradePrice)}>
-                    {numeral(+this.quoteBalance).format('0,0.00000000')}
-                  </ion-button>
-                </ion-item>
-              )}
-              {(this.tradeAction === TradeAction.limitsell || this.tradeAction === TradeAction.marketsell) && (
-                <ion-item lines="none">
-                  <ion-label>Available {this.ticker.base}</ion-label>
-                  <ion-button color="light" slot="end" text-right onClick={() => (this.tradeAmount = this.baseBalance)}>
-                    {numeral(+this.baseBalance).format('0,0.00000000')}
-                  </ion-button>
-                </ion-item>
-              )}
+              <ion-item lines="none">
+                <ion-label>Available {this.ticker.quote}</ion-label>
+                <ion-button color="light" slot="end" text-right onClick={() => (this.tradeAmount = this.quoteBalance / this.tradePrice)}>
+                  {numeral(+this.quoteBalance).format('0,0.00000000')}
+                </ion-button>
+              </ion-item>
+              <ion-item lines="none">
+                <ion-label>Available {this.ticker.base}</ion-label>
+                <ion-button color="light" slot="end" text-right onClick={() => (this.tradeAmount = this.baseBalance)}>
+                  {numeral(+this.baseBalance).format('0,0.00000000')}
+                </ion-button>
+              </ion-item>
               <ion-item lines="none">
                 <ion-label>Set Amount</ion-label>
                 <ion-input name="price" type="number" value={`${this.tradeAmount}`} onBlur={(e) => this.setTradeAmount(e)} />

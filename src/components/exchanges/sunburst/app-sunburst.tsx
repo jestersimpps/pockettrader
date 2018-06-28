@@ -2,6 +2,8 @@ import { Component, Prop } from '@stencil/core';
 import { Exchange } from '../../../services/exchange.service';
 import numeral from 'numeral';
 import { Wallet } from '../../../services/wallets.service';
+import { Currency } from '../../../services/currency.service';
+import { CURRENCYSERVICE } from '../../../services/globals';
 
 declare const d3;
 
@@ -12,10 +14,15 @@ declare const d3;
 export class AppSunburst {
   @Prop() exchanges: Exchange[] = [];
   @Prop() wallets: Wallet[] = [];
+  @Prop() totalBalance: number;
+  @Prop() baseCurrency: Currency;
 
   componentDidLoad() {
+    let innerText = `${this.baseCurrency.symbol} ${numeral(CURRENCYSERVICE.convertToBase(this.totalBalance, this.baseCurrency)).format(
+      this.baseCurrency.id === `BTC` ? '0,0.0000' : '0,0.00',
+    )}`;
     const nodeData = {
-      name: 'All Balances',
+      name: innerText,
       change: 0,
       children: [
         ...this.exchanges.map((e) => {
@@ -149,7 +156,13 @@ export class AppSunburst {
       .append('textPath')
       .attr('startOffset', '50%')
       .attr('xlink:href', (_, i) => `#hiddenArc${i}`)
-      .text((d) => `${d.data.name} (${numeral(d.data.change).format('0.0')}%)`);
+      .text((d) => {
+        if (d.data.change != 0) {
+          return `${d.data.name} (${numeral(d.data.change).format('0.0')}%)`;
+        } else {
+          return `${d.data.name} `;
+        }
+      });
 
     function focusOn(d = { x0: 0, x1: 1, y0: 0, y1: 1 }) {
       const transition = svg

@@ -104,7 +104,7 @@ export class MyApp {
         <ion-nav animated={true} margin-bottom />,
         <ion-footer class="footerHeight">
           <ion-tabs color="light" tabbarHighlight={true} useRouter={true}>
-            <ion-tab icon="pie" label="Overview" href="/overview" />
+            <ion-tab icon="pie" label="Overview" href="/overview"/>
             <ion-tab icon="list-box" label="Exchanges" href="/exchanges" />
             <ion-tab icon="wallet" label="Wallets" href="/wallets" />
             <ion-tab icon="swap" label="Trade" href="/trade" />

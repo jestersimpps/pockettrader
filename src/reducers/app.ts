@@ -1,4 +1,5 @@
-import { BALANCESERVICE, TOKENSERVICE } from './../services/globals';
+import { Order } from './../services/trade.service';
+import { BALANCESERVICE, TOKENSERVICE, TRADESERVICE } from './../services/globals';
 import { TypeKeys, ActionTypes } from '../actions/index';
 import { Exchange } from '../services/exchange.service';
 import { EXCHANGESERVICE, CURRENCYSERVICE, TICKERSERVICE, WALLETSERVICE } from '../services/globals';
@@ -19,6 +20,7 @@ interface AppState {
     exchanges: number;
     wallets: number;
   };
+  orders: Order[];
 }
 
 const getInitialState = () => {
@@ -31,6 +33,7 @@ const getInitialState = () => {
     wallets: [],
     token: null,
     balances: null,
+    orders: [],
   };
 };
 
@@ -66,6 +69,10 @@ const app = (state: AppState = getInitialState(), action: ActionTypes) => {
     case TypeKeys.APP_SET_BALANCES: {
       BALANCESERVICE.setBalances(action.data);
       return { ...state, balances: action.data };
+    }
+    case TypeKeys.APP_SET_ORDERS: {
+      TRADESERVICE.setOrders(action.data);
+      return { ...state, orders: action.data };
     }
   }
 

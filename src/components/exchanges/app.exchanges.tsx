@@ -131,9 +131,7 @@ export class AppExchanges {
         </ion-toolbar>
       </ion-header>,
       <ion-content>
-        <ion-refresher slot="fixed" onIonRefresh={() => this.refreshBalances()}>
-          <ion-refresher-content />
-        </ion-refresher>
+
         <ion-list>
           {this.exchanges.filter((e) => e.key && e.secret).map((exchange) => [
             <ion-list-header color="light">
@@ -145,6 +143,7 @@ export class AppExchanges {
             exchange.balances.map((b) => <app-balanceitem exchangeId={exchange.id} baseCurrency={this.baseCurrency} cryptodata={b} />),
           ])}
         </ion-list>
+
       </ion-content>,
     ];
   }

@@ -2,14 +2,15 @@ import { Component, Prop, State } from '@stencil/core';
 import { Store } from '@stencil/redux';
 import { Exchange, ExchangeId } from '../../services/exchange.service';
 import { Ticker } from '../../services/ticker.service';
-import { TICKERSERVICE } from '../../services/globals';
+import { TICKERSERVICE, TRADESERVICE } from '../../services/globals';
 import numeral from 'numeral';
 
-export enum TradeAction {
-  limitbuy = 'limitbuy',
-  limitsell = 'limitsell',
-  marketbuy = 'marketbuy',
-  marketsell = 'marketsell',
+export enum OrderType {
+  LIMITSELL = 'LIMITSELL',
+  LIMITBUY = 'LIMITBUY',
+  MARKETSELL = 'MARKETSELL',
+  MARKETBUY = 'MARKETBUY',
+  CANCEL = 'CANCEL',
 }
 
 @Component({
@@ -28,7 +29,7 @@ export class AppTrade {
 
   @State() tradePrice = 0;
   @State() tradeAmount = 0;
-  @State() tradeAction = TradeAction.limitbuy;
+  @State() tradeAction = OrderType.LIMITBUY;
   @State() baseBalance = 0;
   @State() quoteBalance = 0;
 
@@ -105,9 +106,17 @@ export class AppTrade {
     }
   }
 
-  getFormat() {
+  getAmountFormat() {
     let zeros = [];
     for (let index = 0; index < this.ticker.info.precision.amount; index++) {
+      zeros.push(`0`);
+    }
+    return `0,0.${zeros.join('')}`;
+  }
+
+  getPriceFormat() {
+    let zeros = [];
+    for (let index = 0; index < this.ticker.info.precision.price; index++) {
       zeros.push(`0`);
     }
     return `0,0.${zeros.join('')}`;
@@ -132,12 +141,12 @@ export class AppTrade {
 
   setTradeAmountByButton(percentage: number) {
     switch (this.tradeAction) {
-      case TradeAction.limitbuy:
-      case TradeAction.marketbuy:
+      case OrderType.LIMITBUY:
+      case OrderType.MARKETBUY:
         this.tradeAmount = (this.quoteBalance * percentage - this.quoteBalance * percentage * this.ticker.info.taker) / this.tradePrice;
         break;
-      case TradeAction.limitsell:
-      case TradeAction.marketsell:
+      case OrderType.LIMITSELL:
+      case OrderType.MARKETSELL:
         this.tradeAmount = this.baseBalance * percentage - this.baseBalance * percentage * this.ticker.info.taker;
         break;
       default:
@@ -160,7 +169,7 @@ export class AppTrade {
       </ion-header>,
       <ion-content>
         <ion-list>
-          <ion-list-header color="dark">
+          <ion-list-header color="light">
             Pair
             {this.ticker ? (
               <ion-badge color="light" margin-right>
@@ -180,13 +189,13 @@ export class AppTrade {
             <ion-label>Select Pair</ion-label>
             <select onChange={(e) => this.pairSelected(e)}>{this.pairs.map((p) => <option value={p.symbol}>{p.symbol}</option>)}</select>
           </ion-item>
-          <ion-list-header color="dark">
+          <ion-list-header color="light">
             Price
             {this.isLoading ? (
               <ion-icon name="sync" class="spin" slot="end" margin-right />
             ) : (
               <ion-badge color="light" margin-right>
-                {numeral(+this.tradePrice).format('0,0.00000000')} {this.ticker.quote}
+                {numeral(+this.tradePrice).format(this.getPriceFormat())} {this.ticker.quote}
               </ion-badge>
             )}
           </ion-list-header>
@@ -200,34 +209,34 @@ export class AppTrade {
               </ion-item>
               <ion-item lines="none">
                 <ion-label>Set price</ion-label>
-                <ion-input name="price" type="number" value={`${this.tradePrice}`} onBlur={(e) => this.setTradePrice(e)} />
+                <ion-input slot="end" name="price" type="number" value={`${this.tradePrice}`} onInput={(e) => this.setTradePrice(e)} />
               </ion-item>
               <ion-grid>
                 <ion-row>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => this.setPriceWithButtons('--')}>
+                    <ion-button fill="outline" expand="block" color="danger" onClick={() => this.setPriceWithButtons('--')}>
                       - -
                     </ion-button>
                   </ion-col>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => this.setPriceWithButtons('-')}>
+                    <ion-button fill="outline" expand="block" color="danger" onClick={() => this.setPriceWithButtons('-')}>
                       -
                     </ion-button>
                   </ion-col>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => this.setPriceWithButtons('+')}>
+                    <ion-button fill="outline" expand="block" color="success" onClick={() => this.setPriceWithButtons('+')}>
                       +
                     </ion-button>
                   </ion-col>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => this.setPriceWithButtons('++')}>
+                    <ion-button fill="outline" expand="block" color="success" onClick={() => this.setPriceWithButtons('++')}>
                       + +
                     </ion-button>
                   </ion-col>
                 </ion-row>
               </ion-grid>
 
-              <ion-list-header color="dark">
+              <ion-list-header color="light">
                 Action
                 <ion-badge color="light" margin-right>
                   {this.tradeAction}
@@ -236,112 +245,112 @@ export class AppTrade {
               <ion-grid>
                 <ion-row>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => (this.tradeAction = TradeAction.marketbuy)}>
+                    <ion-button fill="outline" expand="block" color="success" onClick={() => (this.tradeAction = OrderType.MARKETBUY)}>
                       Market Buy
                     </ion-button>
                   </ion-col>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => (this.tradeAction = TradeAction.marketsell)}>
+                    <ion-button fill="outline" expand="block" color="danger" onClick={() => (this.tradeAction = OrderType.MARKETSELL)}>
                       Market Sell
                     </ion-button>
                   </ion-col>
                 </ion-row>
                 <ion-row>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => (this.tradeAction = TradeAction.limitbuy)}>
+                    <ion-button fill="outline" expand="block" color="success" onClick={() => (this.tradeAction = OrderType.LIMITBUY)}>
                       Limit Buy
                     </ion-button>
                   </ion-col>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => (this.tradeAction = TradeAction.limitsell)}>
+                    <ion-button fill="outline" expand="block" color="danger" onClick={() => (this.tradeAction = OrderType.LIMITSELL)}>
                       Limit Sell
                     </ion-button>
                   </ion-col>
                 </ion-row>
               </ion-grid>
-              <ion-list-header color="dark">
+              <ion-list-header color="light">
                 Amount
                 {this.isLoading ? (
                   <ion-icon name="sync" class="spin" slot="end" margin-right />
                 ) : (
                   <ion-badge color="light" margin-right>
-                    {numeral(this.tradeAmount).format(this.getFormat())}{' '}
-                    {(this.tradeAction === TradeAction.limitbuy || this.tradeAction === TradeAction.marketbuy) && this.ticker.base}
-                    {(this.tradeAction === TradeAction.limitsell || this.tradeAction === TradeAction.marketsell) && this.ticker.quote}
+                    {numeral(this.tradeAmount).format(this.getAmountFormat())}{' '}
+                    {(this.tradeAction === OrderType.LIMITBUY || this.tradeAction === OrderType.MARKETBUY) && this.ticker.base}
+                    {(this.tradeAction === OrderType.LIMITSELL || this.tradeAction === OrderType.MARKETSELL) && this.ticker.quote}
                   </ion-badge>
                 )}
               </ion-list-header>
               <ion-item lines="none">
                 <ion-label>Available {this.ticker.quote}</ion-label>
-                <ion-button color="light" slot="end" text-right onClick={() => (this.tradeAmount = this.quoteBalance / this.tradePrice)}>
-                  {numeral(+this.quoteBalance).format('0,0.00000000')}
+                <ion-button color="light" slot="end" text-right onClick={() => this.setTradeAmountByButton(1)}>
+                  {numeral(+this.quoteBalance).format(this.getAmountFormat())}
                 </ion-button>
               </ion-item>
               <ion-item lines="none">
                 <ion-label>Available {this.ticker.base}</ion-label>
-                <ion-button color="light" slot="end" text-right onClick={() => (this.tradeAmount = this.baseBalance)}>
-                  {numeral(+this.baseBalance).format('0,0.00000000')}
+                <ion-button color="light" slot="end" text-right onClick={() => this.setTradeAmountByButton(1)}>
+                  {numeral(+this.baseBalance).format(this.getAmountFormat())}
                 </ion-button>
               </ion-item>
               <ion-item lines="none">
                 <ion-label>Set Amount</ion-label>
-                <ion-input name="price" type="number" value={`${this.tradeAmount}`} onBlur={(e) => this.setTradeAmount(e)} />
+                <ion-input slot="end" name="price" type="number" value={`${this.tradeAmount}`} onInput={(e) => this.setTradeAmount(e)} />
               </ion-item>
               <ion-grid>
                 <ion-row>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => this.setTradeAmountByButton(0.1)}>
+                    <ion-button fill="outline" expand="block" color="dark" onClick={() => this.setTradeAmountByButton(0.1)}>
                       10%
                     </ion-button>
                   </ion-col>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => this.setTradeAmountByButton(0.2)}>
+                    <ion-button fill="outline" expand="block" color="dark" onClick={() => this.setTradeAmountByButton(0.2)}>
                       20%
                     </ion-button>
                   </ion-col>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => this.setTradeAmountByButton(0.3)}>
+                    <ion-button fill="outline" expand="block" color="dark" onClick={() => this.setTradeAmountByButton(0.3)}>
                       30%
                     </ion-button>
                   </ion-col>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => this.setTradeAmountByButton(0.4)}>
+                    <ion-button fill="outline" expand="block" color="dark" onClick={() => this.setTradeAmountByButton(0.4)}>
                       40%
                     </ion-button>
                   </ion-col>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => this.setTradeAmountByButton(0.5)}>
+                    <ion-button fill="outline" expand="block" color="dark" onClick={() => this.setTradeAmountByButton(0.5)}>
                       50%
                     </ion-button>
                   </ion-col>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => this.setTradeAmountByButton(0.6)}>
+                    <ion-button fill="outline" expand="block" color="dark" onClick={() => this.setTradeAmountByButton(0.6)}>
                       60%
                     </ion-button>
                   </ion-col>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => this.setTradeAmountByButton(0.7)}>
+                    <ion-button fill="outline" expand="block" color="dark" onClick={() => this.setTradeAmountByButton(0.7)}>
                       70%
                     </ion-button>
                   </ion-col>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => this.setTradeAmountByButton(0.8)}>
+                    <ion-button fill="outline" expand="block" color="dark" onClick={() => this.setTradeAmountByButton(0.8)}>
                       80%
                     </ion-button>
                   </ion-col>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => this.setTradeAmountByButton(0.9)}>
+                    <ion-button fill="outline" expand="block" color="dark" onClick={() => this.setTradeAmountByButton(0.9)}>
                       90%
                     </ion-button>
                   </ion-col>
                   <ion-col>
-                    <ion-button expand="block" color="light" onClick={() => this.setTradeAmountByButton(1)}>
+                    <ion-button fill="outline" expand="block" color="dark" onClick={() => this.setTradeAmountByButton(1)}>
                       100%
                     </ion-button>
                   </ion-col>
                 </ion-row>
               </ion-grid>
-              <ion-list-header color="dark">Summary</ion-list-header>
+              <ion-list-header color="light">Summary</ion-list-header>
               <ion-item lines="none">
                 <ion-label>Action</ion-label>
                 <ion-label slot="end" text-right>
@@ -351,26 +360,26 @@ export class AppTrade {
               <ion-item lines="none">
                 <ion-label>Amount</ion-label>
                 <ion-label slot="end" text-right>
-                  {numeral(this.tradeAmount).format(this.getFormat())} {this.ticker.base}
+                  {numeral(this.tradeAmount).format(this.getAmountFormat())} {this.ticker.base}
                 </ion-label>
               </ion-item>
               <ion-item lines="none">
                 <ion-label>Price</ion-label>
                 <ion-label slot="end" text-right>
-                  {numeral(+this.tradePrice).format('0,0.00000000')} {this.ticker.symbol}
+                  {numeral(+this.tradePrice).format(this.getPriceFormat())} {this.ticker.symbol}
                 </ion-label>
               </ion-item>
               <ion-item lines="none">
                 <ion-label>Fee</ion-label>
                 <ion-label slot="end" text-right>
-                  {numeral(+this.ticker.info.taker * +this.tradeAmount * +this.tradePrice).format('0,0.00000000')} {this.ticker.quote}
+                  {numeral(+this.ticker.info.taker * +this.tradeAmount * +this.tradePrice).format(this.getAmountFormat())} {this.ticker.quote}
                 </ion-label>
               </ion-item>
               <ion-item lines="none">
                 <ion-label>Total</ion-label>
                 <ion-label slot="end" text-right>
                   {numeral(+this.tradeAmount * +this.tradePrice - +this.ticker.info.taker * +this.tradeAmount * +this.tradePrice).format(
-                    '0,0.00000000',
+                    this.getAmountFormat(),
                   )}{' '}
                   {this.ticker.quote}
                 </ion-label>
@@ -390,7 +399,20 @@ export class AppTrade {
     ];
   }
 
-  executeOrder(pair: string, type: string, price: number, amount: number) {
+  executeOrder(pair: string, type: OrderType, price: number, amount: number) {
     console.log(pair, type, price, amount);
+    let exchange = this.exchanges.find((e) => e.id === this.exchangeId);
+    TRADESERVICE.newOrder(exchange, {
+      pair: pair,
+      type: type,
+      price: price,
+      amount: numeral(amount).format(this.getAmountFormat()),
+      clientCreds: {
+        key: exchange.key,
+        secret: exchange.secret,
+      },
+    }).then((response) => {
+      console.log(response);
+    });
   }
 }

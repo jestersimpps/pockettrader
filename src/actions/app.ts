@@ -53,3 +53,9 @@ export const appSetBalances = (data: any) => async (dispatch, _getState) => {
     data: data,
   });
 };
+export const appSetTrades = (data: any) => async (dispatch, _getState) => {
+  return dispatch({
+    type: TypeKeys.APP_SET_ORDERS,
+    data: data,
+  });
+};

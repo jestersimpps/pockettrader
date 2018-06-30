@@ -36,6 +36,7 @@ export class AppTrade {
   @State() quoteBalance = 0;
   @State() tradeFee = 0;
   @State() segment = 0;
+  @State() selectedExchange: ExchangeId;
 
   appSetTrades: Action;
 
@@ -62,12 +63,14 @@ export class AppTrade {
         return textA < textB ? -1 : textA > textB ? 1 : 0;
       });
       this.exchangeId = this.tickers[0].exchangeId;
+      this.selectedExchange = this.tickers[0].exchangeId;
       this.getNewTicker(this.exchangeId, this.pairs[0].symbol);
     }
   }
 
   exchangeSelected(e) {
     this.exchangeId = e.target.value;
+    this.selectedExchange = e.target.value;
     this.pairs = this.tickers.find((t) => t.exchangeId === e.target.value).tickers.sort((a, b) => {
       var textA = a.symbol.toUpperCase();
       var textB = b.symbol.toUpperCase();
@@ -76,8 +79,8 @@ export class AppTrade {
     this.getNewTicker(this.exchangeId, this.pairs[0].symbol);
   }
 
-  pairSelected(e) {
-    this.getNewTicker(this.exchangeId, e.target.value);
+  pairSelected(exchangeId: ExchangeId, pair: string) {
+    this.getNewTicker(exchangeId, pair);
   }
 
   getBalances(quote: string, base: string) {
@@ -133,41 +136,56 @@ export class AppTrade {
 
   getNewTicker(exchangeId: ExchangeId, symbol: string) {
     this.isLoading = true;
-    TICKERSERVICE.getTicker(exchangeId, symbol).then((response) => {
-      this.ticker = response.data;
-      this.tradePrice = +response.data.last;
-      this.getBalances(response.data.quote, response.data.base);
-      this.isLoading = false;
-    });
+    TICKERSERVICE.getTicker(exchangeId, symbol)
+      .then((response) => {
+        this.exchangeId = exchangeId;
+        this.ticker = response.data;
+        this.tradePrice = +response.data.last;
+        this.getBalances(response.data.quote, response.data.base);
+        this.isLoading = false;
+      })
+      .catch(() => {
+        window.alert(`Something went wrong while getting ticker data for ${exchangeId} - ${symbol}`);
+        this.isLoading = false;
+      });
   }
 
   setTradePrice(e) {
     this.tradePrice = +e.target.value;
   }
   setTradeAmount(e) {
-    if (this.checkAmounts(+e.target.value)) {
-      this.tradeAmount = +e.target.value;
-    }
+    this.tradeAmount = +e.target.value;
   }
 
   setTradeAmountByButton(percentage: number) {
-    if (this.checkAmounts(this.quoteBalance * percentage)) {
-      switch (this.tradeAction) {
-        case OrderType.LIMITBUY:
-          this.tradeAmount = (this.quoteBalance * percentage - this.quoteBalance * percentage * this.ticker.info.maker) / this.tradePrice;
-          break;
-        case OrderType.MARKETBUY:
-          this.tradeAmount = (this.quoteBalance * percentage - this.quoteBalance * percentage * this.ticker.info.taker) / this.tradePrice;
-          break;
-        case OrderType.LIMITSELL:
-          this.tradeAmount = this.baseBalance * percentage - this.baseBalance * percentage * this.ticker.info.maker;
-          break;
-        case OrderType.MARKETSELL:
-          this.tradeAmount = this.baseBalance * percentage - this.baseBalance * percentage * this.ticker.info.taker;
-          break;
-        default:
-          break;
-      }
+    let amount = 0;
+    switch (this.tradeAction) {
+      case OrderType.LIMITBUY:
+        amount = (this.quoteBalance * percentage - this.quoteBalance * percentage * this.ticker.info.maker) / this.tradePrice;
+        if (this.checkAmounts(amount)) {
+          this.tradeAmount = amount;
+        }
+        break;
+      case OrderType.MARKETBUY:
+        amount = (this.quoteBalance * percentage - this.quoteBalance * percentage * this.ticker.info.taker) / this.tradePrice;
+        if (this.checkAmounts(amount)) {
+          this.tradeAmount = amount;
+        }
+        break;
+      case OrderType.LIMITSELL:
+        amount = this.baseBalance * percentage - this.baseBalance * percentage * this.ticker.info.maker;
+        if (this.checkAmounts(amount)) {
+          this.tradeAmount = amount;
+        }
+        break;
+      case OrderType.MARKETSELL:
+        amount = this.baseBalance * percentage - this.baseBalance * percentage * this.ticker.info.taker;
+        if (this.checkAmounts(amount)) {
+          this.tradeAmount = amount;
+        }
+        break;
+      default:
+        break;
     }
   }
 
@@ -225,27 +243,37 @@ export class AppTrade {
               </ion-segment-button>
             </ion-segment>
           </ion-item>
-
-          {this.segment === 0
-            ? [
+          <ion-item lines="none" style={{ display: this.segment === 1 ? 'none' : 'block' }}>
+            <ion-label>Select Exchange</ion-label>
+            <select onChange={(e) => this.exchangeSelected(e)}>
+              {this.exchanges.filter((e) => e.key && e.secret).map((e) => <option value={e.id}>{e.id}</option>)}
+            </select>
+          </ion-item>
+          <ion-item lines="none" style={{ display: this.segment === 1 ? 'none' : 'block' }}>
+            <ion-label>Select Pair</ion-label>
+            <select onChange={(e) => this.pairSelected(this.selectedExchange, e.target[`value`])}>
+              {this.pairs.map((p) => <option value={p.symbol}>{p.symbol}</option>)}
+            </select>
+          </ion-item>
+          {this.segment === 1 &&
+            this.exchanges.filter((e) => e.key && e.secret).map((exchange) => [
+              exchange.balances.filter((b) => b.currency != `BTC`).map((b) => (
                 <ion-item lines="none">
-                  <ion-label>Select Exchange</ion-label>
-                  <select onChange={(e) => this.exchangeSelected(e)}>
-                    {this.exchanges.filter((e) => e.key && e.secret).map((e) => <option value={e.id}>{e.id}</option>)}
-                  </select>
-                </ion-item>,
-                <ion-item lines="none">
-                  <ion-label>Select Pair</ion-label>
-                  <select onChange={(e) => this.pairSelected(e)}>{this.pairs.map((p) => <option value={p.symbol}>{p.symbol}</option>)}</select>
-                </ion-item>,
-              ]
-            : this.exchanges.filter((e) => e.key && e.secret).map((exchange) => [
-                exchange.balances.filter((b) => b.currency != `BTC`).map((b) => (
-                  <ion-item lines="none">
+                  <ion-label>
                     {exchange.id} - {this.getSymbol(b, exchange)}
-                  </ion-item>
-                )),
-              ])}
+                  </ion-label>
+                  <ion-button
+                    size="small"
+                    color="light"
+                    slot="end"
+                    text-right
+                    onClick={() => this.pairSelected(exchange.id, this.getSymbol(b, exchange))}
+                  >
+                    select
+                  </ion-button>
+                </ion-item>
+              )),
+            ])}
           <ion-list-header color="light">
             Price
             {this.isLoading ? (
@@ -325,6 +353,7 @@ export class AppTrade {
                   </ion-col>
                 </ion-row>
               </ion-grid>
+
               <ion-list-header color="light">
                 Amount
                 {this.isLoading ? (
@@ -351,7 +380,14 @@ export class AppTrade {
               </ion-item>
               <ion-item lines="none">
                 <ion-label>Set Amount</ion-label>
-                <ion-input slot="end" name="price" type="number" value={`${this.tradeAmount}`} onInput={(e) => this.setTradeAmount(e)} />
+                <ion-input
+                  slot="end"
+                  name="price"
+                  type="number"
+                  value={`${this.tradeAmount}`}
+                  onInput={(e) => this.setTradeAmount(e)}
+                  onBlur={() => this.checkAmounts(this.tradeAmount)}
+                />
               </ion-item>
               <ion-grid>
                 <ion-row>
@@ -407,6 +443,7 @@ export class AppTrade {
                   </ion-col>
                 </ion-row>
               </ion-grid>
+
               <ion-list-header color="light">Summary</ion-list-header>
               <ion-item lines="none">
                 <ion-label>Action</ion-label>

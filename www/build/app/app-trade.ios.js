@@ -49,11 +49,13 @@ class AppTrade {
                 return textA < textB ? -1 : textA > textB ? 1 : 0;
             });
             this.exchangeId = this.tickers[0].exchangeId;
+            this.selectedExchange = this.tickers[0].exchangeId;
             this.getNewTicker(this.exchangeId, this.pairs[0].symbol);
         }
     }
     exchangeSelected(e) {
         this.exchangeId = e.target.value;
+        this.selectedExchange = e.target.value;
         this.pairs = this.tickers.find((t) => t.exchangeId === e.target.value).tickers.sort((a, b) => {
             var textA = a.symbol.toUpperCase();
             var textB = b.symbol.toUpperCase();
@@ -61,8 +63,8 @@ class AppTrade {
         });
         this.getNewTicker(this.exchangeId, this.pairs[0].symbol);
     }
-    pairSelected(e) {
-        this.getNewTicker(this.exchangeId, e.target.value);
+    pairSelected(exchangeId, pair) {
+        this.getNewTicker(exchangeId, pair);
     }
     getBalances(quote, base) {
         let exchange = this.exchanges.find((e) => e.id === this.exchangeId);
@@ -113,10 +115,16 @@ class AppTrade {
     }
     getNewTicker(exchangeId, symbol) {
         this.isLoading = true;
-        TICKERSERVICE.getTicker(exchangeId, symbol).then((response) => {
+        TICKERSERVICE.getTicker(exchangeId, symbol)
+            .then((response) => {
+            this.exchangeId = exchangeId;
             this.ticker = response.data;
             this.tradePrice = +response.data.last;
             this.getBalances(response.data.quote, response.data.base);
+            this.isLoading = false;
+        })
+            .catch(() => {
+            window.alert(`Something went wrong while getting ticker data for ${exchangeId} - ${symbol}`);
             this.isLoading = false;
         });
     }
@@ -124,28 +132,37 @@ class AppTrade {
         this.tradePrice = +e.target.value;
     }
     setTradeAmount(e) {
-        if (this.checkAmounts(+e.target.value)) {
-            this.tradeAmount = +e.target.value;
-        }
+        this.tradeAmount = +e.target.value;
     }
     setTradeAmountByButton(percentage) {
-        if (this.checkAmounts(this.quoteBalance * percentage)) {
-            switch (this.tradeAction) {
-                case OrderType.LIMITBUY:
-                    this.tradeAmount = (this.quoteBalance * percentage - this.quoteBalance * percentage * this.ticker.info.maker) / this.tradePrice;
-                    break;
-                case OrderType.MARKETBUY:
-                    this.tradeAmount = (this.quoteBalance * percentage - this.quoteBalance * percentage * this.ticker.info.taker) / this.tradePrice;
-                    break;
-                case OrderType.LIMITSELL:
-                    this.tradeAmount = this.baseBalance * percentage - this.baseBalance * percentage * this.ticker.info.maker;
-                    break;
-                case OrderType.MARKETSELL:
-                    this.tradeAmount = this.baseBalance * percentage - this.baseBalance * percentage * this.ticker.info.taker;
-                    break;
-                default:
-                    break;
-            }
+        let amount = 0;
+        switch (this.tradeAction) {
+            case OrderType.LIMITBUY:
+                amount = (this.quoteBalance * percentage - this.quoteBalance * percentage * this.ticker.info.maker) / this.tradePrice;
+                if (this.checkAmounts(amount)) {
+                    this.tradeAmount = amount;
+                }
+                break;
+            case OrderType.MARKETBUY:
+                amount = (this.quoteBalance * percentage - this.quoteBalance * percentage * this.ticker.info.taker) / this.tradePrice;
+                if (this.checkAmounts(amount)) {
+                    this.tradeAmount = amount;
+                }
+                break;
+            case OrderType.LIMITSELL:
+                amount = this.baseBalance * percentage - this.baseBalance * percentage * this.ticker.info.maker;
+                if (this.checkAmounts(amount)) {
+                    this.tradeAmount = amount;
+                }
+                break;
+            case OrderType.MARKETSELL:
+                amount = this.baseBalance * percentage - this.baseBalance * percentage * this.ticker.info.taker;
+                if (this.checkAmounts(amount)) {
+                    this.tradeAmount = amount;
+                }
+                break;
+            default:
+                break;
         }
     }
     checkAmounts(amount) {
@@ -163,7 +180,6 @@ class AppTrade {
     }
     getSymbol(balance, exchange) {
         let tickers = this.tickers.find((t) => t.exchangeId === exchange.id).tickers;
-        console.log(tickers);
         return BALANCESERVICE.getBtcStats(balance, tickers).symbol;
     }
     render() {
@@ -189,20 +205,20 @@ class AppTrade {
                                 h("span", { style: { color: 'black' } }, "All Pairs")),
                             h("ion-segment-button", { value: "1", checked: this.segment === 1 },
                                 h("span", { style: { color: 'black' } }, "Current Holdings")))),
-                    this.segment === 0
-                        ? [
-                            h("ion-item", { lines: "none" },
-                                h("ion-label", null, "Select Exchange"),
-                                h("select", { onChange: (e) => this.exchangeSelected(e) }, this.exchanges.filter((e) => e.key && e.secret).map((e) => h("option", { value: e.id }, e.id)))),
-                            h("ion-item", { lines: "none" },
-                                h("ion-label", null, "Select Pair"),
-                                h("select", { onChange: (e) => this.pairSelected(e) }, this.pairs.map((p) => h("option", { value: p.symbol }, p.symbol)))),
-                        ]
-                        : this.exchanges.filter((e) => e.key && e.secret).map((exchange) => [
+                    h("ion-item", { lines: "none", style: { display: this.segment === 1 ? 'none' : 'block' } },
+                        h("ion-label", null, "Select Exchange"),
+                        h("select", { onChange: (e) => this.exchangeSelected(e) }, this.exchanges.filter((e) => e.key && e.secret).map((e) => h("option", { value: e.id }, e.id)))),
+                    h("ion-item", { lines: "none", style: { display: this.segment === 1 ? 'none' : 'block' } },
+                        h("ion-label", null, "Select Pair"),
+                        h("select", { onChange: (e) => this.pairSelected(this.selectedExchange, e.target[`value`]) }, this.pairs.map((p) => h("option", { value: p.symbol }, p.symbol)))),
+                    this.segment === 1 &&
+                        this.exchanges.filter((e) => e.key && e.secret).map((exchange) => [
                             exchange.balances.filter((b) => b.currency != `BTC`).map((b) => (h("ion-item", { lines: "none" },
-                                exchange.id,
-                                " - ",
-                                this.getSymbol(b, exchange)))),
+                                h("ion-label", null,
+                                    exchange.id,
+                                    " - ",
+                                    this.getSymbol(b, exchange)),
+                                h("ion-button", { size: "small", color: "light", slot: "end", "text-right": true, onClick: () => this.pairSelected(exchange.id, this.getSymbol(b, exchange)) }, "select")))),
                         ]),
                     h("ion-list-header", { color: "light" },
                         "Price",
@@ -260,7 +276,7 @@ class AppTrade {
                             h("ion-button", { color: "light", slot: "end", "text-right": true, onClick: () => this.setTradeAmountByButton(1) }, numeral(+this.baseBalance).format(this.getAmountFormat()))),
                         h("ion-item", { lines: "none" },
                             h("ion-label", null, "Set Amount"),
-                            h("ion-input", { slot: "end", name: "price", type: "number", value: `${this.tradeAmount}`, onInput: (e) => this.setTradeAmount(e) })),
+                            h("ion-input", { slot: "end", name: "price", type: "number", value: `${this.tradeAmount}`, onInput: (e) => this.setTradeAmount(e), onBlur: () => this.checkAmounts(this.tradeAmount) })),
                         h("ion-grid", null,
                             h("ion-row", null,
                                 h("ion-col", null,
@@ -368,6 +384,9 @@ class AppTrade {
             "state": true
         },
         "segment": {
+            "state": true
+        },
+        "selectedExchange": {
             "state": true
         },
         "store": {

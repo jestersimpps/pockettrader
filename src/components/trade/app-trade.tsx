@@ -212,12 +212,12 @@ export class AppTrade {
     return [
       <ion-header>
         <ion-toolbar color="dark">
-          <ion-buttons slot="start">
+          {/* <ion-buttons slot="start">
             <ion-button fill="solid" shape="round" color="danger" href="/panic" padding>
               <ion-icon name="alert" />
               Panic
             </ion-button>
-          </ion-buttons>
+          </ion-buttons> */}
           <ion-title text-center>Trade</ion-title>
         </ion-toolbar>
       </ion-header>,

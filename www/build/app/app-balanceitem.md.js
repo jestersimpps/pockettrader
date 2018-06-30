@@ -2,7 +2,7 @@
 const { h } = window.App;
 
 import { a as numeral } from './chunk-374e99fd.js';
-import { a as CURRENCYSERVICE } from './chunk-3c4622a5.js';
+import { a as CURRENCYSERVICE } from './chunk-ea0f4733.js';
 import { a as debounceEvent, d as deferEvent } from './chunk-63df273d.js';
 import { a as createThemedClasses } from './chunk-ea7ac2d5.js';
 import './chunk-a7525511.js';

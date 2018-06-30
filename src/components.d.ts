@@ -722,6 +722,45 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface AppOhlc {
+      'altPrice': number;
+      'curPrice': number;
+      'exchangeId': ExchangeId;
+      'symbol': string;
+    }
+  }
+
+  interface HTMLAppOhlcElement extends StencilComponents.AppOhlc, HTMLStencilElement {}
+
+  var HTMLAppOhlcElement: {
+    prototype: HTMLAppOhlcElement;
+    new (): HTMLAppOhlcElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-ohlc': HTMLAppOhlcElement;
+  }
+  interface ElementTagNameMap {
+    'app-ohlc': HTMLAppOhlcElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-ohlc': JSXElements.AppOhlcAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppOhlcAttributes extends HTMLAttributes {
+      'altPrice'?: number;
+      'curPrice'?: number;
+      'exchangeId'?: ExchangeId;
+      'symbol'?: string;
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface AppTrade {
 
     }

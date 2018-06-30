@@ -72,4 +72,4 @@ const appSetTrades = (data) => async (dispatch, _getState) => {
     });
 };
 
-export { appSetBaseCurrency as a, appSetWallets as b, appSetExchanges as c, appSetCurrencies as d, appSetTickers as e, appSetTotalBalances as f, appSetBalances as g, appSetToken as h, appSetTrades as i, TypeKeys as j };
+export { appSetBaseCurrency as a, appSetWallets as b, appSetExchanges as c, appSetCurrencies as d, appSetTickers as e, appSetTotalBalances as f, appSetBalances as g, appSetTrades as h, appSetToken as i, TypeKeys as j };

@@ -1,21 +1,111 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { b as TICKERSERVICE, e as TRADESERVICE, c as BALANCESERVICE, f as OrderStatus } from './chunk-3c4622a5.js';
+import { a as highstock } from './chunk-09df4f05.js';
+import { e as TRADESERVICE, b as TICKERSERVICE, c as BALANCESERVICE, f as OrderStatus, g as OrderType } from './chunk-ea0f4733.js';
 import { a as numeral } from './chunk-374e99fd.js';
 import { i as appSetTrades } from './chunk-65ccb753.js';
 import { a as createThemedClasses, b as getElementClassMap } from './chunk-ea7ac2d5.js';
-import './chunk-8b6e0876.js';
 import './chunk-a7525511.js';
+import './chunk-8b6e0876.js';
 
-var OrderType;
-(function (OrderType) {
-    OrderType["LIMITSELL"] = "LIMITSELL";
-    OrderType["LIMITBUY"] = "LIMITBUY";
-    OrderType["MARKETSELL"] = "MARKETSELL";
-    OrderType["MARKETBUY"] = "MARKETBUY";
-    OrderType["CANCEL"] = "CANCEL";
-})(OrderType || (OrderType = {}));
+class AppOhlc {
+    changeAltLine() {
+        this.chart.series[1].setData(this.ohlcData.map((d) => {
+            return [d[0], this.altPrice];
+        }));
+    }
+    changeSymbol() {
+        TRADESERVICE.getOhlc(this.exchangeId, this.symbol).then((response) => {
+            this.ohlcData = response.data;
+            this.chart.series[0].setData(response.data);
+        });
+    }
+    setTimeFrame(timeFrame) {
+        console.log(timeFrame);
+        TRADESERVICE.getOhlc(this.exchangeId, this.symbol, timeFrame).then((response) => {
+            this.ohlcData = response.data;
+            this.chart.series[0].setData(response.data);
+        });
+    }
+    componentDidLoad() {
+        TRADESERVICE.getOhlc(this.exchangeId, this.symbol).then((response) => {
+            this.ohlcData = response.data;
+            this.chart = highstock.stockChart('ohlc', {
+                title: {
+                    text: ``,
+                },
+                rangeSelector: {
+                    enabled: false,
+                    inputEnabled: false,
+                },
+                navigator: {
+                    enabled: false,
+                },
+                scrollbar: {
+                    enabled: false,
+                },
+                plotOptions: {
+                    line: {
+                        dashStyle: 'ShortDot',
+                    },
+                },
+                series: [
+                    {
+                        name: `${this.exchangeId} - ${this.symbol}`,
+                        type: 'candlestick',
+                        data: response.data,
+                    },
+                    {
+                        name: 'Set Price',
+                        type: 'line',
+                        data: response.data.map((d) => {
+                            return [d[0], this.curPrice];
+                        }),
+                    },
+                ],
+            });
+        });
+    }
+    render() {
+        return [
+            h("ion-grid", null,
+                h("ion-row", null,
+                    h("ion-col", null,
+                        h("ion-button", { size: "small", fill: "outline", expand: "block", color: "dark", onClick: () => this.setTimeFrame('1m') }, "1m")),
+                    h("ion-col", null,
+                        h("ion-button", { size: "small", fill: "outline", expand: "block", color: "dark", onClick: () => this.setTimeFrame('1h') }, "1h")),
+                    h("ion-col", null,
+                        h("ion-button", { size: "small", fill: "outline", expand: "block", color: "dark", onClick: () => this.setTimeFrame('1d') }, "1d"))),
+                h("ion-row", null,
+                    h("ion-col", null,
+                        h("div", { id: "ohlc", class: "chart" })))),
+        ];
+    }
+    static get is() { return "app-ohlc"; }
+    static get properties() { return {
+        "altPrice": {
+            "type": Number,
+            "attr": "alt-price",
+            "watchCallbacks": ["changeAltLine"]
+        },
+        "curPrice": {
+            "type": Number,
+            "attr": "cur-price"
+        },
+        "exchangeId": {
+            "type": String,
+            "attr": "exchange-id"
+        },
+        "symbol": {
+            "type": String,
+            "attr": "symbol",
+            "watchCallbacks": ["changeSymbol"]
+        }
+    }; }
+    static get style() { return ".chart {\n  height: 300px;\n}"; }
+}
+
 class AppTrade {
     constructor() {
         this.pairs = [];
@@ -224,9 +314,10 @@ class AppTrade {
                             " ",
                             this.ticker.quote))),
                     this.ticker && (h("div", null,
+                        h("app-ohlc", { exchangeId: this.exchangeId, symbol: this.ticker.symbol, altPrice: this.tradePrice, curPrice: this.ticker.last }),
                         h("ion-item", { lines: "none" },
                             h("ion-label", null, "Last price"),
-                            h("ion-button", { color: "light", slot: "end", "text-right": true, onClick: () => (this.tradePrice = this.ticker.last) }, numeral(+this.ticker.last).format('0,0.00000000'))),
+                            h("ion-button", { color: "light", slot: "end", "text-right": true, onClick: () => (this.tradePrice = this.ticker.last) }, numeral(+this.ticker.last).format(this.getPriceFormat()))),
                         h("ion-item", { lines: "none" },
                             h("ion-label", null, "Set price"),
                             h("ion-input", { slot: "end", name: "price", type: "number", value: `${this.tradePrice}`, onInput: (e) => this.setTradePrice(e) })),
@@ -331,7 +422,7 @@ class AppTrade {
                             " Execute"))))),
         ];
     }
-    async executeOrder(pair, type, price, amount) {
+    executeOrder(pair, type, price, amount) {
         if (window.confirm('Are you sure you want to execute this order?')) {
             this.isLoading = true;
             let exchange = this.exchanges.find((e) => e.id === this.exchangeId);
@@ -587,4 +678,4 @@ class SegmentButton {
     static get styleMode() { return "ios"; }
 }
 
-export { AppTrade, Segment as IonSegment, SegmentButton as IonSegmentButton };
+export { AppOhlc, AppTrade, Segment as IonSegment, SegmentButton as IonSegmentButton };

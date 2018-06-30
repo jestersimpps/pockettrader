@@ -45,6 +45,9 @@
     "app-keys": {
       "$": "app-keys"
     },
+    "app-ohlc": {
+      "$": "app-ohlc"
+    },
     "app-overview": {
       "$": "app-overview"
     },
@@ -68,8 +71,9 @@
       "$": "app-overview"
     },
     "app-trade": {
-      "ios": "app-trade.ios",
-      "md": "app-trade.md"
+      "ios": "app-ohlc.ios",
+      "md": "app-ohlc.md",
+      "$": "app-ohlc"
     },
     "app-wallets": {
       "$": "app-wallets"
@@ -191,12 +195,12 @@
       "md": "app-holdings.md"
     },
     "ion-segment": {
-      "ios": "app-trade.ios",
-      "md": "app-trade.md"
+      "ios": "ion-segment.ios",
+      "md": "ion-segment.md"
     },
     "ion-segment-button": {
-      "ios": "app-trade.ios",
-      "md": "app-trade.md"
+      "ios": "ion-segment.ios",
+      "md": "ion-segment.md"
     },
     "ion-spinner": {
       "ios": "app-balanceitem.ios",

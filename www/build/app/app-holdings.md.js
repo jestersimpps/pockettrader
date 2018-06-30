@@ -1,7 +1,7 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { d as WALLETSERVICE } from './chunk-3c4622a5.js';
+import { d as WALLETSERVICE } from './chunk-ea0f4733.js';
 import { a as debounceEvent } from './chunk-63df273d.js';
 import { a as createThemedClasses } from './chunk-ea7ac2d5.js';
 import './chunk-8b6e0876.js';

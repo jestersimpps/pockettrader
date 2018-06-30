@@ -1,42 +1,158 @@
-<!DOCTYPE html><html dir="ltr" lang="en"><head>
+
+<!DOCTYPE html>
+<html dir="ltr" lang="en" data-init="app-dev-first-build-loader">
+<head>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(function(registration) {
+        registration.unregister();
+      });
+    }
+  </script>
   <meta charset="utf-8">
-  <title>PocketTrader</title>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
-  <meta name="description" content="Welcome to the Ionic PWA Toolkit. You can use this starter to build fast PWAs using Ionic and Stencil!">
-  <meta name="theme-color" content="#16161d">
-
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Ionic PWA">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta http-equiv="x-ua-compatible" content="IE=Edge">
+  <title>Initializing First Build...</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      position: absolute;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    }
+    .toast {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      left: 10px;
+      margin: auto;
+      max-width: 700px;
+      border-radius: 3px;
+      background: rgba(0,0,0,.9);
+      -webkit-transform: translate3d(0px, -60px, 0px);
+      transform: translate3d(0px, -60px, 0px);
+      -webkit-transition: -webkit-transform 75ms ease-out;
+      transition: transform 75ms ease-out;
+      pointer-events: none;
+    }
 
-  <link href="/build/app.css" rel="stylesheet">
-  <script type="text/javascript" src="/assets/axios.min.js"></script>
-  <script type="text/javascript" src="/assets/d3.min.js"></script>
-  <script type="text/javascript" src="/assets/hashid.min.js"></script>
-  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    .active {
+      -webkit-transform: translate3d(0px, 0px, 0px);
+      transform: translate3d(0px, 0px, 0px);
+    }
 
-  <script src="/build/app.js"></script>
+    .content {
+      display: flex;
+      -webkit-align-items: center;
+      -ms-flex-align: center;
+      align-items: center;
+      pointer-events: auto;
+    }
 
-  <link rel="apple-touch-icon" href="/assets/icon/icon.png">
-  <link rel="icon" type="image/x-icon" href="/assets/icon/favicon.ico">
-  <link rel="manifest" href="/manifest.json">
+    .message {
+      -webkit-flex: 1;
+      -ms-flex: 1;
+      flex: 1;
+      padding: 15px;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .spinner {
+      position: relative;
+      display: inline-block;
+      width: 56px;
+      height: 28px;
+    }
+
+    svg:not(:root) {
+      overflow: hidden;
+    }
+
+    svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+      -webkit-animation: rotate 600ms linear infinite;
+      animation: rotate 600ms linear infinite;
+    }
+
+    @-webkit-keyframes rotate {
+      0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+      100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes rotate {
+      0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+      }
+      100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+
+    svg circle {
+      fill: transparent;
+      stroke: white;
+      stroke-width: 4px;
+      stroke-dasharray: 128px;
+      stroke-dashoffset: 82px;
+    }
+  </style>
 </head>
-
 <body>
 
-  <my-app></my-app>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-121063122-1"></script>
+  <div class="toast">
+    <div class="content">
+      <div class="message">Initializing First Build...</div>
+      <div class="spinner">
+        <svg viewBox="0 0 64 64"><circle transform="translate(32,32)" r="26"></circle></svg>
+      </div>
+    </div>
+  </div>
+
   <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'UA-121063122-1');
+    setTimeout(function() {
+      document.querySelector('.toast').classList.add('active');
+    }, 100);
+
+    setInterval(function() {
+      try {
+        var xhr = new XMLHttpRequest();
+        xhr.addEventListener('load', function() {
+          try {
+            if (this.responseText.indexOf('app-dev-first-build-loader') === -1) {
+              window.location.reload(true);
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        });
+        var url = window.location.pathname + '?' + Math.random();
+        xhr.open('GET', url);
+        xhr.send();
+      } catch (e) {
+        console.error(e);
+      }
+    }, 1000);
   </script>
 
-
-
-</body></html>
+</body>
+</html>

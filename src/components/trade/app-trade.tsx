@@ -6,15 +6,7 @@ import { TICKERSERVICE, TRADESERVICE, BALANCESERVICE } from '../../services/glob
 import numeral from 'numeral';
 import { appSetTrades } from '../../actions/app';
 import { Balance } from '../../services/balance.service';
-import { Order, OrderStatus } from '../../services/trade.service';
-
-export enum OrderType {
-  LIMITSELL = 'LIMITSELL',
-  LIMITBUY = 'LIMITBUY',
-  MARKETSELL = 'MARKETSELL',
-  MARKETBUY = 'MARKETBUY',
-  CANCEL = 'CANCEL',
-}
+import { Order, OrderStatus, OrderType } from '../../services/trade.service';
 
 @Component({
   tag: 'app-trade',
@@ -289,10 +281,12 @@ export class AppTrade {
           </ion-list-header>
           {this.ticker && (
             <div>
+              <app-ohlc exchangeId={this.exchangeId} symbol={this.ticker.symbol} altPrice={this.tradePrice} curPrice={this.ticker.last} />
+
               <ion-item lines="none">
                 <ion-label>Last price</ion-label>
                 <ion-button color="light" slot="end" text-right onClick={() => (this.tradePrice = this.ticker.last)}>
-                  {numeral(+this.ticker.last).format('0,0.00000000')}
+                  {numeral(+this.ticker.last).format(this.getPriceFormat())}
                 </ion-button>
               </ion-item>
               <ion-item lines="none">
@@ -504,7 +498,7 @@ export class AppTrade {
     ];
   }
 
-  async executeOrder(pair: string, type: OrderType, price: number, amount: number) {
+  executeOrder(pair: string, type: OrderType, price: number, amount: number) {
     if (window.confirm('Are you sure you want to execute this order?')) {
       this.isLoading = true;
       let exchange = this.exchanges.find((e) => e.id === this.exchangeId);

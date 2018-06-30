@@ -18,20 +18,20 @@ export class Order {
   updatedAt?: number;
 }
 
-export enum OrderStatus {
-  open = 'open',
-  filled = 'filled',
-  cancelled = 'cancelled',
-  closed = 'closed',
-  failed = 'failed',
-}
-
 export enum OrderType {
   LIMITSELL = 'LIMITSELL',
   LIMITBUY = 'LIMITBUY',
   MARKETSELL = 'MARKETSELL',
   MARKETBUY = 'MARKETBUY',
   CANCEL = 'CANCEL',
+}
+
+export enum OrderStatus {
+  open = 'open',
+  filled = 'filled',
+  cancelled = 'cancelled',
+  closed = 'closed',
+  failed = 'failed',
 }
 
 export class TradeService {
@@ -45,5 +45,9 @@ export class TradeService {
 
   newOrder(exchange: Exchange, newOrder: NewOrderRequest) {
     return axios.post(`https://lightningassets.com/exchangeapi/${exchange.id}/orders/create`, newOrder);
+  }
+
+  getOhlc(exchangeId: ExchangeId, symbol: string, timeFrame = '1h') {
+    return axios.get(`https://lightningassets.com/exchangeapi/${exchangeId}/ticker/ohlc?symbol=${symbol}&timeframe=${timeFrame}`);
   }
 }

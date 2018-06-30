@@ -260,14 +260,6 @@ class TickerService {
     }
 }
 
-var OrderStatus;
-(function (OrderStatus) {
-    OrderStatus["open"] = "open";
-    OrderStatus["filled"] = "filled";
-    OrderStatus["cancelled"] = "cancelled";
-    OrderStatus["closed"] = "closed";
-    OrderStatus["failed"] = "failed";
-})(OrderStatus || (OrderStatus = {}));
 var OrderType;
 (function (OrderType) {
     OrderType["LIMITSELL"] = "LIMITSELL";
@@ -276,6 +268,14 @@ var OrderType;
     OrderType["MARKETBUY"] = "MARKETBUY";
     OrderType["CANCEL"] = "CANCEL";
 })(OrderType || (OrderType = {}));
+var OrderStatus;
+(function (OrderStatus) {
+    OrderStatus["open"] = "open";
+    OrderStatus["filled"] = "filled";
+    OrderStatus["cancelled"] = "cancelled";
+    OrderStatus["closed"] = "closed";
+    OrderStatus["failed"] = "failed";
+})(OrderStatus || (OrderStatus = {}));
 class TradeService {
     getOrdersFromStorage() {
         return STORAGE.get('orders');
@@ -285,6 +285,9 @@ class TradeService {
     }
     newOrder(exchange, newOrder) {
         return axios.post(`https://lightningassets.com/exchangeapi/${exchange.id}/orders/create`, newOrder);
+    }
+    getOhlc(exchangeId, symbol, timeFrame = '1h') {
+        return axios.get(`https://lightningassets.com/exchangeapi/${exchangeId}/ticker/ohlc?symbol=${symbol}&timeFrame=${timeFrame}`);
     }
 }
 
@@ -296,4 +299,4 @@ const WALLETSERVICE = new WalletService();
 const TOKENSERVICE = new TokenService();
 const TRADESERVICE = new TradeService();
 
-export { CURRENCYSERVICE as a, TICKERSERVICE as b, BALANCESERVICE as c, WALLETSERVICE as d, TRADESERVICE as e, OrderStatus as f, TOKENSERVICE as g, EXCHANGESERVICE as h };
+export { CURRENCYSERVICE as a, TICKERSERVICE as b, BALANCESERVICE as c, WALLETSERVICE as d, TRADESERVICE as e, OrderStatus as f, OrderType as g, TOKENSERVICE as h, EXCHANGESERVICE as i };

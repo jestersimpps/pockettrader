@@ -160,7 +160,7 @@ export class AppSunburst {
         if (d.data.change != 0) {
           return `${d.data.name} (${numeral(d.data.change).format('0.0')}%)`;
         } else {
-          return `${d.data.name} `;
+          return ``;
         }
       });
 

@@ -6,6 +6,7 @@ import { TICKERSERVICE, TRADESERVICE, BALANCESERVICE } from '../../services/glob
 import numeral from 'numeral';
 import { appSetTrades } from '../../actions/app';
 import { Balance } from '../../services/balance.service';
+import { Order, OrderStatus } from '../../services/trade.service';
 
 export enum OrderType {
   LIMITSELL = 'LIMITSELL',
@@ -27,6 +28,7 @@ export class AppTrade {
   @State() pairs: any[] = [];
   @State() exchangeId: ExchangeId;
   @State() ticker: any;
+  @State() orders: Order[];
   @State() isLoading = false;
 
   @State() tradePrice = 0;
@@ -43,7 +45,7 @@ export class AppTrade {
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { exchanges, baseCurrency, currencies, tickers, wallets },
+        app: { exchanges, baseCurrency, currencies, tickers, wallets, orders },
       } = state;
       return {
         exchanges,
@@ -51,6 +53,7 @@ export class AppTrade {
         currencies,
         tickers,
         wallets,
+        orders,
       };
     });
     this.store.mapDispatchToProps(this, {
@@ -366,18 +369,22 @@ export class AppTrade {
                   </ion-badge>
                 )}
               </ion-list-header>
-              <ion-item lines="none">
-                <ion-label>Available {this.ticker.quote}</ion-label>
-                <ion-button color="light" slot="end" text-right onClick={() => this.setTradeAmountByButton(1)}>
-                  {numeral(+this.quoteBalance).format(this.getAmountFormat())}
-                </ion-button>
-              </ion-item>
-              <ion-item lines="none">
-                <ion-label>Available {this.ticker.base}</ion-label>
-                <ion-button color="light" slot="end" text-right onClick={() => this.setTradeAmountByButton(1)}>
-                  {numeral(+this.baseBalance).format(this.getAmountFormat())}
-                </ion-button>
-              </ion-item>
+              {(this.tradeAction === OrderType.LIMITBUY || this.tradeAction === OrderType.MARKETBUY) && (
+                <ion-item lines="none">
+                  <ion-label>Available {this.ticker.quote}</ion-label>
+                  <ion-button color="light" slot="end" text-right onClick={() => this.setTradeAmountByButton(1)}>
+                    {numeral(+this.quoteBalance).format(this.getAmountFormat())}
+                  </ion-button>
+                </ion-item>
+              )}
+              {(this.tradeAction === OrderType.LIMITSELL || this.tradeAction === OrderType.MARKETSELL) && (
+                <ion-item lines="none">
+                  <ion-label>Available {this.ticker.base}</ion-label>
+                  <ion-button color="light" slot="end" text-right onClick={() => this.setTradeAmountByButton(1)}>
+                    {numeral(+this.baseBalance).format(this.getAmountFormat())}
+                  </ion-button>
+                </ion-item>
+              )}
               <ion-item lines="none">
                 <ion-label>Set Amount</ion-label>
                 <ion-input
@@ -517,8 +524,25 @@ export class AppTrade {
                       Type: ${type}\n
                       Price: ${numeral(price).format(this.getPriceFormat())}\n
                       amount:${numeral(amount).format(this.getAmountFormat())}`);
+          this.appSetTrades(
+            [...this.orders].push({
+              exchangeId: this.exchangeId,
+              pair: pair,
+              type: type,
+              status: OrderStatus.open,
+              orderId: response.data.id,
+              openPrice: price,
+              closePrice: 0,
+              amount: amount,
+              fee:
+                this.tradeAction === OrderType.LIMITBUY || this.tradeAction === OrderType.LIMITSELL
+                  ? numeral(+this.ticker.info.maker * +this.tradeAmount * +this.tradePrice).format(this.getAmountFormat())
+                  : numeral(+this.ticker.info.taker * +this.tradeAmount * +this.tradePrice).format(this.getAmountFormat()),
+              createdAt: new Date().getTime(),
+              updatedAt: new Date().getTime(),
+            }),
+          );
           this.isLoading = false;
-          console.log(response);
         })
         .catch((error) => {
           this.isLoading = false;

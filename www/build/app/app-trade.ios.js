@@ -1,7 +1,7 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { b as TICKERSERVICE, e as TRADESERVICE, c as BALANCESERVICE } from './chunk-3c4622a5.js';
+import { b as TICKERSERVICE, e as TRADESERVICE, c as BALANCESERVICE, f as OrderStatus } from './chunk-3c4622a5.js';
 import { a as numeral } from './chunk-374e99fd.js';
 import { i as appSetTrades } from './chunk-65ccb753.js';
 import { a as createThemedClasses, b as getElementClassMap } from './chunk-ea7ac2d5.js';
@@ -30,13 +30,14 @@ class AppTrade {
     }
     componentWillLoad() {
         this.store.mapStateToProps(this, (state) => {
-            const { app: { exchanges, baseCurrency, currencies, tickers, wallets }, } = state;
+            const { app: { exchanges, baseCurrency, currencies, tickers, wallets, orders }, } = state;
             return {
                 exchanges,
                 baseCurrency,
                 currencies,
                 tickers,
                 wallets,
+                orders,
             };
         });
         this.store.mapDispatchToProps(this, {
@@ -186,10 +187,6 @@ class AppTrade {
         return [
             h("ion-header", null,
                 h("ion-toolbar", { color: "dark" },
-                    h("ion-buttons", { slot: "start" },
-                        h("ion-button", { fill: "solid", shape: "round", color: "danger", href: "/panic", padding: true },
-                            h("ion-icon", { name: "alert" }),
-                            "Panic")),
                     h("ion-title", { "text-center": true }, "Trade"))),
             h("ion-content", null,
                 h("ion-list", null,
@@ -264,16 +261,16 @@ class AppTrade {
                                 ' ',
                                 (this.tradeAction === OrderType.LIMITBUY || this.tradeAction === OrderType.MARKETBUY) && this.ticker.base,
                                 (this.tradeAction === OrderType.LIMITSELL || this.tradeAction === OrderType.MARKETSELL) && this.ticker.quote))),
-                        h("ion-item", { lines: "none" },
+                        (this.tradeAction === OrderType.LIMITBUY || this.tradeAction === OrderType.MARKETBUY) && (h("ion-item", { lines: "none" },
                             h("ion-label", null,
                                 "Available ",
                                 this.ticker.quote),
-                            h("ion-button", { color: "light", slot: "end", "text-right": true, onClick: () => this.setTradeAmountByButton(1) }, numeral(+this.quoteBalance).format(this.getAmountFormat()))),
-                        h("ion-item", { lines: "none" },
+                            h("ion-button", { color: "light", slot: "end", "text-right": true, onClick: () => this.setTradeAmountByButton(1) }, numeral(+this.quoteBalance).format(this.getAmountFormat())))),
+                        (this.tradeAction === OrderType.LIMITSELL || this.tradeAction === OrderType.MARKETSELL) && (h("ion-item", { lines: "none" },
                             h("ion-label", null,
                                 "Available ",
                                 this.ticker.base),
-                            h("ion-button", { color: "light", slot: "end", "text-right": true, onClick: () => this.setTradeAmountByButton(1) }, numeral(+this.baseBalance).format(this.getAmountFormat()))),
+                            h("ion-button", { color: "light", slot: "end", "text-right": true, onClick: () => this.setTradeAmountByButton(1) }, numeral(+this.baseBalance).format(this.getAmountFormat())))),
                         h("ion-item", { lines: "none" },
                             h("ion-label", null, "Set Amount"),
                             h("ion-input", { slot: "end", name: "price", type: "number", value: `${this.tradeAmount}`, onInput: (e) => this.setTradeAmount(e), onBlur: () => this.checkAmounts(this.tradeAmount) })),
@@ -354,8 +351,22 @@ class AppTrade {
                       Type: ${type}\n
                       Price: ${numeral(price).format(this.getPriceFormat())}\n
                       amount:${numeral(amount).format(this.getAmountFormat())}`);
+                this.appSetTrades([...this.orders].push({
+                    exchangeId: this.exchangeId,
+                    pair: pair,
+                    type: type,
+                    status: OrderStatus.open,
+                    orderId: response.data.id,
+                    openPrice: price,
+                    closePrice: 0,
+                    amount: amount,
+                    fee: this.tradeAction === OrderType.LIMITBUY || this.tradeAction === OrderType.LIMITSELL
+                        ? numeral(+this.ticker.info.maker * +this.tradeAmount * +this.tradePrice).format(this.getAmountFormat())
+                        : numeral(+this.ticker.info.taker * +this.tradeAmount * +this.tradePrice).format(this.getAmountFormat()),
+                    createdAt: new Date().getTime(),
+                    updatedAt: new Date().getTime(),
+                }));
                 this.isLoading = false;
-                console.log(response);
             })
                 .catch((error) => {
                 this.isLoading = false;
@@ -375,6 +386,9 @@ class AppTrade {
             "state": true
         },
         "isLoading": {
+            "state": true
+        },
+        "orders": {
             "state": true
         },
         "pairs": {

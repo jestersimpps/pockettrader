@@ -68,7 +68,8 @@
       "$": "app-overview"
     },
     "app-trade": {
-      "$": "app-trade"
+      "ios": "app-trade.ios",
+      "md": "app-trade.md"
     },
     "app-wallets": {
       "$": "app-wallets"
@@ -188,6 +189,14 @@
     "ion-searchbar": {
       "ios": "app-holdings.ios",
       "md": "app-holdings.md"
+    },
+    "ion-segment": {
+      "ios": "app-trade.ios",
+      "md": "app-trade.md"
+    },
+    "ion-segment-button": {
+      "ios": "app-trade.ios",
+      "md": "app-trade.md"
     },
     "ion-spinner": {
       "ios": "app-balanceitem.ios",

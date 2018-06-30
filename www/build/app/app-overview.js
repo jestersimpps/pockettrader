@@ -1,8 +1,8 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { c as BALANCESERVICE, a as CURRENCYSERVICE } from './chunk-76b301d8.js';
-import { c as appSetExchanges, a as appSetBaseCurrency, d as appSetCurrencies, e as appSetTickers, f as appSetTotalBalances, b as appSetWallets, g as appSetBalances } from './chunk-fc647441.js';
+import { c as BALANCESERVICE, a as CURRENCYSERVICE } from './chunk-3c4622a5.js';
+import { c as appSetExchanges, a as appSetBaseCurrency, d as appSetCurrencies, e as appSetTickers, f as appSetTotalBalances, b as appSetWallets, g as appSetBalances } from './chunk-65ccb753.js';
 import { a as commonjsGlobal, b as commonjsRequire, c as unwrapExports, d as createCommonjsModule } from './chunk-a7525511.js';
 import { a as numeral } from './chunk-374e99fd.js';
 import './chunk-8b6e0876.js';
@@ -1219,7 +1219,7 @@ class AppSunburst {
                         value: e.balances.reduce((a, b) => a + b.btcAmount, 0),
                         change: e.balances.reduce((a, b) => a + b.change * b.btcAmount, 0) / e.balances.reduce((a, b) => a + b.btcAmount, 0),
                         children: e.balances.map((b) => {
-                            return { name: b.symbol, size: b.btcAmount, balance: b.balance, value: b.btcAmount, change: b.change };
+                            return { name: b.currency, size: b.btcAmount, balance: b.balance, value: b.btcAmount, change: b.change };
                         }),
                     };
                 }),
@@ -1229,7 +1229,7 @@ class AppSunburst {
                     value: this.wallets.reduce((a, b) => a + b.btcAmount, 0),
                     change: this.wallets.reduce((a, b) => a + b.change * b.btcAmount, 0) / this.wallets.reduce((a, b) => a + b.btcAmount, 0),
                     children: this.wallets.map((w) => {
-                        return { name: w.symbol, size: w.btcAmount, balance: w.balance, value: w.btcAmount, change: w.change };
+                        return { name: w.currency, size: w.btcAmount, balance: w.balance, value: w.btcAmount, change: w.change };
                     }),
                 },
             ],

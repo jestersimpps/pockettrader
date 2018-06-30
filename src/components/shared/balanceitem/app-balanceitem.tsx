@@ -23,7 +23,7 @@ export class AppBalanceItem {
           <ion-grid>
             <ion-row>
               <ion-col col-4 class="lineText">
-                <app-cryptoicon class="cicon" symbol={this.cryptodata.symbol} />
+                <app-cryptoicon class="cicon" symbol={this.cryptodata.currency} />
               </ion-col>
               <ion-col col-4 text-center class="lineText">
                 <app-baseprice
@@ -40,7 +40,7 @@ export class AppBalanceItem {
             </ion-row>
             <ion-row>
               <ion-col col-4 text-left class="lineText">
-                <b class="ctext">{this.cryptodata.symbol}</b>
+                <b class="ctext">{this.cryptodata.currency}</b>
               </ion-col>
               <ion-col col-4 text-center class="lineText">
                 <span>{numeral(this.cryptodata.balance).format('0,0.00')}</span>
@@ -56,11 +56,11 @@ export class AppBalanceItem {
           </ion-grid>
         </ion-item>
       ) : (
-        <ion-item lines="full" href={`/pair/${this.exchangeId}/${this.cryptodata.symbol}`}>
+        <ion-item lines="full" href={`/pair/${this.exchangeId}/${this.cryptodata.currency}`}>
           <ion-grid>
             <ion-row>
               <ion-col col-4 class="lineText">
-                <app-cryptoicon class="cicon" symbol={this.cryptodata.symbol} />
+                <app-cryptoicon class="cicon" symbol={this.cryptodata.currency} />
               </ion-col>
               <ion-col col-4 text-center class="lineText">
                 <app-baseprice
@@ -77,7 +77,7 @@ export class AppBalanceItem {
             </ion-row>
             <ion-row>
               <ion-col col-4 text-left class="lineText">
-                <b class="ctext">{this.cryptodata.symbol}</b>
+                <b class="ctext">{this.cryptodata.currency}</b>
               </ion-col>
               <ion-col col-4 text-center class="lineText">
                 <span>{numeral(this.cryptodata.balance).format('0,0.00')}</span>

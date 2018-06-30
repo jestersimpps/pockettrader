@@ -1,9 +1,9 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { a as CURRENCYSERVICE, c as BALANCESERVICE } from './chunk-76b301d8.js';
+import { a as CURRENCYSERVICE, c as BALANCESERVICE } from './chunk-3c4622a5.js';
 import { a as numeral } from './chunk-374e99fd.js';
-import { c as appSetExchanges, a as appSetBaseCurrency, d as appSetCurrencies, e as appSetTickers, f as appSetTotalBalances, b as appSetWallets, g as appSetBalances } from './chunk-fc647441.js';
+import { c as appSetExchanges, a as appSetBaseCurrency, d as appSetCurrencies, e as appSetTickers, f as appSetTotalBalances, b as appSetWallets, g as appSetBalances } from './chunk-65ccb753.js';
 import { d as deferEvent } from './chunk-63df273d.js';
 import './chunk-8b6e0876.js';
 import './chunk-a7525511.js';
@@ -83,8 +83,8 @@ class AppPanic {
                             h("ion-grid", null,
                                 h("ion-row", null,
                                     h("ion-col", { "col-6": true, class: "lineText" },
-                                        h("app-cryptoicon", { class: "cicon", symbol: b.symbol }),
-                                        h("b", { style: { position: 'absolute', top: '10px', left: '50px' } }, b.symbol)),
+                                        h("app-cryptoicon", { class: "cicon", symbol: b.currency }),
+                                        h("b", { style: { position: 'absolute', top: '10px', left: '50px' } }, b.currency)),
                                     h("ion-col", { "col-6": true, "text-right": true, class: "lineText" },
                                         h("ion-toggle", { checked: true }))),
                                 h("ion-row", null,

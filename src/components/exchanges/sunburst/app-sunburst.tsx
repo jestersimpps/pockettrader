@@ -32,7 +32,7 @@ export class AppSunburst {
             value: e.balances.reduce((a, b) => a + b.btcAmount, 0),
             change: e.balances.reduce((a, b) => a + b.change * b.btcAmount, 0) / e.balances.reduce((a, b) => a + b.btcAmount, 0),
             children: e.balances.map((b) => {
-              return { name: b.symbol, size: b.btcAmount, balance: b.balance, value: b.btcAmount, change: b.change };
+              return { name: b.currency, size: b.btcAmount, balance: b.balance, value: b.btcAmount, change: b.change };
             }),
           };
         }),
@@ -42,7 +42,7 @@ export class AppSunburst {
           value: this.wallets.reduce((a, b) => a + b.btcAmount, 0),
           change: this.wallets.reduce((a, b) => a + b.change * b.btcAmount, 0) / this.wallets.reduce((a, b) => a + b.btcAmount, 0),
           children: this.wallets.map((w) => {
-            return { name: w.symbol, size: w.btcAmount, balance: w.balance, value: w.btcAmount, change: w.change };
+            return { name: w.currency, size: w.btcAmount, balance: w.balance, value: w.btcAmount, change: w.change };
           }),
         },
       ],

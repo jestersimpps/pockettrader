@@ -5,7 +5,7 @@ declare const axios;
 export class Wallet {
   id: number;
   name: string;
-  symbol: string;
+  currency: string;
   balance: number;
   btcPrice: number;
   btcAmount: number;

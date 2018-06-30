@@ -37,7 +37,7 @@ export class AppEditwallet {
         this.wallet = {
           id: response.data.data.id,
           name: response.data.data.name,
-          symbol: response.data.data.symbol,
+          currency: response.data.data.symbol,
           balance: 0,
           btcPrice: response.data.data.quotes.BTC.price,
           btcAmount: 0,
@@ -66,7 +66,7 @@ export class AppEditwallet {
             <ion-buttons slot="start">
               <ion-back-button defaultHref="/settings" />
             </ion-buttons>
-            <ion-title>Set {this.wallet.symbol} Holdings</ion-title>
+            <ion-title>Set {this.wallet.currency} Holdings</ion-title>
           </ion-toolbar>
         </ion-header>,
         <ion-content>

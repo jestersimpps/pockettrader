@@ -1,7 +1,7 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { d as WALLETSERVICE } from './chunk-76b301d8.js';
+import { d as WALLETSERVICE } from './chunk-3c4622a5.js';
 import { a as debounceEvent } from './chunk-63df273d.js';
 import { a as createThemedClasses } from './chunk-ea7ac2d5.js';
 import './chunk-8b6e0876.js';
@@ -53,7 +53,7 @@ class AppHoldings {
                             crypto.name))))
                     : this.wallets.filter((w) => w.balance > 0).map((wallet) => (h("ion-item", { lines: "full", href: `/settings/holdings/${wallet.id}` },
                         h("ion-label", null,
-                            wallet.symbol,
+                            wallet.currency,
                             " - ",
                             wallet.name),
                         h("ion-label", { "text-right": true }, wallet.balance)))))),

@@ -1,8 +1,8 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { a as appSetBaseCurrency } from './chunk-fc647441.js';
-import { a as CURRENCYSERVICE } from './chunk-76b301d8.js';
+import { a as appSetBaseCurrency } from './chunk-65ccb753.js';
+import { a as CURRENCYSERVICE } from './chunk-3c4622a5.js';
 import './chunk-8b6e0876.js';
 import './chunk-a7525511.js';
 

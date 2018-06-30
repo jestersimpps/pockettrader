@@ -144,8 +144,8 @@ export class AppPanic {
                 <ion-grid>
                   <ion-row>
                     <ion-col col-6 class="lineText">
-                      <app-cryptoicon class="cicon" symbol={b.symbol} />
-                      <b style={{ position: 'absolute', top: '10px', left: '50px' }}>{b.symbol}</b>
+                      <app-cryptoicon class="cicon" symbol={b.currency} />
+                      <b style={{ position: 'absolute', top: '10px', left: '50px' }}>{b.currency}</b>
                     </ion-col>
                     <ion-col col-6 text-right class="lineText">
                       <ion-toggle checked={true} />

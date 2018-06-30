@@ -65,5 +65,11 @@ const appSetBalances = (data) => async (dispatch, _getState) => {
         data: data,
     });
 };
+const appSetTrades = (data) => async (dispatch, _getState) => {
+    return dispatch({
+        type: TypeKeys.APP_SET_ORDERS,
+        data: data,
+    });
+};
 
-export { appSetBaseCurrency as a, appSetWallets as b, appSetExchanges as c, appSetCurrencies as d, appSetTickers as e, appSetTotalBalances as f, appSetBalances as g, appSetToken as h, TypeKeys as i };
+export { appSetBaseCurrency as a, appSetWallets as b, appSetExchanges as c, appSetCurrencies as d, appSetTickers as e, appSetTotalBalances as f, appSetBalances as g, appSetToken as h, appSetTrades as i, TypeKeys as j };

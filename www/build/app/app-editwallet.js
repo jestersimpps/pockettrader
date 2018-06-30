@@ -1,8 +1,8 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { b as appSetWallets } from './chunk-fc647441.js';
-import { b as TICKERSERVICE } from './chunk-76b301d8.js';
+import { b as appSetWallets } from './chunk-65ccb753.js';
+import { b as TICKERSERVICE } from './chunk-3c4622a5.js';
 import './chunk-8b6e0876.js';
 import './chunk-a7525511.js';
 
@@ -29,7 +29,7 @@ class AppEditwallet {
                 this.wallet = {
                     id: response.data.data.id,
                     name: response.data.data.name,
-                    symbol: response.data.data.symbol,
+                    currency: response.data.data.symbol,
                     balance: 0,
                     btcPrice: response.data.data.quotes.BTC.price,
                     btcAmount: 0,
@@ -57,7 +57,7 @@ class AppEditwallet {
                         h("ion-back-button", { defaultHref: "/settings" })),
                     h("ion-title", null,
                         "Set ",
-                        this.wallet.symbol,
+                        this.wallet.currency,
                         " Holdings"))),
             h("ion-content", null,
                 h("ion-list", null,

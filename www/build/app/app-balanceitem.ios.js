@@ -2,7 +2,7 @@
 const { h } = window.App;
 
 import { a as numeral } from './chunk-374e99fd.js';
-import { a as CURRENCYSERVICE } from './chunk-76b301d8.js';
+import { a as CURRENCYSERVICE } from './chunk-3c4622a5.js';
 import { a as debounceEvent, d as deferEvent } from './chunk-63df273d.js';
 import { a as createThemedClasses } from './chunk-ea7ac2d5.js';
 import './chunk-a7525511.js';
@@ -16,31 +16,31 @@ class AppBalanceItem {
                 h("ion-grid", null,
                     h("ion-row", null,
                         h("ion-col", { "col-4": true, class: "lineText" },
-                            h("app-cryptoicon", { class: "cicon", symbol: this.cryptodata.symbol })),
+                            h("app-cryptoicon", { class: "cicon", symbol: this.cryptodata.currency })),
                         h("ion-col", { "col-4": true, "text-center": true, class: "lineText" },
                             h("app-baseprice", { btcPrice: CURRENCYSERVICE.convertToBase(this.cryptodata.btcAmount, this.baseCurrency), baseCurrency: this.baseCurrency })),
                         h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
                             h("app-baseprice", { btcPrice: CURRENCYSERVICE.convertToBase(this.cryptodata.btcPrice, this.baseCurrency), baseCurrency: this.baseCurrency }))),
                     h("ion-row", null,
                         h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
-                            h("b", { class: "ctext" }, this.cryptodata.symbol)),
+                            h("b", { class: "ctext" }, this.cryptodata.currency)),
                         h("ion-col", { "col-4": true, "text-center": true, class: "lineText" },
                             h("span", null, numeral(this.cryptodata.balance).format('0,0.00'))),
                         h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
                             h("b", { style: { color: this.cryptodata.change > 0 ? '#10dc60' : '#f53d3d' } }, this.cryptodata.change > 0
                                 ? '+' + numeral(this.cryptodata.change).format('0,0.00') + ' %'
-                                : numeral(this.cryptodata.change).format('0,0.00') + ' %')))))) : (h("ion-item", { lines: "full", href: `/pair/${this.exchangeId}/${this.cryptodata.symbol}` },
+                                : numeral(this.cryptodata.change).format('0,0.00') + ' %')))))) : (h("ion-item", { lines: "full", href: `/pair/${this.exchangeId}/${this.cryptodata.currency}` },
                 h("ion-grid", null,
                     h("ion-row", null,
                         h("ion-col", { "col-4": true, class: "lineText" },
-                            h("app-cryptoicon", { class: "cicon", symbol: this.cryptodata.symbol })),
+                            h("app-cryptoicon", { class: "cicon", symbol: this.cryptodata.currency })),
                         h("ion-col", { "col-4": true, "text-center": true, class: "lineText" },
                             h("app-baseprice", { btcPrice: CURRENCYSERVICE.convertToBase(this.cryptodata.btcAmount, this.baseCurrency), baseCurrency: this.baseCurrency })),
                         h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
                             h("app-baseprice", { btcPrice: CURRENCYSERVICE.convertToBase(this.cryptodata.btcPrice, this.baseCurrency), baseCurrency: this.baseCurrency }))),
                     h("ion-row", null,
                         h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
-                            h("b", { class: "ctext" }, this.cryptodata.symbol)),
+                            h("b", { class: "ctext" }, this.cryptodata.currency)),
                         h("ion-col", { "col-4": true, "text-center": true, class: "lineText" },
                             h("span", null, numeral(this.cryptodata.balance).format('0,0.00'))),
                         h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },

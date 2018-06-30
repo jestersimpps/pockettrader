@@ -102,7 +102,7 @@ class BalanceService {
                                     balance: balance.balance,
                                     pending: balance.pending,
                                     available: balance.available,
-                                    symbol: balance.currency,
+                                    currency: balance.currency,
                                     btcPrice: btc.price,
                                     change: btc.change,
                                 };
@@ -150,7 +150,7 @@ class BalanceService {
         });
     }
     getBtcStats(balance, tickerData) {
-        let stats = { price: 0, amount: 0, change: 0, last: 0 };
+        let stats = { price: 0, amount: 0, change: 0, last: 0, symbol: null };
         const altTicker = tickerData.find((t) => t.symbol === `${balance.currency}/BTC`);
         const fiatTicker = tickerData.find((t) => t.symbol === `BTC/${balance.currency}`);
         if (balance.currency === 'BTC') {
@@ -161,11 +161,13 @@ class BalanceService {
             stats.amount = balance.balance * altTicker.last;
             stats.price = altTicker.last;
             stats.change = altTicker.percentage;
+            stats.symbol = altTicker.symbol;
         }
         if (fiatTicker) {
             stats.amount = balance.balance / fiatTicker.last;
             stats.price = 1 / fiatTicker.last;
             stats.change = fiatTicker.percentage;
+            stats.symbol = fiatTicker.symbol;
         }
         return stats;
     }

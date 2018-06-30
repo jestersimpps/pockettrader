@@ -9,9 +9,9 @@ import { WALLETSERVICE } from '../../services/globals';
 export class AppHoldings {
   @Prop({ context: 'store' })
   store: Store;
-  cryptos: Wallet[] = [];
+  cryptos: any[] = [];
   @State() wallets: Wallet[] = [];
-  @State() visibleCryptos: Wallet[] = [];
+  @State() visibleCryptos: any[] = [];
   @State() filteredWallets: Wallet[] = [];
 
   componentWillLoad() {
@@ -64,7 +64,7 @@ export class AppHoldings {
               : this.wallets.filter((w) => w.balance > 0).map((wallet) => (
                   <ion-item lines="full" href={`/settings/holdings/${wallet.id}`}>
                     <ion-label>
-                      {wallet.symbol} - {wallet.name}
+                      {wallet.currency} - {wallet.name}
                     </ion-label>
                     <ion-label text-right>{wallet.balance}</ion-label>
                   </ion-item>

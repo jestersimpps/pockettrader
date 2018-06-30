@@ -18,9 +18,12 @@ class AppOhlc {
         }));
     }
     changeSymbol() {
-        TRADESERVICE.getOhlc(this.exchangeId, this.symbol).then((response) => {
+        TRADESERVICE.getOhlc(this.exchangeId, this.symbol, this.timeFrame).then((response) => {
             this.ohlcData = response.data;
             this.chart.series[0].setData(response.data);
+            this.chart.series[1].setData(this.ohlcData.map((d) => {
+                return [d[0], this.altPrice];
+            }));
         });
     }
     setTimeFrame(timeFrame) {
@@ -28,6 +31,9 @@ class AppOhlc {
         TRADESERVICE.getOhlc(this.exchangeId, this.symbol, timeFrame).then((response) => {
             this.ohlcData = response.data;
             this.chart.series[0].setData(response.data);
+            this.chart.series[1].setData(this.ohlcData.map((d) => {
+                return [d[0], this.altPrice];
+            }));
         });
     }
     componentDidLoad() {
@@ -105,7 +111,7 @@ class AppOhlc {
             "state": true
         }
     }; }
-    static get style() { return ".chart {\n  height: 300px;\n}"; }
+    static get style() { return ".chart {\n  height: 200px;\n}"; }
 }
 
 class AppTrade {

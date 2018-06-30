@@ -27,9 +27,14 @@ export class AppOhlc {
   }
   @Watch('symbol')
   changeSymbol() {
-    TRADESERVICE.getOhlc(this.exchangeId, this.symbol).then((response) => {
+    TRADESERVICE.getOhlc(this.exchangeId, this.symbol, this.timeFrame).then((response) => {
       this.ohlcData = response.data;
       this.chart.series[0].setData(response.data);
+      this.chart.series[1].setData(
+        this.ohlcData.map((d) => {
+          return [d[0], this.altPrice];
+        }),
+      );
     });
   }
 
@@ -38,6 +43,11 @@ export class AppOhlc {
     TRADESERVICE.getOhlc(this.exchangeId, this.symbol, timeFrame).then((response) => {
       this.ohlcData = response.data;
       this.chart.series[0].setData(response.data);
+      this.chart.series[1].setData(
+        this.ohlcData.map((d) => {
+          return [d[0], this.altPrice];
+        }),
+      );
     });
   }
 

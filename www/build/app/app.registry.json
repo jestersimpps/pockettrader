@@ -71,8 +71,6 @@
       "$": "app-overview"
     },
     "app-trade": {
-      "ios": "app-ohlc.ios",
-      "md": "app-ohlc.md",
       "$": "app-ohlc"
     },
     "app-wallets": {

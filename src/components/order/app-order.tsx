@@ -5,6 +5,7 @@ import numeral from 'numeral';
 import { appSetOrders } from '../../actions/app';
 import { TRADESERVICE } from '../../services/globals';
 import { Exchange } from '../../services/exchange.service';
+import { OrderStatus } from '../../exchangewrappers/enums/orderstatus.enum';
 
 @Component({
   tag: 'app-order',
@@ -91,10 +92,12 @@ export class AppOrder {
               {numeral(this.order.filled / this.order.amount).format('0,0.00')} %
             </ion-label>
           </ion-item>
-          <ion-button color="danger" expand="block" disabled={this.isLoading} onClick={() => this.cancelOrder()}>
-            {this.isLoading && <ion-icon name="refresh" class="spin" margin-right />}
-            Cancel Order
-          </ion-button>
+          {this.order.status === OrderStatus.open && (
+            <ion-button color="danger" expand="block" disabled={this.isLoading} onClick={() => this.cancelOrder()}>
+              {this.isLoading && <ion-icon name="refresh" class="spin" margin-right />}
+              Cancel Order
+            </ion-button>
+          )}
         </ion-list>
       </ion-content>,
     ];
@@ -107,6 +110,7 @@ export class AppOrder {
       TRADESERVICE.cancelOrder(exchange, this.order.orderId, this.order.pair)
         .then(() => {
           window.alert(`Order cancelled`);
+          this.order.status = OrderStatus.cancelled;
           this.appSetOrders(this.orders);
           this.isLoading = false;
         })

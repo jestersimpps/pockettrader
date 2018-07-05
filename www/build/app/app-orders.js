@@ -4,13 +4,14 @@ const { h } = window.App;
 import { e as TRADESERVICE } from './chunk-9f11c581.js';
 import { h as appSetOrders } from './chunk-43b312d9.js';
 import { a as numeral } from './chunk-374e99fd.js';
+import { a as OrderStatus } from './chunk-da5de7ce.js';
 import './chunk-8b6e0876.js';
 import './chunk-a7525511.js';
 
 class AppOrders {
     constructor() {
         this.pairs = [];
-        this.isLoading = true;
+        this.isLoading = false;
         this.status = 0;
     }
     componentWillLoad() {
@@ -43,6 +44,10 @@ class AppOrders {
                 currentOrder.remaining = order.remaining;
                 currentOrder.base = ticker.base;
                 currentOrder.last = ticker.last;
+                if (+order.remaining === 0) {
+                    currentOrder.status = OrderStatus.filled;
+                    currentOrder.closePrice = ticker.last;
+                }
                 currentOrder.updatedAt = new Date().getTime();
             });
             this.isLoading = false;
@@ -59,26 +64,46 @@ class AppOrders {
                             h("ion-icon", { name: "refresh", class: this.isLoading ? 'spin' : '' })))),
                 h("ion-segment", { color: "dark", onIonChange: (e) => (this.status = +e.detail.value) },
                     h("ion-segment-button", { value: "0", checked: this.status === 0 }, "Open"),
-                    h("ion-segment-button", { value: "1", checked: this.status === 1 }, "Closed"))),
-            h("ion-content", null, this.status === 0 && [
-                this.orders.map((order) => [
-                    h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
-                        h("ion-grid", null,
-                            h("ion-row", null,
-                                h("ion-col", { "col-4": true, class: "lineText" }, order.type),
-                                h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.amount).format('0,0.000000')),
-                                h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
-                                    h("small", null, "open:"),
-                                    numeral(order.openPrice).format('0,0.000000'))),
-                            h("ion-row", null,
-                                h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
-                                    h("b", null, order.pair)),
-                                h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, order.exchangeId),
-                                h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
-                                    h("small", null, "last:"),
-                                    numeral(order.last).format('0,0.000000'))))),
+                    h("ion-segment-button", { value: "1", checked: this.status === 1 }, "Filled"))),
+            h("ion-content", null,
+                this.status === 0 && [
+                    this.orders.filter((o) => o.status === OrderStatus.open).map((order) => [
+                        h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
+                            h("ion-grid", null,
+                                h("ion-row", null,
+                                    h("ion-col", { "col-4": true, class: "lineText" }, order.type),
+                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.amount).format('0,0.000000')),
+                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
+                                        h("small", null, "open:"),
+                                        numeral(order.openPrice).format('0,0.000000'))),
+                                h("ion-row", null,
+                                    h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
+                                        h("b", null, order.pair)),
+                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, order.exchangeId),
+                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
+                                        h("small", null, "last:"),
+                                        numeral(order.last).format('0,0.000000'))))),
+                    ]),
+                ],
+                this.status === 1 && [
+                    this.orders.filter((o) => o.status === OrderStatus.filled).map((order) => [
+                        h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
+                            h("ion-grid", null,
+                                h("ion-row", null,
+                                    h("ion-col", { "col-4": true, class: "lineText" }, order.type),
+                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.amount).format('0,0.000000')),
+                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
+                                        h("small", null, "open:"),
+                                        numeral(order.openPrice).format('0,0.000000'))),
+                                h("ion-row", null,
+                                    h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
+                                        h("b", null, order.pair)),
+                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, order.exchangeId),
+                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
+                                        h("small", null, "last:"),
+                                        numeral(order.last).format('0,0.000000'))))),
+                    ]),
                 ]),
-            ]),
         ];
     }
     static get is() { return "app-orders"; }

@@ -366,7 +366,7 @@ export class AppTrade {
 
           {this.step === 2 && [
             <ion-grid>
-              <ion-row>
+              {/* <ion-row>
                 <ion-col>
                   <ion-button fill="outline" expand="block" color="success" onClick={() => (this.tradeAction = OrderType.MARKETBUY)}>
                     Market Buy
@@ -377,7 +377,7 @@ export class AppTrade {
                     Market Sell
                   </ion-button>
                 </ion-col>
-              </ion-row>
+              </ion-row> */}
               <ion-row>
                 <ion-col>
                   <ion-button fill="outline" expand="block" color="success" onClick={() => (this.tradeAction = OrderType.LIMITBUY)}>

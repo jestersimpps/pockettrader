@@ -6,6 +6,7 @@ import { Order } from '../../services/trade.service';
 import { TRADESERVICE } from '../../services/globals';
 import { appSetOrders } from '../../actions/app';
 import numeral from 'numeral';
+import { OrderStatus } from '../../exchangewrappers/enums/orderstatus.enum';
 
 @Component({
   tag: 'app-orders',
@@ -20,7 +21,7 @@ export class AppOrders {
   @State() exchangeId: ExchangeId;
   @State() ticker: any;
   @State() orders: Order[];
-  @State() isLoading = true;
+  @State() isLoading = false;
   @State() status = 0;
 
   appSetOrders: Action;
@@ -58,6 +59,10 @@ export class AppOrders {
         currentOrder.remaining = order.remaining;
         currentOrder.base = ticker.base;
         currentOrder.last = ticker.last;
+        if (+order.remaining === 0) {
+          currentOrder.status = OrderStatus.filled;
+          currentOrder.closePrice = ticker.last;
+        }
         currentOrder.updatedAt = new Date().getTime();
       });
       this.isLoading = false;
@@ -81,13 +86,45 @@ export class AppOrders {
             Open
           </ion-segment-button>
           <ion-segment-button value="1" checked={this.status === 1}>
-            Closed
+            Filled
           </ion-segment-button>
         </ion-segment>
       </ion-header>,
       <ion-content>
         {this.status === 0 && [
-          this.orders.map((order) => [
+          this.orders.filter((o) => o.status === OrderStatus.open).map((order) => [
+            <ion-item lines="full" href={`/orders/${order.orderId}`}>
+              <ion-grid>
+                <ion-row>
+                  <ion-col col-4 class="lineText">
+                    {order.type}
+                  </ion-col>
+                  <ion-col col-4 text-center class="lineText">
+                    {numeral(order.amount).format('0,0.000000')}
+                  </ion-col>
+                  <ion-col col-4 text-right class="lineText">
+                    <small>open:</small>
+                    {numeral(order.openPrice).format('0,0.000000')}
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col col-4 text-left class="lineText">
+                    <b>{order.pair}</b>
+                  </ion-col>
+                  <ion-col col-4 text-center class="lineText">
+                    {order.exchangeId}
+                  </ion-col>
+                  <ion-col col-4 text-right class="lineText">
+                    <small>last:</small>
+                    {numeral(order.last).format('0,0.000000')}
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-item>,
+          ]),
+        ]}
+        {this.status === 1 && [
+          this.orders.filter((o) => o.status === OrderStatus.filled).map((order) => [
             <ion-item lines="full" href={`/orders/${order.orderId}`}>
               <ion-grid>
                 <ion-row>

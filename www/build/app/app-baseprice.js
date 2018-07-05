@@ -6,7 +6,7 @@ import './chunk-a7525511.js';
 
 class AppBasePrice {
     render() {
-        return [`${this.baseCurrency.symbol} ${numeral(this.btcPrice).format(this.baseCurrency.id === `BTC` ? '0,0.0000' : '0,0.00')}`];
+        return [`${this.baseCurrency.symbol} ${numeral(this.btcPrice).format(this.btcPrice < 1 ? '0,0.000000' : '0,0.00')}`];
     }
     static get is() { return "app-baseprice"; }
     static get properties() { return {

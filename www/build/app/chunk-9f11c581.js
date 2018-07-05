@@ -31,10 +31,10 @@ class WalletService {
 }
 
 class BalanceService {
-    getTotalBalances() {
+    getTotalBalancesFromStorage() {
         return STORAGE.get('totalbalances');
     }
-    getBalancesFromStore() {
+    getBalancesFromStorage() {
         return STORAGE.get('balances');
     }
     getLatestTotal(totalBalances) {
@@ -203,7 +203,7 @@ class CurrencyService {
             },
         ];
     }
-    getBaseCurrency() {
+    getBaseCurrencyFromStorage() {
         return STORAGE.get('basecurrency');
     }
     getConversionRates() {
@@ -243,7 +243,7 @@ class CurrencyService {
 }
 
 class TickerService {
-    getTickersFromStore() {
+    getTickersFromStorage() {
         return STORAGE.get('tickers');
     }
     setTickers(tickers) {
@@ -285,6 +285,26 @@ class TradeService {
     }
     newOrder(exchange, newOrder) {
         return axios.post(`https://lightningassets.com/exchangeapi/${exchange.id}/orders/create`, newOrder);
+    }
+    getOrder(exchange, orderId, pair) {
+        return axios.post(`https://lightningassets.com/exchangeapi/${exchange.id}/orders/get`, {
+            pair: pair,
+            orderId: orderId,
+            clientCreds: {
+                key: exchange.key,
+                secret: exchange.secret,
+            },
+        });
+    }
+    cancelOrder(exchange, orderId, pair) {
+        return axios.post(`https://lightningassets.com/exchangeapi/${exchange.id}/orders/cancel`, {
+            pair: pair,
+            orderId: orderId,
+            clientCreds: {
+                key: exchange.key,
+                secret: exchange.secret,
+            },
+        });
     }
     getOhlc(exchangeId, symbol, timeFrame = '1h') {
         return axios.get(`https://lightningassets.com/exchangeapi/${exchangeId}/ticker/ohlc?symbol=${symbol}&timeframe=${timeFrame}`);

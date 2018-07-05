@@ -32,11 +32,11 @@ export class RefreshResponse {
 }
 
 export class BalanceService {
-  getTotalBalances(): Promise<[number, number][]> {
+  getTotalBalancesFromStorage(): Promise<[number, number][]> {
     return STORAGE.get('totalbalances');
   }
 
-  getBalancesFromStore(): Promise<Balances> {
+  getBalancesFromStorage(): Promise<Balances> {
     return STORAGE.get('balances');
   }
 

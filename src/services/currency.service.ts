@@ -38,7 +38,7 @@ export class CurrencyService {
     },
   ];
 
-  getBaseCurrency(): Promise<Currency> {
+  getBaseCurrencyFromStorage(): Promise<Currency> {
     return STORAGE.get('basecurrency');
   }
 

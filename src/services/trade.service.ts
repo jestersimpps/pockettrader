@@ -13,6 +13,10 @@ export class Order {
   openPrice: number;
   closePrice: number;
   amount: number;
+  filled: number;
+  base: string;
+  last: number;
+  remaining: number;
   fee?: number;
   createdAt?: number;
   updatedAt?: number;
@@ -45,6 +49,28 @@ export class TradeService {
 
   newOrder(exchange: Exchange, newOrder: NewOrderRequest) {
     return axios.post(`https://lightningassets.com/exchangeapi/${exchange.id}/orders/create`, newOrder);
+  }
+
+  getOrder(exchange: Exchange, orderId: string, pair: string) {
+    return axios.post(`https://lightningassets.com/exchangeapi/${exchange.id}/orders/get`, {
+      pair: pair,
+      orderId: orderId,
+      clientCreds: {
+        key: exchange.key,
+        secret: exchange.secret,
+      },
+    });
+  }
+
+  cancelOrder(exchange: Exchange, orderId: string, pair: string) {
+    return axios.post(`https://lightningassets.com/exchangeapi/${exchange.id}/orders/cancel`, {
+      pair: pair,
+      orderId: orderId,
+      clientCreds: {
+        key: exchange.key,
+        secret: exchange.secret,
+      },
+    });
   }
 
   getOhlc(exchangeId: ExchangeId, symbol: string, timeFrame = '1h') {

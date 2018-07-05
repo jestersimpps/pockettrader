@@ -12,8 +12,9 @@ import {
   appSetWallets,
   appSetToken,
   appSetBalances,
+  appSetOrders,
 } from '../../actions/app';
-import { CURRENCYSERVICE, BALANCESERVICE, EXCHANGESERVICE, TICKERSERVICE, WALLETSERVICE, TOKENSERVICE } from '../../services/globals';
+import { CURRENCYSERVICE, BALANCESERVICE, EXCHANGESERVICE, TICKERSERVICE, WALLETSERVICE, TOKENSERVICE, TRADESERVICE } from '../../services/globals';
 
 @Component({
   tag: 'my-app',
@@ -32,6 +33,7 @@ export class MyApp {
   appSetWallets: Action;
   appSetBalances: Action;
   appSetToken: Action;
+  appSetOrders: Action;
 
   componentWillLoad() {
     // Only do this once, in the root component
@@ -45,12 +47,13 @@ export class MyApp {
       appSetWallets,
       appSetToken,
       appSetBalances,
+      appSetOrders,
     });
     // Load in app state from storage
     EXCHANGESERVICE.getExchanges()
       .then((exchanges) => {
         exchanges ? this.appSetExchanges(exchanges) : this.appSetExchanges(DefaultExchanges);
-        return CURRENCYSERVICE.getBaseCurrency();
+        return CURRENCYSERVICE.getBaseCurrencyFromStorage();
       })
       .then((baseCurrency) => {
         baseCurrency ? this.appSetBaseCurrency(baseCurrency) : this.appSetBaseCurrency(CURRENCYSERVICE.currencies[0]);
@@ -62,18 +65,22 @@ export class MyApp {
       })
       .then((currencies) => {
         this.appSetCurrencies(currencies);
-        return TICKERSERVICE.getTickersFromStore();
+        return TICKERSERVICE.getTickersFromStorage();
       })
       .then((tickers) => {
         tickers ? this.appSetTickers(tickers) : this.appSetTickers([]);
-        return BALANCESERVICE.getTotalBalances();
+        return BALANCESERVICE.getTotalBalancesFromStorage();
       })
       .then((totalBalances) => {
         totalBalances ? this.appSetTotalBalances(totalBalances) : this.appSetTotalBalances([]);
-        return BALANCESERVICE.getBalancesFromStore();
+        return BALANCESERVICE.getBalancesFromStorage();
       })
       .then((balances) => {
         balances ? this.appSetBalances(balances) : this.appSetBalances({ overview: 0, exchnges: 0, wallets: 0 });
+        return TRADESERVICE.getOrdersFromStorage();
+      })
+      .then((orders) => {
+        orders ? this.appSetOrders(orders) : this.appSetOrders([]);
         return TOKENSERVICE.getTokenFromStore();
       })
       .then((token) => {
@@ -92,6 +99,8 @@ export class MyApp {
           <ion-route url="/exchanges" component="app-exchanges" />
           <ion-route url="/wallets" component="app-wallets" />
           <ion-route url="/trade" component="app-trade" />
+          <ion-route url="/orders" component="app-orders" />
+          <ion-route url="/orders/:orderId" component="app-order" />
           <ion-route url="/settings" component="app-settings" />
           <ion-route url="/settings/keys" component="app-keys" />
           <ion-route url="/settings/keys/:exchangeId" component="app-exchangekeys" />
@@ -104,10 +113,11 @@ export class MyApp {
         <ion-nav animated={true} margin-bottom />,
         <ion-footer class="footerHeight">
           <ion-tabs color="light" tabbarHighlight={true} useRouter={true}>
-            <ion-tab icon="pie" label="Overview" href="/overview"/>
             <ion-tab icon="list-box" label="Exchanges" href="/exchanges" />
             <ion-tab icon="wallet" label="Wallets" href="/wallets" />
+            <ion-tab icon="pie" label="Overview" href="/overview" />
             <ion-tab icon="swap" label="Trade" href="/trade" />
+            <ion-tab icon="time" label="Orders" href="/orders" />
           </ion-tabs>
         </ion-footer>,
       </ion-app>

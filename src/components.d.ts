@@ -415,6 +415,72 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface AppOrder {
+      'orderId': string;
+    }
+  }
+
+  interface HTMLAppOrderElement extends StencilComponents.AppOrder, HTMLStencilElement {}
+
+  var HTMLAppOrderElement: {
+    prototype: HTMLAppOrderElement;
+    new (): HTMLAppOrderElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-order': HTMLAppOrderElement;
+  }
+  interface ElementTagNameMap {
+    'app-order': HTMLAppOrderElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-order': JSXElements.AppOrderAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppOrderAttributes extends HTMLAttributes {
+      'orderId'?: string;
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppOrders {
+
+    }
+  }
+
+  interface HTMLAppOrdersElement extends StencilComponents.AppOrders, HTMLStencilElement {}
+
+  var HTMLAppOrdersElement: {
+    prototype: HTMLAppOrdersElement;
+    new (): HTMLAppOrdersElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-orders': HTMLAppOrdersElement;
+  }
+  interface ElementTagNameMap {
+    'app-orders': HTMLAppOrdersElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-orders': JSXElements.AppOrdersAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppOrdersAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface AppOverview {
 
     }

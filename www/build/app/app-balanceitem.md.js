@@ -2,7 +2,7 @@
 const { h } = window.App;
 
 import { a as numeral } from './chunk-374e99fd.js';
-import { a as CURRENCYSERVICE } from './chunk-ea0f4733.js';
+import { a as CURRENCYSERVICE } from './chunk-9f11c581.js';
 import { a as debounceEvent, d as deferEvent } from './chunk-63df273d.js';
 import { a as createThemedClasses } from './chunk-ea7ac2d5.js';
 import './chunk-a7525511.js';
@@ -65,20 +65,6 @@ class AppBalanceItem {
         }
     }; }
     static get style() { return ".lineText {\n  font-size: 0.8rem;\n}\n.cicon {\n  position: absolute;\n  top: -1px;\n}"; }
-}
-
-class AppCryptoIcon {
-    render() {
-        return [h("img", { src: `/assets/icon/${this.symbol.toLowerCase()}.svg` })];
-    }
-    static get is() { return "app-cryptoicon"; }
-    static get properties() { return {
-        "symbol": {
-            "type": String,
-            "attr": "symbol"
-        }
-    }; }
-    static get style() { return ""; }
 }
 
 class Input {
@@ -1326,4 +1312,4 @@ class ToolbarTitle {
     static get styleMode() { return "md"; }
 }
 
-export { AppBalanceItem as AppBalanceitem, AppCryptoIcon as AppCryptoicon, Input as IonInput, Label as IonLabel, List as IonList, ListHeader as IonListHeader, NavPop as IonNavPop, Radio as IonRadio, Refresher as IonRefresher, RefresherContent as IonRefresherContent, Spinner as IonSpinner, ToolbarTitle as IonTitle };
+export { AppBalanceItem as AppBalanceitem, Input as IonInput, Label as IonLabel, List as IonList, ListHeader as IonListHeader, NavPop as IonNavPop, Radio as IonRadio, Refresher as IonRefresher, RefresherContent as IonRefresherContent, Spinner as IonSpinner, ToolbarTitle as IonTitle };

@@ -2,7 +2,7 @@
 const { h } = window.App;
 
 import { c as Exchange } from './chunk-8b6e0876.js';
-import { c as appSetExchanges } from './chunk-65ccb753.js';
+import { c as appSetExchanges } from './chunk-43b312d9.js';
 import './chunk-a7525511.js';
 
 class AppExchangeKeys {

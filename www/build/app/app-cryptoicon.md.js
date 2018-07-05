@@ -3,6 +3,20 @@ const { h } = window.App;
 
 import { a as createThemedClasses, b as getElementClassMap, c as openURL } from './chunk-ea7ac2d5.js';
 
+class AppCryptoIcon {
+    render() {
+        return [h("img", { src: `/assets/icon/${this.symbol.toLowerCase()}.svg` })];
+    }
+    static get is() { return "app-cryptoicon"; }
+    static get properties() { return {
+        "symbol": {
+            "type": String,
+            "attr": "symbol"
+        }
+    }; }
+    static get style() { return ""; }
+}
+
 class Col {
     static get is() { return "ion-col"; }
 }
@@ -134,4 +148,4 @@ class Row {
     static get is() { return "ion-row"; }
 }
 
-export { Col as IonCol, Grid as IonGrid, Item as IonItem, Row as IonRow };
+export { AppCryptoIcon as AppCryptoicon, Col as IonCol, Grid as IonGrid, Item as IonItem, Row as IonRow };

@@ -35,7 +35,9 @@ export class AppOhlc {
           return [d[0], this.altPrice];
         }),
       );
-    });
+    }).catch(()=>{
+      window.alert(`Couldn't get chart data`)
+    });;
   }
 
   setTimeFrame(timeFrame: string) {
@@ -48,46 +50,43 @@ export class AppOhlc {
           return [d[0], this.altPrice];
         }),
       );
+    }).catch(()=>{
+      window.alert(`Couldn't get chart data`)
     });
   }
 
   componentDidLoad() {
-    TRADESERVICE.getOhlc(this.exchangeId, this.symbol, this.timeFrame).then((response) => {
-      this.ohlcData = response.data;
-      this.chart = highstock.stockChart('ohlc', {
-        title: {
-          text: ``,
+    this.chart = highstock.stockChart('ohlc', {
+      title: {
+        text: ``,
+      },
+      rangeSelector: {
+        enabled: false,
+        inputEnabled: false,
+      },
+      navigator: {
+        enabled: false,
+      },
+      scrollbar: {
+        enabled: false,
+      },
+      plotOptions: {
+        line: {
+          dashStyle: 'ShortDot',
         },
-        rangeSelector: {
-          enabled: false,
-          inputEnabled: false,
+      },
+      series: [
+        {
+          name: `${this.exchangeId} - ${this.symbol}`,
+          type: 'candlestick',
+          data: [],
         },
-        navigator: {
-          enabled: false,
+        {
+          name: 'Set Price',
+          type: 'line',
+          data: [],
         },
-        scrollbar: {
-          enabled: false,
-        },
-        plotOptions: {
-          line: {
-            dashStyle: 'ShortDot',
-          },
-        },
-        series: [
-          {
-            name: `${this.exchangeId} - ${this.symbol}`,
-            type: 'candlestick',
-            data: this.ohlcData,
-          },
-          {
-            name: 'Set Price',
-            type: 'line',
-            data: this.ohlcData.map((d) => {
-              return [d[0], this.curPrice];
-            }),
-          },
-        ],
-      });
+      ],
     });
   }
 
@@ -95,16 +94,16 @@ export class AppOhlc {
     return [
       <ion-segment color="light" onIonChange={(e) => this.setTimeFrame(e.detail.value)}>
         <ion-segment-button value="1m" checked={this.timeFrame === '1m'}>
-          <span style={{ color: 'black' }}>1 minute</span>
-        </ion-segment-button>
-        <ion-segment-button value="1h" checked={this.timeFrame === '1h'}>
           <span style={{ color: 'black' }}>1 hour</span>
         </ion-segment-button>
-        <ion-segment-button value="1d" checked={this.timeFrame === '1d'}>
+        <ion-segment-button value="1h" checked={this.timeFrame === '1h'}>
           <span style={{ color: 'black' }}>1 day</span>
         </ion-segment-button>
+        <ion-segment-button value="1d" checked={this.timeFrame === '1d'}>
+          <span style={{ color: 'black' }}>1 week</span>
+        </ion-segment-button>
       </ion-segment>,
-      <div id="ohlc" class="chart" />,
+      <div id="ohlc" style={{ height: '200px' }} />,
     ];
   }
 }

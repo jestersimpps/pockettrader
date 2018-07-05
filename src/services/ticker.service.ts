@@ -9,7 +9,7 @@ export class Ticker {
 }
 
 export class TickerService {
-  getTickersFromStore(): Promise<Ticker[]> {
+  getTickersFromStorage(): Promise<Ticker[]> {
     return STORAGE.get('tickers');
   }
   setTickers(tickers: Ticker[]): void {

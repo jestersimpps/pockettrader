@@ -20,8 +20,8 @@
       "$": "app-baseprice"
     },
     "app-cryptoicon": {
-      "ios": "app-balanceitem.ios",
-      "md": "app-balanceitem.md"
+      "ios": "app-cryptoicon.ios",
+      "md": "app-cryptoicon.md"
     },
     "app-editwallet": {
       "$": "app-editwallet"
@@ -47,6 +47,12 @@
     },
     "app-ohlc": {
       "$": "app-ohlc"
+    },
+    "app-order": {
+      "$": "app-order"
+    },
+    "app-orders": {
+      "$": "app-orders"
     },
     "app-overview": {
       "$": "app-overview"
@@ -101,8 +107,8 @@
       "md": "ion-back-button.md"
     },
     "ion-col": {
-      "ios": "ion-col.ios",
-      "md": "ion-col.md"
+      "ios": "app-cryptoicon.ios",
+      "md": "app-cryptoicon.md"
     },
     "ion-content": {
       "ios": "ion-back-button.ios",
@@ -119,8 +125,8 @@
       "$": "ion-gesture"
     },
     "ion-grid": {
-      "ios": "ion-col.ios",
-      "md": "ion-col.md"
+      "ios": "app-cryptoicon.ios",
+      "md": "app-cryptoicon.md"
     },
     "ion-header": {
       "ios": "ion-back-button.ios",
@@ -134,8 +140,8 @@
       "md": "app-balanceitem.md"
     },
     "ion-item": {
-      "ios": "ion-col.ios",
-      "md": "ion-col.md"
+      "ios": "app-cryptoicon.ios",
+      "md": "app-cryptoicon.md"
     },
     "ion-label": {
       "ios": "app-balanceitem.ios",
@@ -181,8 +187,8 @@
       "md": "my-app.md"
     },
     "ion-row": {
-      "ios": "ion-col.ios",
-      "md": "ion-col.md"
+      "ios": "app-cryptoicon.ios",
+      "md": "app-cryptoicon.md"
     },
     "ion-scroll": {
       "ios": "ion-scroll.ios",

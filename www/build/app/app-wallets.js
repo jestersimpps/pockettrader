@@ -1,8 +1,8 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { c as BALANCESERVICE, a as CURRENCYSERVICE } from './chunk-ea0f4733.js';
-import { c as appSetExchanges, a as appSetBaseCurrency, d as appSetCurrencies, e as appSetTickers, f as appSetTotalBalances, b as appSetWallets, g as appSetBalances } from './chunk-65ccb753.js';
+import { c as BALANCESERVICE, a as CURRENCYSERVICE } from './chunk-9f11c581.js';
+import { c as appSetExchanges, a as appSetBaseCurrency, d as appSetCurrencies, e as appSetTickers, f as appSetTotalBalances, b as appSetWallets, g as appSetBalances } from './chunk-43b312d9.js';
 import './chunk-8b6e0876.js';
 import './chunk-a7525511.js';
 
@@ -35,7 +35,7 @@ class AppWallets {
         });
     }
     addTotalBalance(totalBtcBalance) {
-        BALANCESERVICE.getTotalBalances().then((totalBalances) => {
+        BALANCESERVICE.getTotalBalancesFromStorage().then((totalBalances) => {
             if (totalBtcBalance && totalBtcBalance > 0) {
                 let now = Math.round(new Date().getTime());
                 BALANCESERVICE.setTotalBalances([...totalBalances, [now, totalBtcBalance]]);

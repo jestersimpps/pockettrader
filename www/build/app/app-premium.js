@@ -1,7 +1,7 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { i as appSetToken } from './chunk-65ccb753.js';
+import { i as appSetToken } from './chunk-43b312d9.js';
 
 class AppPremium {
     componentWillLoad() {

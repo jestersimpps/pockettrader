@@ -65,7 +65,7 @@ export class AppOverview {
   }
 
   addTotalBalance(totalBtcBalance: number) {
-    BALANCESERVICE.getTotalBalances().then((totalBalances) => {
+    BALANCESERVICE.getTotalBalancesFromStorage().then((totalBalances) => {
       if (totalBtcBalance && totalBtcBalance > 0) {
         let now = Math.round(new Date().getTime());
         BALANCESERVICE.setTotalBalances([...totalBalances, [now, totalBtcBalance]]);

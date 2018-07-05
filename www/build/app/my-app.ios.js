@@ -2,8 +2,8 @@
 const { h } = window.App;
 
 import { a as commonjsGlobal, b as commonjsRequire, c as unwrapExports, d as createCommonjsModule } from './chunk-a7525511.js';
-import { c as BALANCESERVICE, h as TOKENSERVICE, e as TRADESERVICE, i as EXCHANGESERVICE, a as CURRENCYSERVICE, b as TICKERSERVICE, d as WALLETSERVICE } from './chunk-ea0f4733.js';
-import { j as TypeKeys, c as appSetExchanges, a as appSetBaseCurrency, d as appSetCurrencies, e as appSetTickers, f as appSetTotalBalances, b as appSetWallets, i as appSetToken, g as appSetBalances } from './chunk-65ccb753.js';
+import { c as BALANCESERVICE, h as TOKENSERVICE, e as TRADESERVICE, i as EXCHANGESERVICE, a as CURRENCYSERVICE, b as TICKERSERVICE, d as WALLETSERVICE } from './chunk-9f11c581.js';
+import { j as TypeKeys, c as appSetExchanges, a as appSetBaseCurrency, d as appSetCurrencies, e as appSetTickers, f as appSetTotalBalances, b as appSetWallets, i as appSetToken, g as appSetBalances, h as appSetOrders } from './chunk-43b312d9.js';
 import { d as DefaultExchanges } from './chunk-8b6e0876.js';
 import { a as attachComponent } from './chunk-feaa9237.js';
 import { b as assert, e as debounce, c as now, f as pointerCoord } from './chunk-63df273d.js';
@@ -698,12 +698,13 @@ class MyApp {
             appSetWallets,
             appSetToken,
             appSetBalances,
+            appSetOrders,
         });
         // Load in app state from storage
         EXCHANGESERVICE.getExchanges()
             .then((exchanges) => {
             exchanges ? this.appSetExchanges(exchanges) : this.appSetExchanges(DefaultExchanges);
-            return CURRENCYSERVICE.getBaseCurrency();
+            return CURRENCYSERVICE.getBaseCurrencyFromStorage();
         })
             .then((baseCurrency) => {
             baseCurrency ? this.appSetBaseCurrency(baseCurrency) : this.appSetBaseCurrency(CURRENCYSERVICE.currencies[0]);
@@ -715,18 +716,22 @@ class MyApp {
         })
             .then((currencies) => {
             this.appSetCurrencies(currencies);
-            return TICKERSERVICE.getTickersFromStore();
+            return TICKERSERVICE.getTickersFromStorage();
         })
             .then((tickers) => {
             tickers ? this.appSetTickers(tickers) : this.appSetTickers([]);
-            return BALANCESERVICE.getTotalBalances();
+            return BALANCESERVICE.getTotalBalancesFromStorage();
         })
             .then((totalBalances) => {
             totalBalances ? this.appSetTotalBalances(totalBalances) : this.appSetTotalBalances([]);
-            return BALANCESERVICE.getBalancesFromStore();
+            return BALANCESERVICE.getBalancesFromStorage();
         })
             .then((balances) => {
             balances ? this.appSetBalances(balances) : this.appSetBalances({ overview: 0, exchnges: 0, wallets: 0 });
+            return TRADESERVICE.getOrdersFromStorage();
+        })
+            .then((orders) => {
+            orders ? this.appSetOrders(orders) : this.appSetOrders([]);
             return TOKENSERVICE.getTokenFromStore();
         })
             .then((token) => {
@@ -743,6 +748,8 @@ class MyApp {
                 h("ion-route", { url: "/exchanges", component: "app-exchanges" }),
                 h("ion-route", { url: "/wallets", component: "app-wallets" }),
                 h("ion-route", { url: "/trade", component: "app-trade" }),
+                h("ion-route", { url: "/orders", component: "app-orders" }),
+                h("ion-route", { url: "/orders/:orderId", component: "app-order" }),
                 h("ion-route", { url: "/settings", component: "app-settings" }),
                 h("ion-route", { url: "/settings/keys", component: "app-keys" }),
                 h("ion-route", { url: "/settings/keys/:exchangeId", component: "app-exchangekeys" }),
@@ -755,10 +762,11 @@ class MyApp {
             ",",
             h("ion-footer", { class: "footerHeight" },
                 h("ion-tabs", { color: "light", tabbarHighlight: true, useRouter: true },
-                    h("ion-tab", { icon: "pie", label: "Overview", href: "/overview" }),
                     h("ion-tab", { icon: "list-box", label: "Exchanges", href: "/exchanges" }),
                     h("ion-tab", { icon: "wallet", label: "Wallets", href: "/wallets" }),
-                    h("ion-tab", { icon: "swap", label: "Trade", href: "/trade" }))),
+                    h("ion-tab", { icon: "pie", label: "Overview", href: "/overview" }),
+                    h("ion-tab", { icon: "swap", label: "Trade", href: "/trade" }),
+                    h("ion-tab", { icon: "time", label: "Orders", href: "/orders" }))),
             ",")) : ([
             h("div", { class: "progress", "text-center": true },
                 h("ion-icon", { name: "sync", class: "spin" })),

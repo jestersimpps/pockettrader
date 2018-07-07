@@ -2,7 +2,7 @@
 const { h } = window.App;
 
 import { a as appSetBaseCurrency } from './chunk-43b312d9.js';
-import { a as CURRENCYSERVICE } from './chunk-9f11c581.js';
+import { a as CURRENCYSERVICE } from './chunk-6b468cd6.js';
 import './chunk-8b6e0876.js';
 import './chunk-a7525511.js';
 

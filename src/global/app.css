@@ -32,6 +32,9 @@
     transform: rotate(359deg);
   }
 }
+.segment-ios-dark .segment-button {
+  border-radius: 0px !important;
+}
 .full {
   width: 100%;
 }

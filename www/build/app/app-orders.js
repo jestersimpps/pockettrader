@@ -1,10 +1,10 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { e as TRADESERVICE } from './chunk-9f11c581.js';
-import { h as appSetOrders } from './chunk-43b312d9.js';
+import { e as TRADESERVICE, c as BALANCESERVICE } from './chunk-6b468cd6.js';
 import { a as numeral } from './chunk-374e99fd.js';
 import { a as OrderStatus } from './chunk-da5de7ce.js';
+import { c as appSetExchanges, a as appSetBaseCurrency, d as appSetCurrencies, e as appSetTickers, f as appSetTotalBalances, b as appSetWallets, g as appSetBalances, h as appSetOrders } from './chunk-43b312d9.js';
 import './chunk-8b6e0876.js';
 import './chunk-a7525511.js';
 
@@ -16,26 +16,34 @@ class AppOrders {
     }
     componentWillLoad() {
         this.store.mapStateToProps(this, (state) => {
-            const { app: { exchanges, tickers, orders }, } = state;
+            const { app: { exchanges, wallets, tickers, orders }, } = state;
             return {
                 exchanges,
                 tickers,
+                wallets,
                 orders,
             };
         });
         this.store.mapDispatchToProps(this, {
             appSetOrders,
+            appSetExchanges,
+            appSetBaseCurrency,
+            appSetCurrencies,
+            appSetTickers,
+            appSetTotalBalances,
+            appSetWallets,
+            appSetBalances,
         });
-        this.reloadOrders();
     }
     reloadOrders() {
         this.isLoading = true;
         let openOrderPromises = [];
-        this.orders.forEach((order) => {
+        this.orders.filter((o) => o.status === OrderStatus.open).forEach((order) => {
             let exchange = this.exchanges.find((e) => e.id === order.exchangeId);
             openOrderPromises.push(TRADESERVICE.getOrder(exchange, order.orderId, order.pair));
         });
-        Promise.all(openOrderPromises).then((openOrderData) => {
+        Promise.all(openOrderPromises)
+            .then((openOrderData) => {
             openOrderData.map((od) => od.data).forEach((order) => {
                 let currentOrder = this.orders.find((o) => o.orderId === order.id);
                 let tickerData = this.tickers.find((t) => t.exchangeId === currentOrder.exchangeId).tickers;
@@ -51,13 +59,38 @@ class AppOrders {
                 currentOrder.updatedAt = new Date().getTime();
             });
             this.isLoading = false;
+            this.refreshBalances();
             this.appSetOrders(this.orders);
+        })
+            .catch((error) => {
+            window.alert(`Something went wrong while fetching the orderbook: ${error.message}`);
+            this.isLoading = false;
+        });
+    }
+    refreshBalances() {
+        this.isLoading = true;
+        BALANCESERVICE.refreshBalances(this.wallets, this.exchanges).then((response) => {
+            if (response) {
+                this.appSetCurrencies(response.conversionrates);
+                this.appSetTickers(response.tickers);
+                this.appSetWallets(response.wallets);
+                this.appSetExchanges(response.exchanges);
+                this.appSetBalances({
+                    overview: response.exchangeTotal + response.walletTotal,
+                    exchanges: response.exchangeTotal,
+                    wallets: response.walletTotal,
+                });
+            }
+            this.isLoading = false;
         });
     }
     render() {
         return [
             h("ion-header", null,
                 h("ion-toolbar", { color: "dark" },
+                    h("ion-buttons", { slot: "start" },
+                        h("ion-button", { "icon-only": true, href: "/settings", padding: true },
+                            h("ion-icon", { name: "options" }))),
                     h("ion-title", { "text-center": true }, "Orders"),
                     h("ion-buttons", { slot: "end" },
                         h("ion-button", { "icon-only": true, disabled: this.isLoading, onClick: () => this.reloadOrders(), padding: true },
@@ -133,6 +166,9 @@ class AppOrders {
             "state": true
         },
         "tickers": {
+            "state": true
+        },
+        "wallets": {
             "state": true
         }
     }; }

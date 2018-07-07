@@ -2,7 +2,7 @@
 const { h } = window.App;
 
 import { a as commonjsGlobal, b as commonjsRequire, c as unwrapExports, d as createCommonjsModule } from './chunk-a7525511.js';
-import { c as BALANCESERVICE, h as TOKENSERVICE, e as TRADESERVICE, i as EXCHANGESERVICE, a as CURRENCYSERVICE, b as TICKERSERVICE, d as WALLETSERVICE } from './chunk-9f11c581.js';
+import { c as BALANCESERVICE, h as TOKENSERVICE, e as TRADESERVICE, i as EXCHANGESERVICE, a as CURRENCYSERVICE, b as TICKERSERVICE, d as WALLETSERVICE } from './chunk-6b468cd6.js';
 import { j as TypeKeys, c as appSetExchanges, a as appSetBaseCurrency, d as appSetCurrencies, e as appSetTickers, f as appSetTotalBalances, b as appSetWallets, i as appSetToken, g as appSetBalances, h as appSetOrders } from './chunk-43b312d9.js';
 import { d as DefaultExchanges } from './chunk-8b6e0876.js';
 import { a as attachComponent } from './chunk-feaa9237.js';
@@ -744,7 +744,6 @@ class MyApp {
             h("ion-router", { useHash: false },
                 h("ion-route", { url: "/", component: "app-overview" }),
                 h("ion-route", { url: "/pair/:exchangeId/:pair", component: "app-pair" }),
-                h("ion-route", { url: "/overview", component: "app-overview" }),
                 h("ion-route", { url: "/exchanges", component: "app-exchanges" }),
                 h("ion-route", { url: "/wallets", component: "app-wallets" }),
                 h("ion-route", { url: "/trade", component: "app-trade" }),
@@ -762,11 +761,11 @@ class MyApp {
             ",",
             h("ion-footer", { class: "footerHeight" },
                 h("ion-tabs", { color: "light", tabbarHighlight: true, useRouter: true },
-                    h("ion-tab", { icon: "list-box", label: "Exchanges", href: "/exchanges" }),
-                    h("ion-tab", { icon: "wallet", label: "Wallets", href: "/wallets" }),
-                    h("ion-tab", { icon: "pie", label: "Overview", href: "/overview" }),
                     h("ion-tab", { icon: "swap", label: "Trade", href: "/trade" }),
-                    h("ion-tab", { icon: "time", label: "Orders", href: "/orders" }))),
+                    h("ion-tab", { icon: "time", label: "Orders", href: "/orders" }),
+                    h("ion-tab", { icon: "pie", label: "Overview", href: "/" }),
+                    h("ion-tab", { icon: "list-box", label: "Exchanges", href: "/exchanges" }),
+                    h("ion-tab", { icon: "wallet", label: "Wallets", href: "/wallets" }))),
             ",")) : ([
             h("div", { class: "progress", "text-center": true },
                 h("ion-icon", { name: "sync", class: "spin" })),

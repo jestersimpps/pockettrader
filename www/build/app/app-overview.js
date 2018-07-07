@@ -1,7 +1,7 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { c as BALANCESERVICE, a as CURRENCYSERVICE } from './chunk-9f11c581.js';
+import { c as BALANCESERVICE, a as CURRENCYSERVICE } from './chunk-6b468cd6.js';
 import { c as appSetExchanges, a as appSetBaseCurrency, d as appSetCurrencies, e as appSetTickers, f as appSetTotalBalances, b as appSetWallets, g as appSetBalances } from './chunk-43b312d9.js';
 import { a as highstock } from './chunk-09df4f05.js';
 import { a as numeral } from './chunk-374e99fd.js';

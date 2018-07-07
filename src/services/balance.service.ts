@@ -138,23 +138,23 @@ export class BalanceService {
                     });
                     return response;
                   })
-                  .catch((error) => {
-                    window.alert(error.message);
+                  .catch(() => {
+                    window.alert(`Error fetching balance data, please check API keys`);
                     return null;
                   });
               })
-              .catch((error) => {
-                window.alert(error.message);
+              .catch(() => {
+                window.alert(`Error fetching wallet data, please check internet connection`);
                 return null;
               });
           })
-          .catch((error) => {
-            window.alert(error.message);
+          .catch(() => {
+            window.alert(`Error fetching ticker data, please check internet connection`);
             return null;
           });
       })
-      .catch((error) => {
-        window.alert(error.message);
+      .catch(() => {
+        window.alert(`Error fetching conversionrates, please check internet connection`);
         return null;
       });
   }

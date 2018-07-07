@@ -3,10 +3,20 @@ import { Store, Action } from '@stencil/redux';
 import { Exchange, ExchangeId } from '../../services/exchange.service';
 import { Ticker } from '../../services/ticker.service';
 import { Order } from '../../services/trade.service';
-import { TRADESERVICE } from '../../services/globals';
-import { appSetOrders } from '../../actions/app';
+import { TRADESERVICE, BALANCESERVICE } from '../../services/globals';
 import numeral from 'numeral';
 import { OrderStatus } from '../../exchangewrappers/enums/orderstatus.enum';
+import {
+  appSetExchanges,
+  appSetBaseCurrency,
+  appSetCurrencies,
+  appSetTickers,
+  appSetTotalBalances,
+  appSetWallets,
+  appSetBalances,
+  appSetOrders,
+} from '../../actions/app';
+import { Wallet } from '../../services/wallets.service';
 
 @Component({
   tag: 'app-orders',
@@ -21,52 +31,92 @@ export class AppOrders {
   @State() exchangeId: ExchangeId;
   @State() ticker: any;
   @State() orders: Order[];
+  @State() wallets: Wallet[];
   @State() isLoading = false;
   @State() status = 0;
 
   appSetOrders: Action;
+  appSetExchanges: Action;
+  appSetCurrencies: Action;
+  appSetBaseCurrency: Action;
+  appSetConversionRates: Action;
+  appSetTickers: Action;
+  appSetTotalBalances: Action;
+  appSetWallets: Action;
+  appSetBalances: Action;
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { exchanges, tickers, orders },
+        app: { exchanges, wallets, tickers, orders },
       } = state;
       return {
         exchanges,
         tickers,
+        wallets,
         orders,
       };
     });
     this.store.mapDispatchToProps(this, {
       appSetOrders,
+      appSetExchanges,
+      appSetBaseCurrency,
+      appSetCurrencies,
+      appSetTickers,
+      appSetTotalBalances,
+      appSetWallets,
+      appSetBalances,
     });
-    this.reloadOrders();
   }
 
   reloadOrders() {
     this.isLoading = true;
     let openOrderPromises = [];
-    this.orders.forEach((order) => {
+    this.orders.filter((o) => o.status === OrderStatus.open).forEach((order) => {
       let exchange = this.exchanges.find((e) => e.id === order.exchangeId);
       openOrderPromises.push(TRADESERVICE.getOrder(exchange, order.orderId, order.pair));
     });
-    Promise.all(openOrderPromises).then((openOrderData) => {
-      openOrderData.map((od) => od.data).forEach((order) => {
-        let currentOrder = this.orders.find((o) => o.orderId === order.id);
-        let tickerData = this.tickers.find((t) => t.exchangeId === currentOrder.exchangeId).tickers;
-        let ticker = tickerData.find((t) => t.symbol === currentOrder.pair);
-        currentOrder.filled = order.filled;
-        currentOrder.remaining = order.remaining;
-        currentOrder.base = ticker.base;
-        currentOrder.last = ticker.last;
-        if (+order.remaining === 0) {
-          currentOrder.status = OrderStatus.filled;
-          currentOrder.closePrice = ticker.last;
-        }
-        currentOrder.updatedAt = new Date().getTime();
+    Promise.all(openOrderPromises)
+      .then((openOrderData) => {
+        openOrderData.map((od) => od.data).forEach((order) => {
+          let currentOrder = this.orders.find((o) => o.orderId === order.id);
+          let tickerData = this.tickers.find((t) => t.exchangeId === currentOrder.exchangeId).tickers;
+          let ticker = tickerData.find((t) => t.symbol === currentOrder.pair);
+          currentOrder.filled = order.filled;
+          currentOrder.remaining = order.remaining;
+          currentOrder.base = ticker.base;
+          currentOrder.last = ticker.last;
+          if (+order.remaining === 0) {
+            currentOrder.status = OrderStatus.filled;
+            currentOrder.closePrice = ticker.last;
+          }
+          currentOrder.updatedAt = new Date().getTime();
+        });
+        this.isLoading = false;
+        this.refreshBalances();
+        this.appSetOrders(this.orders);
+      })
+      .catch((error) => {
+        window.alert(`Something went wrong while fetching the orderbook: ${error.message}`);
+        this.isLoading = false;
       });
+  }
+
+  refreshBalances() {
+    this.isLoading = true;
+    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges).then((response) => {
+      if (response) {
+        this.appSetCurrencies(response.conversionrates);
+        this.appSetTickers(response.tickers);
+        this.appSetWallets(response.wallets);
+        this.appSetExchanges(response.exchanges);
+        this.appSetBalances({
+          overview: response.exchangeTotal + response.walletTotal,
+          exchanges: response.exchangeTotal,
+          wallets: response.walletTotal,
+        });
+      }
       this.isLoading = false;
-      this.appSetOrders(this.orders);
     });
   }
 
@@ -74,6 +124,11 @@ export class AppOrders {
     return [
       <ion-header>
         <ion-toolbar color="dark">
+          <ion-buttons slot="start">
+            <ion-button icon-only href="/settings" padding>
+              <ion-icon name="options" />
+            </ion-button>
+          </ion-buttons>
           <ion-title text-center>Orders</ion-title>
           <ion-buttons slot="end">
             <ion-button icon-only disabled={this.isLoading} onClick={() => this.reloadOrders()} padding>

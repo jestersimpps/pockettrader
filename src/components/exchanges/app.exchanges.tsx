@@ -131,7 +131,6 @@ export class AppExchanges {
         </ion-toolbar>
       </ion-header>,
       <ion-content>
-
         <ion-list>
           {this.exchanges.filter((e) => e.key && e.secret).map((exchange) => [
             <ion-list-header color="light">
@@ -140,10 +139,13 @@ export class AppExchanges {
                 <app-baseprice btcPrice={CURRENCYSERVICE.getBaseTotal(exchange.balances, this.baseCurrency)} baseCurrency={this.baseCurrency} />
               </ion-badge>
             </ion-list-header>,
-            exchange.balances.map((b) => <app-balanceitem exchangeId={exchange.id} baseCurrency={this.baseCurrency} cryptodata={b} />),
+            exchange.balances
+              .sort((a, b) => {
+                return b.btcAmount - a.btcAmount;
+              })
+              .map((b) => <app-balanceitem exchangeId={exchange.id} baseCurrency={this.baseCurrency} cryptodata={b} />),
           ])}
         </ion-list>
-
       </ion-content>,
     ];
   }

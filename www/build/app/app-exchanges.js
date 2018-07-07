@@ -94,7 +94,11 @@ class AppExchanges {
                         exchange.id,
                         h("ion-badge", { color: "light", "margin-right": true },
                             h("app-baseprice", { btcPrice: CURRENCYSERVICE.getBaseTotal(exchange.balances, this.baseCurrency), baseCurrency: this.baseCurrency }))),
-                    exchange.balances.map((b) => h("app-balanceitem", { exchangeId: exchange.id, baseCurrency: this.baseCurrency, cryptodata: b })),
+                    exchange.balances
+                        .sort((a, b) => {
+                        return b.btcAmount - a.btcAmount;
+                    })
+                        .map((b) => h("app-balanceitem", { exchangeId: exchange.id, baseCurrency: this.baseCurrency, cryptodata: b })),
                 ]))),
         ];
     }

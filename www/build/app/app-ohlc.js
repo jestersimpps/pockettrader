@@ -366,8 +366,6 @@ class AppTrade {
                             // <ion-list-header color="light">{exchange.id}</ion-list-header>,
                             exchange.balances.filter((b) => b.currency != `BTC`).map((b) => [
                                 h("ion-item", { lines: "full", onClick: () => this.pairSelected(exchange.id, this.getSymbol(b, exchange)) },
-                                    h("app-cryptoicon", { class: "cicon", symbol: b.currency, "margin-right": true }),
-                                    " ",
                                     this.getSymbol(b, exchange),
                                     h("ion-label", { slot: "end", "text-right": true }, exchange.id)),
                             ]),
@@ -502,8 +500,8 @@ class AppTrade {
                     remaining: 0,
                     amount: numeral(amount).format(this.getAmountFormat()),
                     fee: this.tradeAction === OrderType.LIMITBUY || this.tradeAction === OrderType.LIMITSELL
-                        ? numeral(+this.ticker.info.maker * +this.tradeAmount * +this.tradePrice).format(this.getAmountFormat())
-                        : numeral(+this.ticker.info.taker * +this.tradeAmount * +this.tradePrice).format(this.getAmountFormat()),
+                        ? numeral(+this.ticker.info.maker * +this.tradeAmount * +this.tradePrice).format(this.getPriceFormat())
+                        : numeral(+this.ticker.info.taker * +this.tradeAmount * +this.tradePrice).format(this.getPriceFormat()),
                     createdAt: new Date().getTime(),
                     updatedAt: new Date().getTime(),
                 };

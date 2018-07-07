@@ -1,7 +1,7 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { e as TRADESERVICE, c as BALANCESERVICE } from './chunk-6b468cd6.js';
+import { g as OrderType, e as TRADESERVICE, c as BALANCESERVICE } from './chunk-6b468cd6.js';
 import { a as numeral } from './chunk-374e99fd.js';
 import { a as OrderStatus } from './chunk-da5de7ce.js';
 import { c as appSetExchanges, a as appSetBaseCurrency, d as appSetCurrencies, e as appSetTickers, f as appSetTotalBalances, b as appSetWallets, g as appSetBalances, h as appSetOrders } from './chunk-43b312d9.js';
@@ -52,9 +52,15 @@ class AppOrders {
                 currentOrder.remaining = order.remaining;
                 currentOrder.base = ticker.base;
                 currentOrder.last = ticker.last;
+                currentOrder.quote = ticker.quote;
                 if (+order.remaining === 0) {
-                    currentOrder.status = OrderStatus.filled;
-                    currentOrder.closePrice = ticker.last;
+                    if (order.type === OrderType.LIMITBUY || order.type === OrderType.MARKETBUY) {
+                        currentOrder.status = OrderStatus.filled;
+                    }
+                    else {
+                        currentOrder.status = OrderStatus.closed;
+                        currentOrder.closePrice = ticker.last;
+                    }
                 }
                 currentOrder.updatedAt = new Date().getTime();
             });
@@ -97,10 +103,31 @@ class AppOrders {
                             h("ion-icon", { name: "refresh", class: this.isLoading ? 'spin' : '' })))),
                 h("ion-segment", { color: "dark", onIonChange: (e) => (this.status = +e.detail.value) },
                     h("ion-segment-button", { value: "0", checked: this.status === 0 }, "Open"),
-                    h("ion-segment-button", { value: "1", checked: this.status === 1 }, "Filled"))),
+                    h("ion-segment-button", { value: "1", checked: this.status === 1 }, "Bought"),
+                    h("ion-segment-button", { value: "2", checked: this.status === 2 }, "Sold"),
+                    h("ion-segment-button", { value: "3", checked: this.status === 3 }, "Cancelled"))),
             h("ion-content", null,
                 this.status === 0 && [
                     this.orders.filter((o) => o.status === OrderStatus.open).map((order) => [
+                        h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
+                            h("ion-grid", null,
+                                h("ion-row", null,
+                                    h("ion-col", { "col-4": true, class: "lineText" }, order.type),
+                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.amount).format('0,0.000000')),
+                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
+                                        h("small", null, "fill:"),
+                                        numeral(order.openPrice).format('0,0.000000'))),
+                                h("ion-row", null,
+                                    h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
+                                        h("b", null, order.pair)),
+                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, order.exchangeId),
+                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
+                                        h("small", null, "last:"),
+                                        numeral(order.last).format('0,0.000000'))))),
+                    ]),
+                ],
+                this.status === 1 && [
+                    this.orders.filter((o) => o.status === OrderStatus.filled).map((order) => [
                         h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
                             h("ion-grid", null,
                                 h("ion-row", null,
@@ -118,8 +145,27 @@ class AppOrders {
                                         numeral(order.last).format('0,0.000000'))))),
                     ]),
                 ],
-                this.status === 1 && [
-                    this.orders.filter((o) => o.status === OrderStatus.filled).map((order) => [
+                this.status === 2 && [
+                    this.orders.filter((o) => o.status === OrderStatus.closed).map((order) => [
+                        h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
+                            h("ion-grid", null,
+                                h("ion-row", null,
+                                    h("ion-col", { "col-4": true, class: "lineText" }, order.type),
+                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.amount).format('0,0.000000')),
+                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
+                                        h("small", null, "open:"),
+                                        numeral(order.openPrice).format('0,0.000000'))),
+                                h("ion-row", null,
+                                    h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
+                                        h("b", null, order.pair)),
+                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, order.exchangeId),
+                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
+                                        h("small", null, "close:"),
+                                        numeral(order.last).format('0,0.000000'))))),
+                    ]),
+                ],
+                this.status === 3 && [
+                    this.orders.filter((o) => o.status === OrderStatus.cancelled).map((order) => [
                         h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
                             h("ion-grid", null,
                                 h("ion-row", null,

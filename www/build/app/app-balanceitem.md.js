@@ -67,6 +67,20 @@ class AppBalanceItem {
     static get style() { return ".lineText {\n  font-size: 0.8rem;\n}\n.cicon {\n  position: absolute;\n  top: -1px;\n}"; }
 }
 
+class AppCryptoIcon {
+    render() {
+        return [h("img", { src: `/assets/icon/${this.symbol.toLowerCase()}.svg` })];
+    }
+    static get is() { return "app-cryptoicon"; }
+    static get properties() { return {
+        "symbol": {
+            "type": String,
+            "attr": "symbol"
+        }
+    }; }
+    static get style() { return ""; }
+}
+
 class Input {
     constructor() {
         this.didBlurAfterEdit = false;
@@ -1312,4 +1326,4 @@ class ToolbarTitle {
     static get styleMode() { return "md"; }
 }
 
-export { AppBalanceItem as AppBalanceitem, Input as IonInput, Label as IonLabel, List as IonList, ListHeader as IonListHeader, NavPop as IonNavPop, Radio as IonRadio, Refresher as IonRefresher, RefresherContent as IonRefresherContent, Spinner as IonSpinner, ToolbarTitle as IonTitle };
+export { AppBalanceItem as AppBalanceitem, AppCryptoIcon as AppCryptoicon, Input as IonInput, Label as IonLabel, List as IonList, ListHeader as IonListHeader, NavPop as IonNavPop, Radio as IonRadio, Refresher as IonRefresher, RefresherContent as IonRefresherContent, Spinner as IonSpinner, ToolbarTitle as IonTitle };

@@ -15,6 +15,7 @@ export class Order {
   amount: number;
   filled: number;
   base: string;
+  quote: string;
   last: number;
   remaining: number;
   fee?: number;

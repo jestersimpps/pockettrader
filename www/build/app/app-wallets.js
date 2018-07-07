@@ -79,6 +79,9 @@ class AppWallets {
                     h("ion-refresher-content", null)),
                 h("ion-list", null, this.wallets
                     .filter((w) => w.balance > 0)
+                    .sort((a, b) => {
+                    return b.btcAmount - a.btcAmount;
+                })
                     .map((wallet) => h("app-balanceitem", { exchangeId: null, baseCurrency: this.baseCurrency, cryptodata: wallet })))),
         ];
     }

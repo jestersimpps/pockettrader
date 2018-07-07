@@ -45,11 +45,17 @@ export class AppOrder {
           <ion-buttons slot="start">
             <ion-back-button defaultHref="/orders" />
           </ion-buttons>
-          <ion-title text-center>Open {this.order.base} Order</ion-title>
+          <ion-title text-center>{this.order.base} Order</ion-title>
         </ion-toolbar>
       </ion-header>,
       <ion-content>
         <ion-list>
+          <ion-item lines="none">
+            <ion-label>Type</ion-label>
+            <ion-label text-right slot="end">
+              {this.order.type}
+            </ion-label>
+          </ion-item>
           <ion-item lines="none">
             <ion-label>Exchange</ion-label>
             <ion-label text-right slot="end">
@@ -62,10 +68,16 @@ export class AppOrder {
               {this.order.pair}
             </ion-label>
           </ion-item>
+          <ion-item lines="full">
+            <ion-label>Status</ion-label>
+            <ion-badge color="dark" text-right slot="end">
+              {this.order.status}
+            </ion-badge>
+          </ion-item>
           <ion-item lines="none">
-            <ion-label>Type</ion-label>
+            <ion-label>Open Price</ion-label>
             <ion-label text-right slot="end">
-              {this.order.type}
+              {this.order.openPrice ? numeral(this.order.openPrice).format('0,0.00000000') : '-'}
             </ion-label>
           </ion-item>
           <ion-item lines="none">
@@ -75,23 +87,50 @@ export class AppOrder {
             </ion-label>
           </ion-item>
           <ion-item lines="none">
-            <ion-label>Open Price</ion-label>
+            <ion-label>Fee</ion-label>
             <ion-label text-right slot="end">
-              {this.order.openPrice}
+              {this.order.fee ? numeral(this.order.fee).format('0,0.00000000') : '-'}
+            </ion-label>
+          </ion-item>
+          <ion-item lines="full">
+            <ion-label>Total</ion-label>
+            <ion-label text-right slot="end">
+              {numeral(this.order.openPrice * this.order.amount - this.order.fee).format('0,0.00000000')} {this.order.quote}
             </ion-label>
           </ion-item>
           <ion-item lines="none">
             <ion-label>last Price</ion-label>
             <ion-label text-right slot="end">
-              {this.order.last}
+              {this.order.last ? numeral(this.order.last).format('0,0.00000000') : '-'}
             </ion-label>
           </ion-item>
           <ion-item lines="none">
-            <ion-label>Filled</ion-label>
+            <ion-label>Profit/Loss</ion-label>
             <ion-label text-right slot="end">
-              {numeral(this.order.filled / this.order.amount).format('0,0.00')} %
+              <b style={{ color: (this.order.last * 100) / this.order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
+                {(this.order.last * 100) / this.order.openPrice - 100 > 0
+                  ? '+' + numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'
+                  : numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'}
+              </b>
             </ion-label>
           </ion-item>
+          <ion-item lines="none">
+            <ion-label>Close Price</ion-label>
+            <ion-label text-right slot="end">
+              {this.order.closePrice ? numeral(this.order.closePrice).format('0,0.00000000') : '-'}
+            </ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-label>Total Profit/Loss</ion-label>
+            <ion-label text-right slot="end">
+              {this.order.closePrice
+                ? numeral(this.order.closePrice * this.order.amount - this.order.openPrice * this.order.amount - 2 * this.order.fee).format(
+                    '0,0.00000000',
+                  )
+                : '-'}
+            </ion-label>
+          </ion-item>
+
           {this.order.status === OrderStatus.open && (
             <ion-button color="danger" expand="block" disabled={this.isLoading} onClick={() => this.cancelOrder()}>
               {this.isLoading && <ion-icon name="refresh" class="spin" margin-right />}

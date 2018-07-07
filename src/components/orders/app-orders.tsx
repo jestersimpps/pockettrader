@@ -2,7 +2,7 @@ import { Component, State, Prop } from '@stencil/core';
 import { Store, Action } from '@stencil/redux';
 import { Exchange, ExchangeId } from '../../services/exchange.service';
 import { Ticker } from '../../services/ticker.service';
-import { Order } from '../../services/trade.service';
+import { Order, OrderType } from '../../services/trade.service';
 import { TRADESERVICE, BALANCESERVICE } from '../../services/globals';
 import numeral from 'numeral';
 import { OrderStatus } from '../../exchangewrappers/enums/orderstatus.enum';
@@ -86,9 +86,14 @@ export class AppOrders {
           currentOrder.remaining = order.remaining;
           currentOrder.base = ticker.base;
           currentOrder.last = ticker.last;
+          currentOrder.quote = ticker.quote;
           if (+order.remaining === 0) {
-            currentOrder.status = OrderStatus.filled;
-            currentOrder.closePrice = ticker.last;
+            if (order.type === OrderType.LIMITBUY || order.type === OrderType.MARKETBUY) {
+              currentOrder.status = OrderStatus.filled;
+            } else {
+              currentOrder.status = OrderStatus.closed;
+              currentOrder.closePrice = ticker.last;
+            }
           }
           currentOrder.updatedAt = new Date().getTime();
         });
@@ -141,74 +146,164 @@ export class AppOrders {
             Open
           </ion-segment-button>
           <ion-segment-button value="1" checked={this.status === 1}>
-            Filled
+            Bought
+          </ion-segment-button>
+          <ion-segment-button value="2" checked={this.status === 2}>
+            Sold
+          </ion-segment-button>
+          <ion-segment-button value="3" checked={this.status === 3}>
+            Cancelled
           </ion-segment-button>
         </ion-segment>
       </ion-header>,
       <ion-content>
         {this.status === 0 && [
-          this.orders.filter((o) => o.status === OrderStatus.open).map((order) => [
-            <ion-item lines="full" href={`/orders/${order.orderId}`}>
-              <ion-grid>
-                <ion-row>
-                  <ion-col col-4 class="lineText">
-                    {order.type}
-                  </ion-col>
-                  <ion-col col-4 text-center class="lineText">
-                    {numeral(order.amount).format('0,0.000000')}
-                  </ion-col>
-                  <ion-col col-4 text-right class="lineText">
-                    <small>open:</small>
-                    {numeral(order.openPrice).format('0,0.000000')}
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col col-4 text-left class="lineText">
-                    <b>{order.pair}</b>
-                  </ion-col>
-                  <ion-col col-4 text-center class="lineText">
-                    {order.exchangeId}
-                  </ion-col>
-                  <ion-col col-4 text-right class="lineText">
-                    <small>last:</small>
-                    {numeral(order.last).format('0,0.000000')}
-                  </ion-col>
-                </ion-row>
-              </ion-grid>
-            </ion-item>,
-          ]),
+          this.orders
+            .sort((a, b) => {
+              return b.updatedAt - a.updatedAt;
+            })
+            .filter((o) => o.status === OrderStatus.open)
+            .map((order) => [
+              <ion-item lines="full" href={`/orders/${order.orderId}`}>
+                <ion-grid>
+                  <ion-row>
+                    <ion-col col-4 class="lineText">
+                      {order.type}
+                    </ion-col>
+                    <ion-col col-4 text-center class="lineText">
+                      {numeral(order.amount).format('0,0.000000')}
+                    </ion-col>
+                    <ion-col col-4 text-right class="lineText">
+                      <small>fill:</small>
+                      {numeral(order.openPrice).format('0,0.000000')}
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col col-4 text-left class="lineText">
+                      <b>{order.pair}</b>
+                    </ion-col>
+                    <ion-col col-4 text-center class="lineText">
+                      {order.exchangeId}
+                    </ion-col>
+                    <ion-col col-4 text-right class="lineText">
+                      <small>last:</small>
+                      {numeral(order.last).format('0,0.000000')}
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-item>,
+            ]),
         ]}
         {this.status === 1 && [
-          this.orders.filter((o) => o.status === OrderStatus.filled).map((order) => [
-            <ion-item lines="full" href={`/orders/${order.orderId}`}>
-              <ion-grid>
-                <ion-row>
-                  <ion-col col-4 class="lineText">
-                    {order.type}
-                  </ion-col>
-                  <ion-col col-4 text-center class="lineText">
-                    {numeral(order.amount).format('0,0.000000')}
-                  </ion-col>
-                  <ion-col col-4 text-right class="lineText">
-                    <small>open:</small>
-                    {numeral(order.openPrice).format('0,0.000000')}
-                  </ion-col>
-                </ion-row>
-                <ion-row>
-                  <ion-col col-4 text-left class="lineText">
-                    <b>{order.pair}</b>
-                  </ion-col>
-                  <ion-col col-4 text-center class="lineText">
-                    {order.exchangeId}
-                  </ion-col>
-                  <ion-col col-4 text-right class="lineText">
-                    <small>last:</small>
-                    {numeral(order.last).format('0,0.000000')}
-                  </ion-col>
-                </ion-row>
-              </ion-grid>
-            </ion-item>,
-          ]),
+          this.orders
+            .sort((a, b) => {
+              return b.updatedAt - a.updatedAt;
+            })
+            .filter((o) => o.status === OrderStatus.filled)
+            .map((order) => [
+              <ion-item lines="full" href={`/orders/${order.orderId}`}>
+                <ion-grid>
+                  <ion-row>
+                    <ion-col col-4 class="lineText">
+                      {order.type}
+                    </ion-col>
+                    <ion-col col-4 text-center class="lineText">
+                      {numeral(order.amount).format('0,0.000000')}
+                    </ion-col>
+                    <ion-col col-4 text-right class="lineText">
+                      <small>open:</small>
+                      {numeral(order.openPrice).format('0,0.000000')}
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col col-4 text-left class="lineText">
+                      <b>{order.pair}</b>
+                    </ion-col>
+                    <ion-col col-4 text-center class="lineText">
+                      {order.exchangeId}
+                    </ion-col>
+                    <ion-col col-4 text-right class="lineText">
+                      <small>last:</small>
+                      {numeral(order.last).format('0,0.000000')}
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-item>,
+            ]),
+        ]}
+        {this.status === 2 && [
+          this.orders
+            .sort((a, b) => {
+              return b.updatedAt - a.updatedAt;
+            })
+            .filter((o) => o.status === OrderStatus.closed)
+            .map((order) => [
+              <ion-item lines="full" href={`/orders/${order.orderId}`}>
+                <ion-grid>
+                  <ion-row>
+                    <ion-col col-4 class="lineText">
+                      {order.type}
+                    </ion-col>
+                    <ion-col col-4 text-center class="lineText">
+                      {numeral(order.amount).format('0,0.000000')}
+                    </ion-col>
+                    <ion-col col-4 text-right class="lineText">
+                      <small>open:</small>
+                      {numeral(order.openPrice).format('0,0.000000')}
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col col-4 text-left class="lineText">
+                      <b>{order.pair}</b>
+                    </ion-col>
+                    <ion-col col-4 text-center class="lineText">
+                      {order.exchangeId}
+                    </ion-col>
+                    <ion-col col-4 text-right class="lineText">
+                      <small>close:</small>
+                      {numeral(order.last).format('0,0.000000')}
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-item>,
+            ]),
+        ]}
+        {this.status === 3 && [
+          this.orders
+            .sort((a, b) => {
+              return b.updatedAt - a.updatedAt;
+            })
+            .filter((o) => o.status === OrderStatus.cancelled)
+            .map((order) => [
+              <ion-item lines="full" href={`/orders/${order.orderId}`}>
+                <ion-grid>
+                  <ion-row>
+                    <ion-col col-4 class="lineText">
+                      {order.type}
+                    </ion-col>
+                    <ion-col col-4 text-center class="lineText">
+                      {numeral(order.amount).format('0,0.000000')}
+                    </ion-col>
+                    <ion-col col-4 text-right class="lineText">
+                      <small>open:</small>
+                      {numeral(order.openPrice).format('0,0.000000')}
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col col-4 text-left class="lineText">
+                      <b>{order.pair}</b>
+                    </ion-col>
+                    <ion-col col-4 text-center class="lineText">
+                      {order.exchangeId}
+                    </ion-col>
+                    <ion-col col-4 text-right class="lineText">
+                      <small>last:</small>
+                      {numeral(order.last).format('0,0.000000')}
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-item>,
+            ]),
         ]}
       </ion-content>,
     ];

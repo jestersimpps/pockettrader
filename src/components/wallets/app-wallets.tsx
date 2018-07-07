@@ -122,6 +122,9 @@ export class AppWallets {
         <ion-list>
           {this.wallets
             .filter((w) => w.balance > 0)
+            .sort((a, b) => {
+              return b.btcAmount - a.btcAmount;
+            })
             .map((wallet) => <app-balanceitem exchangeId={null} baseCurrency={this.baseCurrency} cryptodata={wallet} />)}
         </ion-list>
       </ion-content>,

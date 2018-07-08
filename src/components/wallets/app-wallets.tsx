@@ -1,7 +1,7 @@
 import { Component, State, Prop } from '@stencil/core';
 import { BALANCESERVICE, CURRENCYSERVICE } from '../../services/globals';
 import { Currency } from '../../services/currency.service';
-import { Exchange } from '../../services/exchange.service';
+import { Exchange, ExchangeId } from '../../services/exchange.service';
 import {
   appSetExchanges,
   appSetBaseCurrency,
@@ -96,6 +96,21 @@ export class AppWallets {
     });
   }
 
+  getExchange(balance: any): ExchangeId {
+    let exchangeId = null;
+    this.exchanges.forEach((exchange) => {
+      let tickerData = this.tickers.find((t) => t.exchangeId === exchange.id);
+      if (tickerData) {
+        let tickers = tickerData.tickers;
+        let symbol = BALANCESERVICE.getBtcStats(balance, tickers).symbol;
+        if (symbol) {
+          exchangeId = exchange.id;
+        }
+      }
+    });
+    return exchangeId;
+  }
+
   render() {
     return [
       <ion-header>
@@ -127,7 +142,9 @@ export class AppWallets {
             .sort((a, b) => {
               return b.btcAmount - a.btcAmount;
             })
-            .map((wallet) => <app-balanceitem exchangeId={null} baseCurrency={this.baseCurrency} cryptodata={wallet} />)}
+            .map((wallet) => {
+              return <app-balanceitem exchangeId={this.getExchange(wallet)} baseCurrency={this.baseCurrency} cryptodata={wallet} />;
+            })}
         </ion-list>
       </ion-content>,
     ];

@@ -40,10 +40,8 @@ class AppDust {
                         h("ion-input", { name: "dust", type: "number", value: `${this.dust}`, onInput: (ev) => this.changeValue(ev) })),
                     h("ion-item", { lines: "none" },
                         h("ion-label", null,
-                            "\u00B1 ",
-                            this.baseCurrency.symbol,
-                            " ",
-                            CURRENCYSERVICE.convertToBase(this.dust, this.baseCurrency)))),
+                            "=   ",
+                            h("app-baseprice", { btcPrice: CURRENCYSERVICE.convertToBase(this.dust, this.baseCurrency), baseCurrency: this.baseCurrency })))),
                 h("ion-nav-pop", null,
                     h("ion-button", { "icon-left": true, color: "success", expand: "full", onClick: () => this.setValue() }, "Set"))),
         ];

@@ -14,7 +14,7 @@ export class AppBalanceItem {
   @Prop() exchangeId: ExchangeId;
   @Prop() baseCurrency: Currency;
   @Prop() cryptodata: Wallet | Balance;
-
+  
   render() {
     return [
       // TODO: if exchangeid == null, pick one

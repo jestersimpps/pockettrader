@@ -62,6 +62,20 @@ class AppWallets {
             this.isLoading = false;
         });
     }
+    getExchange(balance) {
+        let exchangeId = null;
+        this.exchanges.forEach((exchange) => {
+            let tickerData = this.tickers.find((t) => t.exchangeId === exchange.id);
+            if (tickerData) {
+                let tickers = tickerData.tickers;
+                let symbol = BALANCESERVICE.getBtcStats(balance, tickers).symbol;
+                if (symbol) {
+                    exchangeId = exchange.id;
+                }
+            }
+        });
+        return exchangeId;
+    }
     render() {
         return [
             h("ion-header", null,
@@ -83,7 +97,9 @@ class AppWallets {
                     .sort((a, b) => {
                     return b.btcAmount - a.btcAmount;
                 })
-                    .map((wallet) => h("app-balanceitem", { exchangeId: null, baseCurrency: this.baseCurrency, cryptodata: wallet })))),
+                    .map((wallet) => {
+                    return h("app-balanceitem", { exchangeId: this.getExchange(wallet), baseCurrency: this.baseCurrency, cryptodata: wallet });
+                }))),
         ];
     }
     static get is() { return "app-wallets"; }

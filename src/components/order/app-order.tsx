@@ -5,6 +5,8 @@ import numeral from 'numeral';
 import { appSetOrders } from '../../actions/app';
 import { TRADESERVICE } from '../../services/globals';
 import { Exchange } from '../../services/exchange.service';
+import { CURRENCYSERVICE } from '../../services/globals';
+import { Currency } from '../../services/currency.service';
 
 @Component({
   tag: 'app-order',
@@ -18,17 +20,19 @@ export class AppOrder {
   @State() orders: Order[];
   @State() exchanges: Exchange[];
   @State() isLoading: boolean;
+  @State() baseCurrency: Currency;
 
   appSetOrders: Action;
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { orders, exchanges },
+        app: { orders, exchanges, baseCurrency },
       } = state;
       return {
         orders,
         exchanges,
+        baseCurrency,
       };
     });
     this.store.mapDispatchToProps(this, {
@@ -103,16 +107,30 @@ export class AppOrder {
               {this.order.last ? numeral(this.order.last).format('0,0.00000000') : '-'}
             </ion-label>
           </ion-item>
-          <ion-item lines="none">
-            <ion-label>Profit/Loss</ion-label>
-            <ion-label text-right slot="end">
-              <b style={{ color: (this.order.last * 100) / this.order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
-                {(this.order.last * 100) / this.order.openPrice - 100 > 0
-                  ? '+' + numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'
-                  : numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'}
-              </b>
-            </ion-label>
-          </ion-item>
+          {this.order.status === OrderStatus.filled && (
+            <ion-item lines="none">
+              <ion-label>Profit/Loss</ion-label>
+              <ion-label text-right slot="end">
+                <b style={{ color: (this.order.last * 100) / this.order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
+                  {(this.order.last * 100) / this.order.openPrice - 100 > 0
+                    ? '+' + numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'
+                    : numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'}
+                </b>
+              </ion-label>
+            </ion-item>
+          )}
+          {this.order.status === OrderStatus.open && (
+            <ion-item lines="none">
+              <ion-label>Last/Open Price</ion-label>
+              <ion-label text-right slot="end">
+                <b style={{ color: (this.order.last * 100) / this.order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
+                  {(this.order.last * 100) / this.order.openPrice - 100 > 0
+                    ? '+' + numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'
+                    : numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'}
+                </b>
+              </ion-label>
+            </ion-item>
+          )}
           <ion-item lines="none">
             <ion-label>Close Price</ion-label>
             <ion-label text-right slot="end">
@@ -122,11 +140,18 @@ export class AppOrder {
           <ion-item lines="none">
             <ion-label>Total Profit/Loss</ion-label>
             <ion-label text-right slot="end">
-              {this.order.closePrice
-                ? numeral(this.order.closePrice * this.order.amount - this.order.openPrice * this.order.amount - 2 * this.order.fee).format(
-                    '0,0.00000000',
-                  )
-                : '-'}
+              {this.baseCurrency.symbol}{' '}
+              {this.order.closePrice ? (
+                <app-baseprice
+                  btcPrice={CURRENCYSERVICE.convertToBase(
+                    this.order.closePrice * this.order.amount - this.order.openPrice * this.order.amount - 2 * this.order.fee,
+                    this.baseCurrency,
+                  )}
+                  baseCurrency={this.baseCurrency}
+                />
+              ) : (
+                '-'
+              )}
             </ion-label>
           </ion-item>
 

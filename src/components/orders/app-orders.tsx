@@ -175,7 +175,7 @@ export class AppOrders {
                       {numeral(order.amount).format('0,0.000000')}
                     </ion-col>
                     <ion-col col-4 text-right class="lineText">
-                      <small>fill:</small>
+                      <small>open:</small>
                       {numeral(order.openPrice).format('0,0.000000')}
                     </ion-col>
                   </ion-row>
@@ -213,7 +213,7 @@ export class AppOrders {
                       {numeral(order.amount).format('0,0.000000')}
                     </ion-col>
                     <ion-col col-4 text-right class="lineText">
-                      <small>open:</small>
+                      <small>fill:</small>
                       {numeral(order.openPrice).format('0,0.000000')}
                     </ion-col>
                   </ion-row>
@@ -251,7 +251,7 @@ export class AppOrders {
                       {numeral(order.amount).format('0,0.000000')}
                     </ion-col>
                     <ion-col col-4 text-right class="lineText">
-                      <small>open:</small>
+                      <small>fill:</small>
                       {numeral(order.openPrice).format('0,0.000000')}
                     </ion-col>
                   </ion-row>

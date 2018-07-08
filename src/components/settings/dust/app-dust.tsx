@@ -59,7 +59,10 @@ export class AppDust {
           </ion-item>
           <ion-item lines="none">
             <ion-label>
-              ± {this.baseCurrency.symbol} {CURRENCYSERVICE.convertToBase(this.dust, this.baseCurrency)}
+              =   <app-baseprice
+                  btcPrice={CURRENCYSERVICE.convertToBase(this.dust, this.baseCurrency)}
+                  baseCurrency={this.baseCurrency}
+                />
             </ion-label>
           </ion-item>
         </ion-list>

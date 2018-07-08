@@ -23,6 +23,9 @@
       "ios": "app-balanceitem.ios",
       "md": "app-balanceitem.md"
     },
+    "app-dust": {
+      "$": "app-dust"
+    },
     "app-editwallet": {
       "$": "app-editwallet"
     },
@@ -115,8 +118,8 @@
       "md": "ion-back-button.md"
     },
     "ion-footer": {
-      "ios": "ion-footer.ios",
-      "md": "ion-footer.md"
+      "ios": "my-app.ios",
+      "md": "my-app.md"
     },
     "ion-gesture": {
       "$": "ion-gesture"
@@ -143,9 +146,13 @@
       "ios": "ion-col.ios",
       "md": "ion-col.md"
     },
-    "ion-label": {
+    "ion-item-divider": {
       "ios": "app-balanceitem.ios",
       "md": "app-balanceitem.md"
+    },
+    "ion-label": {
+      "ios": "ion-label.ios",
+      "md": "ion-label.md"
     },
     "ion-list": {
       "ios": "app-balanceitem.ios",

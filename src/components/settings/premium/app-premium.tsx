@@ -1,6 +1,6 @@
 import { Component, State, Prop } from '@stencil/core';
 import { Store, Action } from '@stencil/redux';
-import { appSetToken } from '../../actions/app';
+import { appSetToken } from '../../../actions/app';
 
 @Component({
   tag: 'app-premium',

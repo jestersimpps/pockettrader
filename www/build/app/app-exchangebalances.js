@@ -1,7 +1,7 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { c as Exchange } from './chunk-8b6e0876.js';
+import { c as Exchange } from './chunk-ea6d9d39.js';
 import './chunk-a7525511.js';
 
 class AppExchangeBalances {

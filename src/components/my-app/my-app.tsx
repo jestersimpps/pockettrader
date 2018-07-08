@@ -13,6 +13,7 @@ import {
   appSetToken,
   appSetBalances,
   appSetOrders,
+  appSetDust,
 } from '../../actions/app';
 import { CURRENCYSERVICE, BALANCESERVICE, EXCHANGESERVICE, TICKERSERVICE, WALLETSERVICE, TOKENSERVICE, TRADESERVICE } from '../../services/globals';
 
@@ -34,6 +35,7 @@ export class MyApp {
   appSetBalances: Action;
   appSetToken: Action;
   appSetOrders: Action;
+  appSetDust: Action;
 
   componentWillLoad() {
     // Only do this once, in the root component
@@ -48,9 +50,10 @@ export class MyApp {
       appSetToken,
       appSetBalances,
       appSetOrders,
+      appSetDust,
     });
     // Load in app state from storage
-    EXCHANGESERVICE.getExchanges()
+    EXCHANGESERVICE.getExchangesFromStorage()
       .then((exchanges) => {
         exchanges ? this.appSetExchanges(exchanges) : this.appSetExchanges(DefaultExchanges);
         return CURRENCYSERVICE.getBaseCurrencyFromStorage();
@@ -81,7 +84,11 @@ export class MyApp {
       })
       .then((orders) => {
         orders ? this.appSetOrders(orders) : this.appSetOrders([]);
-        return TOKENSERVICE.getTokenFromStore();
+        return EXCHANGESERVICE.getDustFromStorage();
+      })
+      .then((dust) => {
+        dust ? this.appSetDust(dust) : this.appSetDust( 0.000002);
+        return TOKENSERVICE.getTokenFromStorage();
       })
       .then((token) => {
         token ? this.appSetToken(token) : this.appSetToken(TOKENSERVICE.generateNewToken());
@@ -107,6 +114,7 @@ export class MyApp {
           <ion-route url="/settings/holdings" component="app-holdings" />
           <ion-route url="/settings/holdings/:walletId" component="app-editwallet" />
           <ion-route url="/settings/premium" component="app-premium" />
+          <ion-route url="/settings/dust" component="app-dust" />
           <ion-route url="/panic" component="app-panic" />
         </ion-router>
         <ion-nav animated={true} margin-bottom />,

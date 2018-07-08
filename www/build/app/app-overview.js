@@ -1,11 +1,11 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { c as BALANCESERVICE, a as CURRENCYSERVICE } from './chunk-6b468cd6.js';
-import { c as appSetExchanges, a as appSetBaseCurrency, d as appSetCurrencies, e as appSetTickers, f as appSetTotalBalances, b as appSetWallets, g as appSetBalances } from './chunk-43b312d9.js';
+import { c as BALANCESERVICE, a as CURRENCYSERVICE } from './chunk-1c4b34f7.js';
+import { d as appSetExchanges, a as appSetBaseCurrency, e as appSetCurrencies, f as appSetTickers, g as appSetTotalBalances, c as appSetWallets, h as appSetBalances } from './chunk-9c7d3ec3.js';
 import { a as highstock } from './chunk-09df4f05.js';
 import { a as numeral } from './chunk-374e99fd.js';
-import './chunk-8b6e0876.js';
+import './chunk-ea6d9d39.js';
 import './chunk-a7525511.js';
 
 class AppOverview {
@@ -15,7 +15,7 @@ class AppOverview {
     }
     componentWillLoad() {
         this.store.mapStateToProps(this, (state) => {
-            const { app: { exchanges, baseCurrency, currencies, tickers, wallets, balances }, } = state;
+            const { app: { exchanges, baseCurrency, currencies, tickers, wallets, balances, dust }, } = state;
             return {
                 exchanges,
                 baseCurrency,
@@ -23,6 +23,7 @@ class AppOverview {
                 tickers,
                 wallets,
                 balances,
+                dust
             };
         });
         this.store.mapDispatchToProps(this, {
@@ -61,7 +62,7 @@ class AppOverview {
     }
     refreshBalances() {
         this.isLoading = true;
-        BALANCESERVICE.refreshBalances(this.wallets, this.exchanges).then((response) => {
+        BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.dust).then((response) => {
             if (response) {
                 this.appSetCurrencies(response.conversionrates);
                 this.appSetTickers(response.tickers);
@@ -110,6 +111,9 @@ class AppOverview {
             "state": true
         },
         "baseCurrency": {
+            "state": true
+        },
+        "dust": {
             "state": true
         },
         "exchanges": {

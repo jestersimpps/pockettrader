@@ -62,7 +62,7 @@ export class BalanceService {
     });
   }
 
-  refreshBalances(wallets: Wallet[], exchanges: Exchange[]): Promise<RefreshResponse> {
+  refreshBalances(wallets: Wallet[], exchanges: Exchange[], dust:number): Promise<RefreshResponse> {
     let exchangeIds: ExchangeId[] = [];
     let tickerPromises = [];
     let balancePromises = [];
@@ -117,7 +117,7 @@ export class BalanceService {
                           };
                         })
                         .filter((b) => {
-                          return +b.btcAmount > 0.000002; // leave out dust balances
+                          return +b.btcAmount > dust; // leave out dust balances
                         });
                     }
                     // refresh wallets

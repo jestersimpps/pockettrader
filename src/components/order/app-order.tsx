@@ -1,11 +1,10 @@
 import { Component, Prop, State } from '@stencil/core';
 import { Store, Action } from '@stencil/redux';
-import { Order } from '../../services/trade.service';
+import { Order, OrderStatus } from '../../services/trade.service';
 import numeral from 'numeral';
 import { appSetOrders } from '../../actions/app';
 import { TRADESERVICE } from '../../services/globals';
 import { Exchange } from '../../services/exchange.service';
-import { OrderStatus } from '../../exchangewrappers/enums/orderstatus.enum';
 
 @Component({
   tag: 'app-order',
@@ -132,7 +131,7 @@ export class AppOrder {
           </ion-item>
 
           {this.order.status === OrderStatus.open && (
-            <ion-button color="danger" expand="block" disabled={this.isLoading} onClick={() => this.cancelOrder()}>
+            <ion-button color="danger" expand="full" disabled={this.isLoading} onClick={() => this.cancelOrder()}>
               {this.isLoading && <ion-icon name="refresh" class="spin" margin-right />}
               Cancel Order
             </ion-button>

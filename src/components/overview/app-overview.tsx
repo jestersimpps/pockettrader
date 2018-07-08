@@ -29,6 +29,7 @@ export class AppOverview {
   @State() balances: Balances;
   @State() tickers: any[];
   @State() wallets: Wallet[];
+  @State() dust: number;
 
   appSetCurrencies: Action;
   appSetExchanges: Action;
@@ -42,7 +43,7 @@ export class AppOverview {
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { exchanges, baseCurrency, currencies, tickers, wallets, balances },
+        app: { exchanges, baseCurrency, currencies, tickers, wallets, balances, dust },
       } = state;
       return {
         exchanges,
@@ -51,6 +52,7 @@ export class AppOverview {
         tickers,
         wallets,
         balances,
+        dust
       };
     });
     this.store.mapDispatchToProps(this, {
@@ -92,7 +94,7 @@ export class AppOverview {
 
   refreshBalances() {
     this.isLoading = true;
-    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges).then((response) => {
+    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.dust).then((response) => {
       if (response) {
         this.appSetCurrencies(response.conversionrates);
         this.appSetTickers(response.tickers);

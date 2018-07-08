@@ -46,72 +46,6 @@ import {
 declare global {
 
   namespace StencilComponents {
-    interface AppBasecurrency {
-
-    }
-  }
-
-  interface HTMLAppBasecurrencyElement extends StencilComponents.AppBasecurrency, HTMLStencilElement {}
-
-  var HTMLAppBasecurrencyElement: {
-    prototype: HTMLAppBasecurrencyElement;
-    new (): HTMLAppBasecurrencyElement;
-  };
-  interface HTMLElementTagNameMap {
-    'app-basecurrency': HTMLAppBasecurrencyElement;
-  }
-  interface ElementTagNameMap {
-    'app-basecurrency': HTMLAppBasecurrencyElement;
-  }
-  namespace JSX {
-    interface IntrinsicElements {
-      'app-basecurrency': JSXElements.AppBasecurrencyAttributes;
-    }
-  }
-  namespace JSXElements {
-    export interface AppBasecurrencyAttributes extends HTMLAttributes {
-
-    }
-  }
-}
-
-
-declare global {
-
-  namespace StencilComponents {
-    interface AppEditwallet {
-      'walletId': number;
-    }
-  }
-
-  interface HTMLAppEditwalletElement extends StencilComponents.AppEditwallet, HTMLStencilElement {}
-
-  var HTMLAppEditwalletElement: {
-    prototype: HTMLAppEditwalletElement;
-    new (): HTMLAppEditwalletElement;
-  };
-  interface HTMLElementTagNameMap {
-    'app-editwallet': HTMLAppEditwalletElement;
-  }
-  interface ElementTagNameMap {
-    'app-editwallet': HTMLAppEditwalletElement;
-  }
-  namespace JSX {
-    interface IntrinsicElements {
-      'app-editwallet': JSXElements.AppEditwalletAttributes;
-    }
-  }
-  namespace JSXElements {
-    export interface AppEditwalletAttributes extends HTMLAttributes {
-      'walletId'?: number;
-    }
-  }
-}
-
-
-declare global {
-
-  namespace StencilComponents {
     interface AppExchangebalances {
       'exchangeId': ExchangeId;
     }
@@ -136,39 +70,6 @@ declare global {
   }
   namespace JSXElements {
     export interface AppExchangebalancesAttributes extends HTMLAttributes {
-      'exchangeId'?: ExchangeId;
-    }
-  }
-}
-
-
-declare global {
-
-  namespace StencilComponents {
-    interface AppExchangekeys {
-      'exchangeId': ExchangeId;
-    }
-  }
-
-  interface HTMLAppExchangekeysElement extends StencilComponents.AppExchangekeys, HTMLStencilElement {}
-
-  var HTMLAppExchangekeysElement: {
-    prototype: HTMLAppExchangekeysElement;
-    new (): HTMLAppExchangekeysElement;
-  };
-  interface HTMLElementTagNameMap {
-    'app-exchangekeys': HTMLAppExchangekeysElement;
-  }
-  interface ElementTagNameMap {
-    'app-exchangekeys': HTMLAppExchangekeysElement;
-  }
-  namespace JSX {
-    interface IntrinsicElements {
-      'app-exchangekeys': JSXElements.AppExchangekeysAttributes;
-    }
-  }
-  namespace JSXElements {
-    export interface AppExchangekeysAttributes extends HTMLAttributes {
       'exchangeId'?: ExchangeId;
     }
   }
@@ -308,72 +209,6 @@ declare global {
       'exchanges'?: Exchange[];
       'totalBalance'?: number;
       'wallets'?: Wallet[];
-    }
-  }
-}
-
-
-declare global {
-
-  namespace StencilComponents {
-    interface AppHoldings {
-
-    }
-  }
-
-  interface HTMLAppHoldingsElement extends StencilComponents.AppHoldings, HTMLStencilElement {}
-
-  var HTMLAppHoldingsElement: {
-    prototype: HTMLAppHoldingsElement;
-    new (): HTMLAppHoldingsElement;
-  };
-  interface HTMLElementTagNameMap {
-    'app-holdings': HTMLAppHoldingsElement;
-  }
-  interface ElementTagNameMap {
-    'app-holdings': HTMLAppHoldingsElement;
-  }
-  namespace JSX {
-    interface IntrinsicElements {
-      'app-holdings': JSXElements.AppHoldingsAttributes;
-    }
-  }
-  namespace JSXElements {
-    export interface AppHoldingsAttributes extends HTMLAttributes {
-
-    }
-  }
-}
-
-
-declare global {
-
-  namespace StencilComponents {
-    interface AppKeys {
-
-    }
-  }
-
-  interface HTMLAppKeysElement extends StencilComponents.AppKeys, HTMLStencilElement {}
-
-  var HTMLAppKeysElement: {
-    prototype: HTMLAppKeysElement;
-    new (): HTMLAppKeysElement;
-  };
-  interface HTMLElementTagNameMap {
-    'app-keys': HTMLAppKeysElement;
-  }
-  interface ElementTagNameMap {
-    'app-keys': HTMLAppKeysElement;
-  }
-  namespace JSX {
-    interface IntrinsicElements {
-      'app-keys': JSXElements.AppKeysAttributes;
-    }
-  }
-  namespace JSXElements {
-    export interface AppKeysAttributes extends HTMLAttributes {
-
     }
   }
 }
@@ -582,39 +417,6 @@ declare global {
 declare global {
 
   namespace StencilComponents {
-    interface AppPremium {
-
-    }
-  }
-
-  interface HTMLAppPremiumElement extends StencilComponents.AppPremium, HTMLStencilElement {}
-
-  var HTMLAppPremiumElement: {
-    prototype: HTMLAppPremiumElement;
-    new (): HTMLAppPremiumElement;
-  };
-  interface HTMLElementTagNameMap {
-    'app-premium': HTMLAppPremiumElement;
-  }
-  interface ElementTagNameMap {
-    'app-premium': HTMLAppPremiumElement;
-  }
-  namespace JSX {
-    interface IntrinsicElements {
-      'app-premium': JSXElements.AppPremiumAttributes;
-    }
-  }
-  namespace JSXElements {
-    export interface AppPremiumAttributes extends HTMLAttributes {
-
-    }
-  }
-}
-
-
-declare global {
-
-  namespace StencilComponents {
     interface AppSettings {
 
     }
@@ -639,6 +441,237 @@ declare global {
   }
   namespace JSXElements {
     export interface AppSettingsAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppBasecurrency {
+
+    }
+  }
+
+  interface HTMLAppBasecurrencyElement extends StencilComponents.AppBasecurrency, HTMLStencilElement {}
+
+  var HTMLAppBasecurrencyElement: {
+    prototype: HTMLAppBasecurrencyElement;
+    new (): HTMLAppBasecurrencyElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-basecurrency': HTMLAppBasecurrencyElement;
+  }
+  interface ElementTagNameMap {
+    'app-basecurrency': HTMLAppBasecurrencyElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-basecurrency': JSXElements.AppBasecurrencyAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppBasecurrencyAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppDust {
+
+    }
+  }
+
+  interface HTMLAppDustElement extends StencilComponents.AppDust, HTMLStencilElement {}
+
+  var HTMLAppDustElement: {
+    prototype: HTMLAppDustElement;
+    new (): HTMLAppDustElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-dust': HTMLAppDustElement;
+  }
+  interface ElementTagNameMap {
+    'app-dust': HTMLAppDustElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-dust': JSXElements.AppDustAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppDustAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppEditwallet {
+      'walletId': number;
+    }
+  }
+
+  interface HTMLAppEditwalletElement extends StencilComponents.AppEditwallet, HTMLStencilElement {}
+
+  var HTMLAppEditwalletElement: {
+    prototype: HTMLAppEditwalletElement;
+    new (): HTMLAppEditwalletElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-editwallet': HTMLAppEditwalletElement;
+  }
+  interface ElementTagNameMap {
+    'app-editwallet': HTMLAppEditwalletElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-editwallet': JSXElements.AppEditwalletAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppEditwalletAttributes extends HTMLAttributes {
+      'walletId'?: number;
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppExchangekeys {
+      'exchangeId': ExchangeId;
+    }
+  }
+
+  interface HTMLAppExchangekeysElement extends StencilComponents.AppExchangekeys, HTMLStencilElement {}
+
+  var HTMLAppExchangekeysElement: {
+    prototype: HTMLAppExchangekeysElement;
+    new (): HTMLAppExchangekeysElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-exchangekeys': HTMLAppExchangekeysElement;
+  }
+  interface ElementTagNameMap {
+    'app-exchangekeys': HTMLAppExchangekeysElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-exchangekeys': JSXElements.AppExchangekeysAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppExchangekeysAttributes extends HTMLAttributes {
+      'exchangeId'?: ExchangeId;
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppHoldings {
+
+    }
+  }
+
+  interface HTMLAppHoldingsElement extends StencilComponents.AppHoldings, HTMLStencilElement {}
+
+  var HTMLAppHoldingsElement: {
+    prototype: HTMLAppHoldingsElement;
+    new (): HTMLAppHoldingsElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-holdings': HTMLAppHoldingsElement;
+  }
+  interface ElementTagNameMap {
+    'app-holdings': HTMLAppHoldingsElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-holdings': JSXElements.AppHoldingsAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppHoldingsAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppKeys {
+
+    }
+  }
+
+  interface HTMLAppKeysElement extends StencilComponents.AppKeys, HTMLStencilElement {}
+
+  var HTMLAppKeysElement: {
+    prototype: HTMLAppKeysElement;
+    new (): HTMLAppKeysElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-keys': HTMLAppKeysElement;
+  }
+  interface ElementTagNameMap {
+    'app-keys': HTMLAppKeysElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-keys': JSXElements.AppKeysAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppKeysAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppPremium {
+
+    }
+  }
+
+  interface HTMLAppPremiumElement extends StencilComponents.AppPremium, HTMLStencilElement {}
+
+  var HTMLAppPremiumElement: {
+    prototype: HTMLAppPremiumElement;
+    new (): HTMLAppPremiumElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-premium': HTMLAppPremiumElement;
+  }
+  interface ElementTagNameMap {
+    'app-premium': HTMLAppPremiumElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-premium': JSXElements.AppPremiumAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppPremiumAttributes extends HTMLAttributes {
 
     }
   }

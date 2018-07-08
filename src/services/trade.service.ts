@@ -1,6 +1,6 @@
 import { STORAGE } from './storage';
 import { ExchangeId, Exchange } from './exchange.service';
-import { NewOrderRequest } from '../exchangewrappers/models/neworderrequest.model';
+import { ClientCreds } from './globals';
 
 declare const axios;
 
@@ -37,6 +37,14 @@ export enum OrderStatus {
   cancelled = 'cancelled',
   closed = 'closed',
   failed = 'failed',
+}
+
+export class NewOrderRequest {
+  pair: string;
+  type: OrderType;
+  price: number;
+  amount: number;
+  clientCreds: ClientCreds;
 }
 
 export class TradeService {

@@ -1,12 +1,11 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
+import { e as OrderStatus, d as TRADESERVICE } from './chunk-1c4b34f7.js';
 import { a as numeral } from './chunk-374e99fd.js';
-import { h as appSetOrders } from './chunk-43b312d9.js';
-import { e as TRADESERVICE } from './chunk-6b468cd6.js';
-import { a as OrderStatus } from './chunk-da5de7ce.js';
+import { i as appSetOrders } from './chunk-9c7d3ec3.js';
+import './chunk-ea6d9d39.js';
 import './chunk-a7525511.js';
-import './chunk-8b6e0876.js';
 
 class AppOrder {
     componentWillLoad() {
@@ -80,7 +79,7 @@ class AppOrder {
                         h("ion-label", { "text-right": true, slot: "end" }, this.order.closePrice
                             ? numeral(this.order.closePrice * this.order.amount - this.order.openPrice * this.order.amount - 2 * this.order.fee).format('0,0.00000000')
                             : '-')),
-                    this.order.status === OrderStatus.open && (h("ion-button", { color: "danger", expand: "block", disabled: this.isLoading, onClick: () => this.cancelOrder() },
+                    this.order.status === OrderStatus.open && (h("ion-button", { color: "danger", expand: "full", disabled: this.isLoading, onClick: () => this.cancelOrder() },
                         this.isLoading && h("ion-icon", { name: "refresh", class: "spin", "margin-right": true }),
                         "Cancel Order")))),
         ];

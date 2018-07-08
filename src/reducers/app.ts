@@ -21,6 +21,7 @@ interface AppState {
     wallets: number;
   };
   orders: Order[];
+  dust: number;
 }
 
 const getInitialState = () => {
@@ -34,6 +35,7 @@ const getInitialState = () => {
     token: null,
     balances: null,
     orders: [],
+    dust: 0.1,
   };
 };
 
@@ -73,6 +75,10 @@ const app = (state: AppState = getInitialState(), action: ActionTypes) => {
     case TypeKeys.APP_SET_ORDERS: {
       TRADESERVICE.setOrders(action.data);
       return { ...state, orders: action.data };
+    }
+    case TypeKeys.APP_SET_DUST: {
+      EXCHANGESERVICE.setDust(action.data);
+      return { ...state, dust: action.data };
     }
   }
 

@@ -45,4 +45,4 @@ function debounce(func, wait = 0) {
     };
 }
 
-export { debounceEvent as a, assert as b, now as c, deferEvent as d, debounce as e, pointerCoord as f };
+export { assert as a, now as b, debounceEvent as c, deferEvent as d, debounce as e, pointerCoord as f };

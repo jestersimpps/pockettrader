@@ -1,5 +1,5 @@
 import { Component, State, Prop } from '@stencil/core';
-import { Exchange } from '../../services/exchange.service';
+import { Exchange } from '../../../services/exchange.service';
 import { Store } from '@stencil/redux';
 
 @Component({
@@ -37,9 +37,9 @@ export class AppKeys {
           {this.exchanges.map((exchange) => (
             <ion-item lines="full" href={`/settings/keys/${exchange.id}`}>
               {exchange.key && exchange.secret ? (
-                <ion-icon name="checkmark" item-start margin-right />
+                <ion-icon name="checkmark" color="success" item-start margin-right style={{ 'font-size': '2rem' }} />
               ) : (
-                <ion-icon name="close" item-start margin-right />
+                <ion-icon name="close" color="danger" item-start margin-right style={{ 'font-size': '2rem' }} />
               )}
               <ion-label>{exchange.id}</ion-label>
             </ion-item>

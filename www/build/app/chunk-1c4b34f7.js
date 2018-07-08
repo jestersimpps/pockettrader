@@ -1,11 +1,11 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { a as STORAGE, b as ExchangeService } from './chunk-8b6e0876.js';
+import { a as STORAGE, b as ExchangeService } from './chunk-ea6d9d39.js';
 
 class TokenService {
     constructor() { }
-    getTokenFromStore() {
+    getTokenFromStorage() {
         return STORAGE.get('token');
     }
     setToken(token) {
@@ -55,7 +55,7 @@ class BalanceService {
             secret: exchange.secret,
         });
     }
-    refreshBalances(wallets, exchanges) {
+    refreshBalances(wallets, exchanges, dust) {
         let exchangeIds = [];
         let tickerPromises = [];
         let balancePromises = [];
@@ -108,7 +108,7 @@ class BalanceService {
                                 };
                             })
                                 .filter((b) => {
-                                return +b.btcAmount > 0.000002; // leave out dust balances
+                                return +b.btcAmount > dust; // leave out dust balances
                             });
                         }
                         // refresh wallets
@@ -319,4 +319,4 @@ const WALLETSERVICE = new WalletService();
 const TOKENSERVICE = new TokenService();
 const TRADESERVICE = new TradeService();
 
-export { CURRENCYSERVICE as a, TICKERSERVICE as b, BALANCESERVICE as c, WALLETSERVICE as d, TRADESERVICE as e, OrderStatus as f, OrderType as g, TOKENSERVICE as h, EXCHANGESERVICE as i };
+export { CURRENCYSERVICE as a, TICKERSERVICE as b, BALANCESERVICE as c, TRADESERVICE as d, OrderStatus as e, OrderType as f, WALLETSERVICE as g, TOKENSERVICE as h, EXCHANGESERVICE as i };

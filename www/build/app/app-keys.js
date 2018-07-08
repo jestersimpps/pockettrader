@@ -22,7 +22,7 @@ class AppKeys {
                     h("ion-title", null, "Exchanges"))),
             h("ion-content", null,
                 h("ion-list", null, this.exchanges.map((exchange) => (h("ion-item", { lines: "full", href: `/settings/keys/${exchange.id}` },
-                    exchange.key && exchange.secret ? (h("ion-icon", { name: "checkmark", "item-start": true, "margin-right": true })) : (h("ion-icon", { name: "close", "item-start": true, "margin-right": true })),
+                    exchange.key && exchange.secret ? (h("ion-icon", { name: "checkmark", color: "success", "item-start": true, "margin-right": true, style: { 'font-size': '2rem' } })) : (h("ion-icon", { name: "close", color: "danger", "item-start": true, "margin-right": true, style: { 'font-size': '2rem' } })),
                     h("ion-label", null, exchange.id)))))),
         ];
     }

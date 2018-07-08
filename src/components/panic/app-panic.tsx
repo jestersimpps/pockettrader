@@ -31,6 +31,7 @@ export class AppPanic {
   @State() wallets: Wallet[];
   @State() isLoading = false;
   @State() balances: Balances;
+  @State() dust: number;
 
   appSetCurrencies: Action;
   appSetExchanges: Action;
@@ -44,7 +45,7 @@ export class AppPanic {
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { exchanges, baseCurrency, currencies, tickers, wallets, balances },
+        app: { exchanges, baseCurrency, currencies, tickers, wallets, balances, dust },
       } = state;
       return {
         exchanges,
@@ -53,6 +54,7 @@ export class AppPanic {
         tickers,
         wallets,
         balances,
+        dust
       };
     });
     this.store.mapDispatchToProps(this, {
@@ -228,7 +230,7 @@ export class AppPanic {
 
   refreshBalances() {
     this.isLoading = true;
-    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges).then((response) => {
+    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.dust).then((response) => {
       if (response) {
         this.appSetCurrencies(response.conversionrates);
         this.appSetTickers(response.tickers);

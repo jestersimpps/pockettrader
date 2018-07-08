@@ -15,6 +15,7 @@ var TypeKeys;
     TypeKeys["APP_SET_TOKEN"] = "APP_SET_TOKEN";
     TypeKeys["APP_SET_BALANCES"] = "APP_SET_BALANCES";
     TypeKeys["APP_SET_ORDERS"] = "APP_SET_ORDERS";
+    TypeKeys["APP_SET_DUST"] = "APP_SET_DUST";
 })(TypeKeys || (TypeKeys = {}));
 
 const appSetExchanges = (data) => async (dispatch, _getState) => {
@@ -71,5 +72,11 @@ const appSetOrders = (data) => async (dispatch, _getState) => {
         data: data,
     });
 };
+const appSetDust = (data) => async (dispatch, _getState) => {
+    return dispatch({
+        type: TypeKeys.APP_SET_DUST,
+        data: data,
+    });
+};
 
-export { appSetBaseCurrency as a, appSetWallets as b, appSetExchanges as c, appSetCurrencies as d, appSetTickers as e, appSetTotalBalances as f, appSetBalances as g, appSetOrders as h, appSetToken as i, TypeKeys as j };
+export { appSetBaseCurrency as a, appSetDust as b, appSetWallets as c, appSetExchanges as d, appSetCurrencies as e, appSetTickers as f, appSetTotalBalances as g, appSetBalances as h, appSetOrders as i, appSetToken as j, TypeKeys as k };

@@ -2,12 +2,12 @@
 const { h } = window.App;
 
 import { a as commonjsGlobal, b as commonjsRequire, c as unwrapExports, d as createCommonjsModule } from './chunk-a7525511.js';
-import { c as BALANCESERVICE, h as TOKENSERVICE, e as TRADESERVICE, i as EXCHANGESERVICE, a as CURRENCYSERVICE, b as TICKERSERVICE, d as WALLETSERVICE } from './chunk-6b468cd6.js';
-import { j as TypeKeys, c as appSetExchanges, a as appSetBaseCurrency, d as appSetCurrencies, e as appSetTickers, f as appSetTotalBalances, b as appSetWallets, i as appSetToken, g as appSetBalances, h as appSetOrders } from './chunk-43b312d9.js';
-import { d as DefaultExchanges } from './chunk-8b6e0876.js';
-import { a as attachComponent } from './chunk-feaa9237.js';
-import { b as assert, e as debounce, c as now, f as pointerCoord } from './chunk-63df273d.js';
+import { c as BALANCESERVICE, h as TOKENSERVICE, d as TRADESERVICE, i as EXCHANGESERVICE, a as CURRENCYSERVICE, b as TICKERSERVICE, g as WALLETSERVICE } from './chunk-1c4b34f7.js';
+import { k as TypeKeys, d as appSetExchanges, a as appSetBaseCurrency, e as appSetCurrencies, f as appSetTickers, g as appSetTotalBalances, c as appSetWallets, j as appSetToken, h as appSetBalances, i as appSetOrders, b as appSetDust } from './chunk-9c7d3ec3.js';
+import { d as DefaultExchanges } from './chunk-ea6d9d39.js';
 import { a as createThemedClasses } from './chunk-ea7ac2d5.js';
+import { a as attachComponent } from './chunk-feaa9237.js';
+import { a as assert, e as debounce, b as now, f as pointerCoord } from './chunk-63df273d.js';
 
 var global$1 = (typeof global !== "undefined" ? global :
             typeof self !== "undefined" ? self :
@@ -633,6 +633,7 @@ const getInitialState = () => {
         token: null,
         balances: null,
         orders: [],
+        dust: 0.1,
     };
 };
 const app = (state = getInitialState(), action) => {
@@ -672,6 +673,10 @@ const app = (state = getInitialState(), action) => {
             TRADESERVICE.setOrders(action.data);
             return Object.assign({}, state, { orders: action.data });
         }
+        case TypeKeys.APP_SET_DUST: {
+            EXCHANGESERVICE.setDust(action.data);
+            return Object.assign({}, state, { dust: action.data });
+        }
     }
     return state;
 };
@@ -699,9 +704,10 @@ class MyApp {
             appSetToken,
             appSetBalances,
             appSetOrders,
+            appSetDust,
         });
         // Load in app state from storage
-        EXCHANGESERVICE.getExchanges()
+        EXCHANGESERVICE.getExchangesFromStorage()
             .then((exchanges) => {
             exchanges ? this.appSetExchanges(exchanges) : this.appSetExchanges(DefaultExchanges);
             return CURRENCYSERVICE.getBaseCurrencyFromStorage();
@@ -732,7 +738,11 @@ class MyApp {
         })
             .then((orders) => {
             orders ? this.appSetOrders(orders) : this.appSetOrders([]);
-            return TOKENSERVICE.getTokenFromStore();
+            return EXCHANGESERVICE.getDustFromStorage();
+        })
+            .then((dust) => {
+            dust ? this.appSetDust(dust) : this.appSetDust(0.000002);
+            return TOKENSERVICE.getTokenFromStorage();
         })
             .then((token) => {
             token ? this.appSetToken(token) : this.appSetToken(TOKENSERVICE.generateNewToken());
@@ -756,6 +766,7 @@ class MyApp {
                 h("ion-route", { url: "/settings/holdings", component: "app-holdings" }),
                 h("ion-route", { url: "/settings/holdings/:walletId", component: "app-editwallet" }),
                 h("ion-route", { url: "/settings/premium", component: "app-premium" }),
+                h("ion-route", { url: "/settings/dust", component: "app-dust" }),
                 h("ion-route", { url: "/panic", component: "app-panic" })),
             h("ion-nav", { animated: true, "margin-bottom": true }),
             ",",
@@ -2024,6 +2035,37 @@ async function loadInputShims(win, config) {
     if (inputShims) {
         (await import("./input-shims.js")).startInputShims(win.document, config);
     }
+}
+
+class Footer {
+    constructor() {
+        /**
+         * If true, the footer will be translucent.
+         * Note: In order to scroll content behind the footer, the `fullscreen`
+         * attribute needs to be set on the content.
+         * Defaults to `false`.
+         */
+        this.translucent = false;
+    }
+    hostData() {
+        const themedClasses = this.translucent ? createThemedClasses(this.mode, this.color, 'header-translucent') : {};
+        const hostClasses = Object.assign({}, themedClasses);
+        return {
+            class: hostClasses
+        };
+    }
+    static get is() { return "ion-footer"; }
+    static get host() { return {
+        "theme": "footer"
+    }; }
+    static get properties() { return {
+        "translucent": {
+            "type": Boolean,
+            "attr": "translucent"
+        }
+    }; }
+    static get style() { return "ion-footer {\n  position: relative;\n  z-index: 10;\n  display: block;\n  -webkit-box-ordinal-group: 2;\n  -ms-flex-order: 1;\n  order: 1;\n  width: 100%; }"; }
+    static get styleMode() { return "md"; }
 }
 
 const iosTransitionAnimation = () => import("./ios.transition.js");
@@ -4466,4 +4508,4 @@ const ADD_ACTIVATED_DEFERS = 200;
 const CLEAR_STATE_DEFERS = 200;
 const MOUSE_WAIT = 2500;
 
-export { MyApp, AnimationControllerImpl as IonAnimationController, App as IonApp, Nav as IonNav, Route as IonRoute, Router as IonRouter, StatusTap as IonStatusTap, TabButton as IonTabButton, Tabbar as IonTabbar, Tabs as IonTabs, TapClick as IonTapClick };
+export { MyApp, AnimationControllerImpl as IonAnimationController, App as IonApp, Footer as IonFooter, Nav as IonNav, Route as IonRoute, Router as IonRouter, StatusTap as IonStatusTap, TabButton as IonTabButton, Tabbar as IonTabbar, Tabs as IonTabs, TapClick as IonTapClick };

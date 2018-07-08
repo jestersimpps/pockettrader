@@ -1,7 +1,7 @@
 import { Component, State, Prop } from '@stencil/core';
 import { Store } from '@stencil/redux';
-import { Wallet } from '../../services/wallets.service';
-import { WALLETSERVICE } from '../../services/globals';
+import { Wallet } from '../../../services/wallets.service';
+import { WALLETSERVICE } from '../../../services/globals';
 @Component({
   tag: 'app-holdings',
   styleUrl: 'app-holdings.css',

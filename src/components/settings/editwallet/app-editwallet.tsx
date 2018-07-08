@@ -1,8 +1,8 @@
 import { Component, Prop, State } from '@stencil/core';
 import { Store, Action } from '@stencil/redux';
-import { appSetWallets } from '../../actions/app';
-import { Wallet } from '../../services/wallets.service';
-import { TICKERSERVICE } from '../../services/globals';
+import { appSetWallets } from '../../../actions/app';
+import { Wallet } from '../../../services/wallets.service';
+import { TICKERSERVICE } from '../../../services/globals';
 
 @Component({
   tag: 'app-editwallet',
@@ -71,21 +71,17 @@ export class AppEditwallet {
         </ion-header>,
         <ion-content>
           <ion-list>
-            <ion-item lines="full">
-              <ion-label>Amount</ion-label>
+            <ion-item lines="none">
+              <ion-label>Amount:</ion-label>
               <ion-input name="key" type="number" value={`${this.wallet.balance}`} onInput={(ev) => this.changeValue(ev)} />
             </ion-item>
           </ion-list>
+          <ion-nav-pop>
+            <ion-button icon-left color="success" expand="full">
+              Set
+            </ion-button>
+          </ion-nav-pop>
         </ion-content>,
-        <ion-footer>
-          <ion-toolbar>
-            <ion-nav-pop>
-              <ion-button icon-left color="light" class="full">
-                Set
-              </ion-button>
-            </ion-nav-pop>
-          </ion-toolbar>
-        </ion-footer>,
       ]
     );
   }

@@ -27,32 +27,36 @@ export class AppOhlc {
   }
   @Watch('symbol')
   changeSymbol() {
-    TRADESERVICE.getOhlc(this.exchangeId, this.symbol, this.timeFrame).then((response) => {
-      this.ohlcData = response.data;
-      this.chart.series[0].setData(response.data);
-      this.chart.series[1].setData(
-        this.ohlcData.map((d) => {
-          return [d[0], this.altPrice];
-        }),
-      );
-    }).catch(()=>{
-      window.alert(`Couldn't get chart data`)
-    });;
+    TRADESERVICE.getOhlc(this.exchangeId, this.symbol, this.timeFrame)
+      .then((response) => {
+        this.ohlcData = response.data;
+        this.chart.series[0].setData(response.data);
+        this.chart.series[1].setData(
+          this.ohlcData.map((d) => {
+            return [d[0], this.altPrice];
+          }),
+        );
+      })
+      .catch(() => {
+        window.alert(`Couldn't get chart data`);
+      });
   }
 
   setTimeFrame(timeFrame: string) {
     this.timeFrame = timeFrame;
-    TRADESERVICE.getOhlc(this.exchangeId, this.symbol, timeFrame).then((response) => {
-      this.ohlcData = response.data;
-      this.chart.series[0].setData(response.data);
-      this.chart.series[1].setData(
-        this.ohlcData.map((d) => {
-          return [d[0], this.altPrice];
-        }),
-      );
-    }).catch(()=>{
-      window.alert(`Couldn't get chart data`)
-    });
+    TRADESERVICE.getOhlc(this.exchangeId, this.symbol, timeFrame)
+      .then((response) => {
+        this.ohlcData = response.data;
+        this.chart.series[0].setData(response.data);
+        this.chart.series[1].setData(
+          this.ohlcData.map((d) => {
+            return [d[0], this.altPrice];
+          }),
+        );
+      })
+      .catch(() => {
+        window.alert(`Couldn't get chart data`);
+      });
   }
 
   componentDidLoad() {
@@ -92,15 +96,15 @@ export class AppOhlc {
 
   render() {
     return [
-      <ion-segment color="light" onIonChange={(e) => this.setTimeFrame(e.detail.value)}>
+      <ion-segment color="dark" onIonChange={(e) => this.setTimeFrame(e.detail.value)}>
         <ion-segment-button value="1m" checked={this.timeFrame === '1m'}>
-          <span style={{ color: 'black' }}>1 hour</span>
+          1 hour{' '}
         </ion-segment-button>
         <ion-segment-button value="1h" checked={this.timeFrame === '1h'}>
-          <span style={{ color: 'black' }}>1 day</span>
+          1 day{' '}
         </ion-segment-button>
         <ion-segment-button value="1d" checked={this.timeFrame === '1d'}>
-          <span style={{ color: 'black' }}>1 week</span>
+          1 week{' '}
         </ion-segment-button>
       </ion-segment>,
       <div id="ohlc" style={{ height: '200px' }} />,

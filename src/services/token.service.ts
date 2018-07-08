@@ -4,7 +4,7 @@ declare const Hashids;
 
 export class TokenService {
   constructor() {}
-  getTokenFromStore(): Promise<string> {
+  getTokenFromStorage(): Promise<string> {
     return STORAGE.get('token');
   }
 

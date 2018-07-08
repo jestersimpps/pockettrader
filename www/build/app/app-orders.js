@@ -1,11 +1,10 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { g as OrderType, e as TRADESERVICE, c as BALANCESERVICE } from './chunk-6b468cd6.js';
+import { f as OrderType, e as OrderStatus, d as TRADESERVICE, c as BALANCESERVICE } from './chunk-1c4b34f7.js';
 import { a as numeral } from './chunk-374e99fd.js';
-import { a as OrderStatus } from './chunk-da5de7ce.js';
-import { c as appSetExchanges, a as appSetBaseCurrency, d as appSetCurrencies, e as appSetTickers, f as appSetTotalBalances, b as appSetWallets, g as appSetBalances, h as appSetOrders } from './chunk-43b312d9.js';
-import './chunk-8b6e0876.js';
+import { d as appSetExchanges, a as appSetBaseCurrency, e as appSetCurrencies, f as appSetTickers, g as appSetTotalBalances, c as appSetWallets, h as appSetBalances, i as appSetOrders } from './chunk-9c7d3ec3.js';
+import './chunk-ea6d9d39.js';
 import './chunk-a7525511.js';
 
 class AppOrders {
@@ -16,12 +15,13 @@ class AppOrders {
     }
     componentWillLoad() {
         this.store.mapStateToProps(this, (state) => {
-            const { app: { exchanges, wallets, tickers, orders }, } = state;
+            const { app: { exchanges, wallets, tickers, orders, dust }, } = state;
             return {
                 exchanges,
                 tickers,
                 wallets,
                 orders,
+                dust,
             };
         });
         this.store.mapDispatchToProps(this, {
@@ -75,7 +75,7 @@ class AppOrders {
     }
     refreshBalances() {
         this.isLoading = true;
-        BALANCESERVICE.refreshBalances(this.wallets, this.exchanges).then((response) => {
+        BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.dust).then((response) => {
             if (response) {
                 this.appSetCurrencies(response.conversionrates);
                 this.appSetTickers(response.tickers);
@@ -108,7 +108,12 @@ class AppOrders {
                     h("ion-segment-button", { value: "3", checked: this.status === 3 }, "Cancelled"))),
             h("ion-content", null,
                 this.status === 0 && [
-                    this.orders.filter((o) => o.status === OrderStatus.open).map((order) => [
+                    this.orders
+                        .sort((a, b) => {
+                        return b.updatedAt - a.updatedAt;
+                    })
+                        .filter((o) => o.status === OrderStatus.open)
+                        .map((order) => [
                         h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
                             h("ion-grid", null,
                                 h("ion-row", null,
@@ -127,7 +132,13 @@ class AppOrders {
                     ]),
                 ],
                 this.status === 1 && [
-                    this.orders.filter((o) => o.status === OrderStatus.filled).map((order) => [
+                    this.orders
+                        .sort((a, b) => {
+                        return b.updatedAt - a.updatedAt;
+                    })
+                        .filter((o) => o.type === OrderType.LIMITBUY || o.type === OrderType.MARKETBUY)
+                        .filter((o) => o.status === OrderStatus.closed || o.status === OrderStatus.filled)
+                        .map((order) => [
                         h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
                             h("ion-grid", null,
                                 h("ion-row", null,
@@ -146,7 +157,13 @@ class AppOrders {
                     ]),
                 ],
                 this.status === 2 && [
-                    this.orders.filter((o) => o.status === OrderStatus.closed).map((order) => [
+                    this.orders
+                        .sort((a, b) => {
+                        return b.updatedAt - a.updatedAt;
+                    })
+                        .filter((o) => o.type === OrderType.LIMITSELL || o.type === OrderType.MARKETSELL)
+                        .filter((o) => o.status === OrderStatus.closed || o.status === OrderStatus.filled)
+                        .map((order) => [
                         h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
                             h("ion-grid", null,
                                 h("ion-row", null,
@@ -165,7 +182,12 @@ class AppOrders {
                     ]),
                 ],
                 this.status === 3 && [
-                    this.orders.filter((o) => o.status === OrderStatus.cancelled).map((order) => [
+                    this.orders
+                        .sort((a, b) => {
+                        return b.updatedAt - a.updatedAt;
+                    })
+                        .filter((o) => o.status === OrderStatus.cancelled)
+                        .map((order) => [
                         h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
                             h("ion-grid", null,
                                 h("ion-row", null,
@@ -187,6 +209,9 @@ class AppOrders {
     }
     static get is() { return "app-orders"; }
     static get properties() { return {
+        "dust": {
+            "state": true
+        },
         "exchangeId": {
             "state": true
         },

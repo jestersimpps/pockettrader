@@ -48,13 +48,19 @@ export const DefaultExchanges: Exchange[] = [
 ];
 
 export class ExchangeService {
-
-  getExchanges(): Promise<Exchange[]> {
+  getExchangesFromStorage(): Promise<Exchange[]> {
     return STORAGE.get(`exchanges`);
   }
 
   setExchanges(exchanges: Exchange[]): void {
     STORAGE.set(`exchanges`, exchanges);
   }
-  
+
+  setDust(dust: number) {
+    STORAGE.set(`dust`, dust);
+  }
+
+  getDustFromStorage(): Promise<number> {
+    return STORAGE.get(`dust`);
+  }
 }

@@ -2,11 +2,11 @@
 const { h } = window.App;
 
 import { a as numeral } from './chunk-374e99fd.js';
-import { a as CURRENCYSERVICE } from './chunk-6b468cd6.js';
-import { a as debounceEvent, d as deferEvent } from './chunk-63df273d.js';
+import { a as CURRENCYSERVICE } from './chunk-1c4b34f7.js';
+import { c as debounceEvent, d as deferEvent } from './chunk-63df273d.js';
 import { a as createThemedClasses } from './chunk-ea7ac2d5.js';
 import './chunk-a7525511.js';
-import './chunk-8b6e0876.js';
+import './chunk-ea6d9d39.js';
 
 class AppBalanceItem {
     render() {
@@ -400,31 +400,29 @@ class Input {
     static get styleMode() { return "md"; }
 }
 
-class Label {
-    getText() {
-        return this.el.textContent || '';
-    }
+class ItemDivider {
     componentDidLoad() {
-        this.positionChanged();
-    }
-    positionChanged() {
-        const position = this.position;
-        return this.ionStyle.emit({
-            [`label-${position}`]: !!position,
-        });
-    }
-    hostData() {
-        const position = this.position;
-        return {
-            class: {
-                [`label-${position}`]: !!position,
-                [`label-${this.mode}-${position}`]: !!position
+        // Change the button size to small for each ion-button in the item
+        // unless the size is explicitly set
+        const buttons = this.el.querySelectorAll('ion-button');
+        for (let i = 0; i < buttons.length; i++) {
+            if (!buttons[i].size) {
+                buttons[i].size = 'small';
             }
-        };
+        }
     }
-    static get is() { return "ion-label"; }
+    render() {
+        return [
+            h("slot", { name: "start" }),
+            h("div", { class: "item-divider-inner" },
+                h("div", { class: "item-divider-wrapper" },
+                    h("slot", null)),
+                h("slot", { name: "end" }))
+        ];
+    }
+    static get is() { return "ion-item-divider"; }
     static get host() { return {
-        "theme": "label"
+        "theme": "item-divider"
     }; }
     static get properties() { return {
         "color": {
@@ -434,27 +432,12 @@ class Label {
         "el": {
             "elementRef": true
         },
-        "getText": {
-            "method": true
-        },
         "mode": {
             "type": String,
             "attr": "mode"
-        },
-        "position": {
-            "type": String,
-            "attr": "position",
-            "watchCallbacks": ["positionChanged"]
         }
     }; }
-    static get events() { return [{
-            "name": "ionStyle",
-            "method": "ionStyle",
-            "bubbles": true,
-            "cancelable": true,
-            "composed": true
-        }]; }
-    static get style() { return "ion-label {\n  margin: 0;\n  display: block;\n  overflow: hidden;\n  -webkit-box-flex: 1;\n  -ms-flex: 1;\n  flex: 1;\n  font-size: inherit;\n  text-overflow: ellipsis;\n  white-space: nowrap; }\n\n.item-input ion-label {\n  -webkit-box-flex: initial;\n  -ms-flex: initial;\n  flex: initial;\n  max-width: 200px;\n  pointer-events: none; }\n\n[text-wrap] ion-label {\n  white-space: normal; }\n\n.label-fixed {\n  -webkit-box-flex: 0;\n  -ms-flex: 0 0 100px;\n  flex: 0 0 100px;\n  width: 100px;\n  min-width: 100px;\n  max-width: 200px; }\n\n.item-label-stacked ion-label,\n.item-label-floating ion-label {\n  -ms-flex-item-align: stretch;\n  align-self: stretch;\n  width: auto;\n  max-width: 100%; }\n\n.label-stacked,\n.label-floating {\n  margin-bottom: 0; }\n\n.item-label-stacked .input-wrapper,\n.item-label-floating .input-wrapper {\n  -webkit-box-flex: 1;\n  -ms-flex: 1;\n  flex: 1;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n  -ms-flex-direction: column;\n  flex-direction: column; }\n\n.item-label-stacked ion-select,\n.item-label-floating ion-select {\n  -ms-flex-item-align: stretch;\n  align-self: stretch;\n  max-width: 100%; }\n\n.label-md {\n  margin: 13px 8px 13px 0;\n  font-family: \"Roboto\", \"Helvetica Neue\", sans-serif; }\n\n[text-wrap] .label-md {\n  font-size: 14px;\n  line-height: 1.5; }\n\n.item-interactive .label-md {\n  color: var(--ion-text-md-color-step-600, var(--ion-text-color-step-600, #999999)); }\n\n.label-md-stacked {\n  font-size: 12px; }\n\n.label-md-floating {\n  -webkit-transform: translate3d(0,  27px,  0);\n  transform: translate3d(0,  27px,  0);\n  -webkit-transform-origin: left top;\n  transform-origin: left top;\n  -webkit-transition: -webkit-transform 150ms ease-in-out;\n  transition: -webkit-transform 150ms ease-in-out;\n  transition: transform 150ms ease-in-out;\n  transition: transform 150ms ease-in-out, -webkit-transform 150ms ease-in-out; }\n\n.label-md-stacked,\n.label-md-floating {\n  margin-left: 0;\n  margin-bottom: 0; }\n\n.item-input-has-focus .label-md-stacked,\n.item-input-has-focus .label-md-floating {\n  color: var(--ion-color-md-primary, var(--ion-color-primary, #3880ff)); }\n\n.item-input-has-focus .label-md-floating,\n.item-input-has-value .label-md-floating {\n  -webkit-transform: translate3d(0,  0,  0) scale(0.8);\n  transform: translate3d(0,  0,  0) scale(0.8); }\n\n.label-md-primary,\n.item-interactive .label-md-primary {\n  color: var(--ion-color-md-primary, var(--ion-color-primary, #3880ff)); }\n\n.label-md-secondary,\n.item-interactive .label-md-secondary {\n  color: var(--ion-color-md-secondary, var(--ion-color-secondary, #0cd1e8)); }\n\n.label-md-tertiary,\n.item-interactive .label-md-tertiary {\n  color: var(--ion-color-md-tertiary, var(--ion-color-tertiary, #7044ff)); }\n\n.label-md-success,\n.item-interactive .label-md-success {\n  color: var(--ion-color-md-success, var(--ion-color-success, #10dc60)); }\n\n.label-md-warning,\n.item-interactive .label-md-warning {\n  color: var(--ion-color-md-warning, var(--ion-color-warning, #ffce00)); }\n\n.label-md-danger,\n.item-interactive .label-md-danger {\n  color: var(--ion-color-md-danger, var(--ion-color-danger, #f04141)); }\n\n.label-md-light,\n.item-interactive .label-md-light {\n  color: var(--ion-color-md-light, var(--ion-color-light, #f4f5f8)); }\n\n.label-md-medium,\n.item-interactive .label-md-medium {\n  color: var(--ion-color-md-medium, var(--ion-color-medium, #989aa2)); }\n\n.label-md-dark,\n.item-interactive .label-md-dark {\n  color: var(--ion-color-md-dark, var(--ion-color-dark, #222428)); }"; }
+    static get style() { return "ion-item-divider {\n  -moz-osx-font-smoothing: grayscale;\n  -webkit-font-smoothing: antialiased;\n  margin: 0;\n  padding: 0;\n  -webkit-box-sizing: border-box;\n  box-sizing: border-box;\n  z-index: 100;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  overflow: hidden;\n  -webkit-box-align: center;\n  -ms-flex-align: center;\n  align-items: center;\n  -webkit-box-pack: justify;\n  -ms-flex-pack: justify;\n  justify-content: space-between;\n  width: 100%;\n  min-height: 30px; }\n\nion-item-divider[sticky] {\n  position: -webkit-sticky;\n  position: sticky;\n  top: 0; }\n\n.item-divider-inner {\n  margin: 0;\n  padding: 0;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  overflow: hidden;\n  -webkit-box-flex: 1;\n  -ms-flex: 1;\n  flex: 1;\n  -webkit-box-orient: inherit;\n  -webkit-box-direction: inherit;\n  -ms-flex-direction: inherit;\n  flex-direction: inherit;\n  -webkit-box-align: inherit;\n  -ms-flex-align: inherit;\n  align-items: inherit;\n  -ms-flex-item-align: stretch;\n  align-self: stretch;\n  min-height: inherit;\n  border: 0; }\n\n.item-divider-wrapper {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  overflow: hidden;\n  -webkit-box-flex: 1;\n  -ms-flex: 1;\n  flex: 1;\n  -webkit-box-orient: inherit;\n  -webkit-box-direction: inherit;\n  -ms-flex-direction: inherit;\n  flex-direction: inherit;\n  -webkit-box-align: inherit;\n  -ms-flex-align: inherit;\n  align-items: inherit;\n  -ms-flex-item-align: stretch;\n  align-self: stretch;\n  text-overflow: ellipsis; }\n\n.item-divider-md {\n  padding-left: 16px;\n  border-bottom: 1px solid rgba(var(--ion-item-md-border-color-rgb, var(--ion-item-border-color-rgb, 0, 0, 0)), 0.13);\n  font-family: \"Roboto\", \"Helvetica Neue\", sans-serif;\n  font-size: 14px;\n  color: var(--ion-text-md-color-step-600, var(--ion-text-color-step-600, #999999));\n  background-color: var(--ion-background-md-color, var(--ion-background-color, #fff)); }\n\n.item-divider-md .item-divider-inner {\n  padding-right: 8px; }\n\n.item-divider-md [slot=\"start\"],\n.item-divider-md [slot=\"end\"] {\n  margin: 0 8px 0 0; }\n\n.item-divider-md ion-icon[slot=\"start\"],\n.item-divider-md ion-icon[slot=\"end\"] {\n  margin-left: 0;\n  margin-top: 11px;\n  margin-bottom: 10px; }\n\n.item-divider-md ion-icon[slot=\"start\"] + .item-inner,\n.item-divider-md ion-icon[slot=\"start\"] + .item-interactive {\n  margin-left: 24px; }\n\n.item-divider-md ion-avatar[slot=\"start\"],\n.item-divider-md ion-thumbnail[slot=\"start\"] {\n  margin: 8px 16px 8px 0; }\n\n.item-divider-md ion-avatar[slot=\"end\"],\n.item-divider-md ion-thumbnail[slot=\"end\"] {\n  margin: 8px; }\n\n.item-divider-md h1 {\n  margin: 0 0 2px;\n  font-size: 24px;\n  font-weight: normal; }\n\n.item-divider-md h2 {\n  margin: 2px 0;\n  font-size: 16px;\n  font-weight: normal; }\n\n.item-divider-md h3,\n.item-divider-md h4,\n.item-divider-md h5,\n.item-divider-md h6 {\n  margin: 2px 0;\n  font-size: 14px;\n  font-weight: normal;\n  line-height: normal; }\n\n.item-divider-md p {\n  margin: 0 0 2px;\n  overflow: inherit;\n  font-size: 14px;\n  line-height: normal;\n  text-overflow: inherit;\n  color: var(--ion-text-md-color-step-400, var(--ion-text-color-step-400, #666666)); }\n\n.item-divider-md-primary {\n  color: var(--ion-color-md-primary-contrast, var(--ion-color-primary-contrast, #fff));\n  background-color: var(--ion-color-md-primary, var(--ion-color-primary, #3880ff)); }\n  .item-divider-md-primary p {\n    color: var(--ion-color-md-primary-contrast, var(--ion-color-primary-contrast, #fff)); }\n  .item-divider-md-primary.activated {\n    background-color: var(--ion-color-md-primary-tint, var(--ion-color-primary-tint, #4c8dff)); }\n\n.item-divider-md-secondary {\n  color: var(--ion-color-md-secondary-contrast, var(--ion-color-secondary-contrast, #fff));\n  background-color: var(--ion-color-md-secondary, var(--ion-color-secondary, #0cd1e8)); }\n  .item-divider-md-secondary p {\n    color: var(--ion-color-md-secondary-contrast, var(--ion-color-secondary-contrast, #fff)); }\n  .item-divider-md-secondary.activated {\n    background-color: var(--ion-color-md-secondary-tint, var(--ion-color-secondary-tint, #24d6ea)); }\n\n.item-divider-md-tertiary {\n  color: var(--ion-color-md-tertiary-contrast, var(--ion-color-tertiary-contrast, #fff));\n  background-color: var(--ion-color-md-tertiary, var(--ion-color-tertiary, #7044ff)); }\n  .item-divider-md-tertiary p {\n    color: var(--ion-color-md-tertiary-contrast, var(--ion-color-tertiary-contrast, #fff)); }\n  .item-divider-md-tertiary.activated {\n    background-color: var(--ion-color-md-tertiary-tint, var(--ion-color-tertiary-tint, #7e57ff)); }\n\n.item-divider-md-success {\n  color: var(--ion-color-md-success-contrast, var(--ion-color-success-contrast, #fff));\n  background-color: var(--ion-color-md-success, var(--ion-color-success, #10dc60)); }\n  .item-divider-md-success p {\n    color: var(--ion-color-md-success-contrast, var(--ion-color-success-contrast, #fff)); }\n  .item-divider-md-success.activated {\n    background-color: var(--ion-color-md-success-tint, var(--ion-color-success-tint, #28e070)); }\n\n.item-divider-md-warning {\n  color: var(--ion-color-md-warning-contrast, var(--ion-color-warning-contrast, #fff));\n  background-color: var(--ion-color-md-warning, var(--ion-color-warning, #ffce00)); }\n  .item-divider-md-warning p {\n    color: var(--ion-color-md-warning-contrast, var(--ion-color-warning-contrast, #fff)); }\n  .item-divider-md-warning.activated {\n    background-color: var(--ion-color-md-warning-tint, var(--ion-color-warning-tint, #ffd31a)); }\n\n.item-divider-md-danger {\n  color: var(--ion-color-md-danger-contrast, var(--ion-color-danger-contrast, #fff));\n  background-color: var(--ion-color-md-danger, var(--ion-color-danger, #f04141)); }\n  .item-divider-md-danger p {\n    color: var(--ion-color-md-danger-contrast, var(--ion-color-danger-contrast, #fff)); }\n  .item-divider-md-danger.activated {\n    background-color: var(--ion-color-md-danger-tint, var(--ion-color-danger-tint, #f25454)); }\n\n.item-divider-md-light {\n  color: var(--ion-color-md-light-contrast, var(--ion-color-light-contrast, #000));\n  background-color: var(--ion-color-md-light, var(--ion-color-light, #f4f5f8)); }\n  .item-divider-md-light p {\n    color: var(--ion-color-md-light-contrast, var(--ion-color-light-contrast, #000)); }\n  .item-divider-md-light.activated {\n    background-color: var(--ion-color-md-light-tint, var(--ion-color-light-tint, #f5f6f9)); }\n\n.item-divider-md-medium {\n  color: var(--ion-color-md-medium-contrast, var(--ion-color-medium-contrast, #fff));\n  background-color: var(--ion-color-md-medium, var(--ion-color-medium, #989aa2)); }\n  .item-divider-md-medium p {\n    color: var(--ion-color-md-medium-contrast, var(--ion-color-medium-contrast, #fff)); }\n  .item-divider-md-medium.activated {\n    background-color: var(--ion-color-md-medium-tint, var(--ion-color-medium-tint, #a2a4ab)); }\n\n.item-divider-md-dark {\n  color: var(--ion-color-md-dark-contrast, var(--ion-color-dark-contrast, #fff));\n  background-color: var(--ion-color-md-dark, var(--ion-color-dark, #222428)); }\n  .item-divider-md-dark p {\n    color: var(--ion-color-md-dark-contrast, var(--ion-color-dark-contrast, #fff)); }\n  .item-divider-md-dark.activated {\n    background-color: var(--ion-color-md-dark-tint, var(--ion-color-dark-tint, #383a3e)); }"; }
     static get styleMode() { return "md"; }
 }
 
@@ -1326,4 +1309,4 @@ class ToolbarTitle {
     static get styleMode() { return "md"; }
 }
 
-export { AppBalanceItem as AppBalanceitem, AppCryptoIcon as AppCryptoicon, Input as IonInput, Label as IonLabel, List as IonList, ListHeader as IonListHeader, NavPop as IonNavPop, Radio as IonRadio, Refresher as IonRefresher, RefresherContent as IonRefresherContent, Spinner as IonSpinner, ToolbarTitle as IonTitle };
+export { AppBalanceItem as AppBalanceitem, AppCryptoIcon as AppCryptoicon, Input as IonInput, ItemDivider as IonItemDivider, List as IonList, ListHeader as IonListHeader, NavPop as IonNavPop, Radio as IonRadio, Refresher as IonRefresher, RefresherContent as IonRefresherContent, Spinner as IonSpinner, ToolbarTitle as IonTitle };

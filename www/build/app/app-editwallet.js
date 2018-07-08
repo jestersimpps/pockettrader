@@ -1,9 +1,9 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { b as appSetWallets } from './chunk-43b312d9.js';
-import { b as TICKERSERVICE } from './chunk-6b468cd6.js';
-import './chunk-8b6e0876.js';
+import { c as appSetWallets } from './chunk-9c7d3ec3.js';
+import { b as TICKERSERVICE } from './chunk-1c4b34f7.js';
+import './chunk-ea6d9d39.js';
 import './chunk-a7525511.js';
 
 class AppEditwallet {
@@ -61,13 +61,11 @@ class AppEditwallet {
                         " Holdings"))),
             h("ion-content", null,
                 h("ion-list", null,
-                    h("ion-item", { lines: "full" },
-                        h("ion-label", null, "Amount"),
-                        h("ion-input", { name: "key", type: "number", value: `${this.wallet.balance}`, onInput: (ev) => this.changeValue(ev) })))),
-            h("ion-footer", null,
-                h("ion-toolbar", null,
-                    h("ion-nav-pop", null,
-                        h("ion-button", { "icon-left": true, color: "light", class: "full" }, "Set")))),
+                    h("ion-item", { lines: "none" },
+                        h("ion-label", null, "Amount:"),
+                        h("ion-input", { name: "key", type: "number", value: `${this.wallet.balance}`, onInput: (ev) => this.changeValue(ev) }))),
+                h("ion-nav-pop", null,
+                    h("ion-button", { "icon-left": true, color: "success", expand: "full" }, "Set"))),
         ]);
     }
     static get is() { return "app-editwallet"; }

@@ -3050,11 +3050,17 @@ const DefaultExchanges = [
     },
 ];
 class ExchangeService {
-    getExchanges() {
+    getExchangesFromStorage() {
         return STORAGE.get(`exchanges`);
     }
     setExchanges(exchanges) {
         STORAGE.set(`exchanges`, exchanges);
+    }
+    setDust(dust) {
+        STORAGE.set(`dust`, dust);
+    }
+    getDustFromStorage() {
+        return STORAGE.get(`dust`);
     }
 }
 

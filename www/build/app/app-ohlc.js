@@ -2,11 +2,11 @@
 const { h } = window.App;
 
 import { a as highstock } from './chunk-09df4f05.js';
-import { e as TRADESERVICE, b as TICKERSERVICE, c as BALANCESERVICE, f as OrderStatus, g as OrderType } from './chunk-6b468cd6.js';
+import { d as TRADESERVICE, b as TICKERSERVICE, c as BALANCESERVICE, e as OrderStatus, f as OrderType } from './chunk-1c4b34f7.js';
 import { a as numeral } from './chunk-374e99fd.js';
-import { h as appSetOrders } from './chunk-43b312d9.js';
+import { i as appSetOrders } from './chunk-9c7d3ec3.js';
 import './chunk-a7525511.js';
-import './chunk-8b6e0876.js';
+import './chunk-ea6d9d39.js';
 
 class AppOhlc {
     constructor() {
@@ -18,25 +18,29 @@ class AppOhlc {
         }));
     }
     changeSymbol() {
-        TRADESERVICE.getOhlc(this.exchangeId, this.symbol, this.timeFrame).then((response) => {
+        TRADESERVICE.getOhlc(this.exchangeId, this.symbol, this.timeFrame)
+            .then((response) => {
             this.ohlcData = response.data;
             this.chart.series[0].setData(response.data);
             this.chart.series[1].setData(this.ohlcData.map((d) => {
                 return [d[0], this.altPrice];
             }));
-        }).catch(() => {
+        })
+            .catch(() => {
             window.alert(`Couldn't get chart data`);
         });
     }
     setTimeFrame(timeFrame) {
         this.timeFrame = timeFrame;
-        TRADESERVICE.getOhlc(this.exchangeId, this.symbol, timeFrame).then((response) => {
+        TRADESERVICE.getOhlc(this.exchangeId, this.symbol, timeFrame)
+            .then((response) => {
             this.ohlcData = response.data;
             this.chart.series[0].setData(response.data);
             this.chart.series[1].setData(this.ohlcData.map((d) => {
                 return [d[0], this.altPrice];
             }));
-        }).catch(() => {
+        })
+            .catch(() => {
             window.alert(`Couldn't get chart data`);
         });
     }
@@ -76,13 +80,16 @@ class AppOhlc {
     }
     render() {
         return [
-            h("ion-segment", { color: "light", onIonChange: (e) => this.setTimeFrame(e.detail.value) },
+            h("ion-segment", { color: "dark", onIonChange: (e) => this.setTimeFrame(e.detail.value) },
                 h("ion-segment-button", { value: "1m", checked: this.timeFrame === '1m' },
-                    h("span", { style: { color: 'black' } }, "1 hour")),
+                    "1 hour",
+                    ' '),
                 h("ion-segment-button", { value: "1h", checked: this.timeFrame === '1h' },
-                    h("span", { style: { color: 'black' } }, "1 day")),
+                    "1 day",
+                    ' '),
                 h("ion-segment-button", { value: "1d", checked: this.timeFrame === '1d' },
-                    h("span", { style: { color: 'black' } }, "1 week"))),
+                    "1 week",
+                    ' ')),
             h("div", { id: "ohlc", style: { height: '200px' } }),
         ];
     }
@@ -317,68 +324,49 @@ class AppTrade {
                         h("ion-segment-button", { value: "2", checked: this.step === 2 }, "Action"),
                         h("ion-segment-button", { value: "3", checked: this.step === 3 }, "Amount"),
                         h("ion-segment-button", { value: "4", checked: this.step === 4 }, "Summary")),
-                    this.step === 0 && [
-                        h("ion-list-header", { color: "dark" },
-                            h("ion-title", { "text-center": true }, this.isLoading ? (h("ion-icon", { name: "sync", class: "spin" })) : (h("ion-badge", { color: "light" },
-                                this.exchangeId,
-                                " - ",
-                                this.ticker.symbol)))),
-                    ],
-                    this.step === 1 && [
-                        h("ion-list-header", { color: "dark" },
-                            h("ion-title", { "text-center": true }, this.isLoading ? (h("ion-icon", { name: "sync", class: "spin" })) : (h("ion-badge", { color: "light" },
-                                numeral(+this.tradePrice).format(this.getPriceFormat()),
-                                " ",
-                                this.ticker.quote)))),
-                    ],
-                    this.step === 2 && [
-                        h("ion-list-header", { color: "dark" },
-                            h("ion-title", { "text-center": true },
-                                h("ion-badge", { color: "light" }, this.tradeAction))),
-                    ],
-                    this.step === 3 && [
-                        h("ion-list-header", { color: "dark" },
-                            h("ion-title", { "text-center": true }, this.isLoading ? (h("ion-icon", { name: "sync", class: "spin" })) : (h("ion-badge", { color: "light" },
-                                numeral(this.tradeAmount).format(this.getAmountFormat()),
-                                " ",
-                                this.ticker.base)))),
-                    ],
-                    this.step === 4 && [
-                        h("ion-list-header", { color: "dark" },
-                            this.exchangeId,
-                            " - ",
-                            this.ticker.symbol,
-                            " Order summary"),
-                    ],
                 ]),
             this.ticker ? (h("ion-content", null,
                 h("ion-list", null,
                     this.step === 0 && [
-                        h("ion-list-header", { color: "light" }, "Select from all pairs:"),
+                        h("ion-list-header", { color: "light" },
+                            h("ion-title", { "text-center": true }, this.isLoading ? (h("ion-icon", { name: "sync", class: "spin" })) : (h("ion-badge", { color: "light" },
+                                this.exchangeId,
+                                " - ",
+                                this.ticker.symbol)))),
+                        h("ion-item-divider", { color: "light" }, "Select from all pairs:"),
                         h("ion-item", { lines: "none" },
                             h("ion-label", null, "Select Exchange"),
                             h("select", { onChange: (e) => this.exchangeSelected(e) }, this.exchanges.filter((e) => e.key && e.secret).map((e) => h("option", { value: e.id }, e.id)))),
                         h("ion-item", { lines: "none" },
                             h("ion-label", null, "Select Pair"),
                             h("select", { onChange: (e) => this.pairSelected(this.selectedExchange, e.target[`value`]) }, this.pairs.map((p) => h("option", { value: p.symbol }, p.symbol)))),
-                        h("ion-list-header", { color: "light" }, "Select from holdings:"),
+                        h("ion-item-divider", { color: "light" }, "Select from holdings:"),
                         this.exchanges.filter((e) => e.key && e.secret).map((exchange) => [
                             // <ion-list-header color="light">{exchange.id}</ion-list-header>,
                             exchange.balances.filter((b) => b.currency != `BTC`).map((b) => [
                                 h("ion-item", { lines: "full", onClick: () => this.pairSelected(exchange.id, this.getSymbol(b, exchange)) },
-                                    this.getSymbol(b, exchange),
-                                    h("ion-label", { slot: "end", "text-right": true }, exchange.id)),
+                                    h("ion-label", { "text-left": true }, exchange.id),
+                                    h("ion-label", { "text-right": true }, this.getSymbol(b, exchange))),
                             ]),
                         ]),
                     ],
                     this.step === 1 && (h("div", null,
+                        h("ion-list-header", { color: "light" },
+                            h("ion-title", { "text-center": true }, this.isLoading ? (h("ion-icon", { name: "sync", class: "spin" })) : (h("ion-badge", { color: "light" },
+                                numeral(+this.tradePrice).format(this.getPriceFormat()),
+                                " ",
+                                this.ticker.symbol)))),
                         h("app-ohlc", { exchangeId: this.exchangeId, symbol: this.ticker.symbol, altPrice: this.tradePrice, curPrice: this.ticker.last }),
                         h("ion-item", { lines: "none" },
                             h("ion-label", null, "Last price"),
-                            h("ion-button", { size: "small", fill: "outline", color: "dark", slot: "end", "text-right": true, onClick: () => (this.tradePrice = this.ticker.last) }, numeral(+this.ticker.last).format(this.getPriceFormat()))),
-                        h("ion-item", { lines: "none" },
-                            h("ion-label", null, "Set price"),
-                            h("ion-input", { slot: "end", name: "price", type: "number", value: `${this.tradePrice}`, onInput: (e) => this.setTradePrice(e) })),
+                            h("ion-label", null,
+                                h("ion-button", { size: "small", fill: "outline", color: "dark", expand: "block", "text-right": true, onClick: () => (this.tradePrice = this.ticker.last) },
+                                    numeral(+this.ticker.last).format(this.getPriceFormat()),
+                                    " ",
+                                    this.ticker.symbol))),
+                        h("ion-item", { lines: "full" },
+                            h("ion-label", null, "Set price:"),
+                            h("ion-input", { clearInput: true, name: "price", type: "number", value: `${this.tradePrice}`, onInput: (e) => this.setTradePrice(e) })),
                         h("ion-grid", null,
                             h("ion-row", null,
                                 h("ion-col", null,
@@ -390,7 +378,10 @@ class AppTrade {
                                 h("ion-col", null,
                                     h("ion-button", { fill: "outline", expand: "block", color: "success", onClick: () => this.setPriceWithButtons('++') }, "+ +")))))),
                     this.step === 2 && [
-                        h("ion-grid", { "margin-top": true, "padding-top": true },
+                        h("ion-list-header", { color: "light" },
+                            h("ion-title", { "text-center": true },
+                                h("ion-badge", { color: "light" }, this.tradeAction))),
+                        h("ion-grid", null,
                             h("ion-row", null,
                                 h("ion-col", null,
                                     h("ion-button", { fill: "outline", expand: "block", color: "success", onClick: () => (this.tradeAction = OrderType.LIMITBUY) }, "Limit Buy")),
@@ -398,71 +389,87 @@ class AppTrade {
                                     h("ion-button", { fill: "outline", expand: "block", color: "danger", onClick: () => (this.tradeAction = OrderType.LIMITSELL) }, "Limit Sell")))),
                     ],
                     this.step === 3 && [
-                        (this.tradeAction === OrderType.LIMITBUY || this.tradeAction === OrderType.MARKETBUY) && (h("ion-item", { lines: "none", "margin-top": true, "padding-top": true },
+                        h("ion-list-header", { color: "light" },
+                            h("ion-title", { "text-center": true }, this.isLoading ? (h("ion-icon", { name: "sync", class: "spin" })) : (h("ion-badge", { color: "light" },
+                                numeral(this.tradeAmount).format(this.getAmountFormat()),
+                                " ",
+                                this.ticker.base)))),
+                        (this.tradeAction === OrderType.LIMITBUY || this.tradeAction === OrderType.MARKETBUY) && (h("ion-item", { lines: "none" },
                             h("ion-label", null,
                                 "Available ",
                                 this.ticker.quote),
-                            h("ion-button", { color: "light", slot: "end", "text-right": true, onClick: () => this.setTradeAmountByButton(1) }, numeral(+this.quoteBalance).format(this.getAmountFormat())))),
-                        (this.tradeAction === OrderType.LIMITSELL || this.tradeAction === OrderType.MARKETSELL) && (h("ion-item", { lines: "none", "margin-top": true, "padding-top": true },
+                            h("ion-label", null,
+                                h("ion-button", { size: "small", fill: "outline", color: "dark", expand: "block", "text-right": true, onClick: () => this.setTradeAmountByButton(1) }, numeral(+this.quoteBalance).format(this.getAmountFormat()))))),
+                        (this.tradeAction === OrderType.LIMITSELL || this.tradeAction === OrderType.MARKETSELL) && (h("ion-item", { lines: "none" },
                             h("ion-label", null,
                                 "Available ",
                                 this.ticker.base),
-                            h("ion-button", { color: "light", slot: "end", "text-right": true, onClick: () => this.setTradeAmountByButton(1) }, numeral(+this.baseBalance).format(this.getAmountFormat())))),
-                        h("ion-item", { lines: "none" },
-                            h("ion-label", null, "Set Amount"),
-                            h("ion-input", { slot: "end", name: "price", type: "number", value: `${this.tradeAmount}`, onInput: (e) => this.setTradeAmount(e), onBlur: () => this.checkAmounts(this.tradeAmount) })),
+                            h("ion-label", null,
+                                h("ion-button", { size: "small", fill: "outline", color: "dark", expand: "block", "text-right": true, onClick: () => this.setTradeAmountByButton(1) }, numeral(+this.baseBalance).format(this.getAmountFormat()))))),
+                        h("ion-item", { lines: "full" },
+                            h("ion-label", null, "Set Amount:"),
+                            h("ion-input", { clearInput: true, name: "amount", type: "number", value: `${this.tradeAmount}`, onInput: (e) => this.setTradeAmount(e), onBlur: () => this.checkAmounts(this.tradeAmount) })),
                         h("ion-grid", null,
                             h("ion-row", null,
-                                h("ion-col", null,
+                                h("ion-col", { "col-6": true },
                                     h("ion-button", { fill: "outline", expand: "block", color: "dark", onClick: () => this.setTradeAmountByButton(0.1) }, "10%")),
-                                h("ion-col", null,
+                                h("ion-col", { "col-6": true },
                                     h("ion-button", { fill: "outline", expand: "block", color: "dark", onClick: () => this.setTradeAmountByButton(0.2) }, "20%")),
-                                h("ion-col", null,
+                                h("ion-col", { "col-6": true },
                                     h("ion-button", { fill: "outline", expand: "block", color: "dark", onClick: () => this.setTradeAmountByButton(0.3) }, "30%")),
-                                h("ion-col", null,
+                                h("ion-col", { "col-6": true },
                                     h("ion-button", { fill: "outline", expand: "block", color: "dark", onClick: () => this.setTradeAmountByButton(0.4) }, "40%")),
-                                h("ion-col", null,
+                                h("ion-col", { "col-6": true },
                                     h("ion-button", { fill: "outline", expand: "block", color: "dark", onClick: () => this.setTradeAmountByButton(0.5) }, "50%")),
-                                h("ion-col", null,
+                                h("ion-col", { "col-6": true },
                                     h("ion-button", { fill: "outline", expand: "block", color: "dark", onClick: () => this.setTradeAmountByButton(0.6) }, "60%")),
-                                h("ion-col", null,
+                                h("ion-col", { "col-6": true },
                                     h("ion-button", { fill: "outline", expand: "block", color: "dark", onClick: () => this.setTradeAmountByButton(0.7) }, "70%")),
-                                h("ion-col", null,
+                                h("ion-col", { "col-6": true },
                                     h("ion-button", { fill: "outline", expand: "block", color: "dark", onClick: () => this.setTradeAmountByButton(0.8) }, "80%")),
-                                h("ion-col", null,
+                                h("ion-col", { "col-6": true },
                                     h("ion-button", { fill: "outline", expand: "block", color: "dark", onClick: () => this.setTradeAmountByButton(0.9) }, "90%")),
-                                h("ion-col", null,
+                                h("ion-col", { "col-6": true },
                                     h("ion-button", { fill: "outline", expand: "block", color: "dark", onClick: () => this.setTradeAmountByButton(1) }, "100%")))),
                     ],
                     this.step === 4 && [
-                        h("ion-item", { lines: "none", "margin-top": true, "padding-top": true },
+                        h("ion-list-header", { color: "light" },
+                            h("ion-title", { "text-center": true },
+                                h("ion-badge", { color: "light" }, "Order summary"))),
+                        h("ion-item", { lines: "none" },
+                            h("ion-label", null, "Exchange"),
+                            h("ion-label", { "text-right": true }, this.ticker.exchange)),
+                        h("ion-item", { lines: "none" },
+                            h("ion-label", null, "Pair"),
+                            h("ion-label", { "text-right": true }, this.ticker.symbol)),
+                        h("ion-item", { lines: "none" },
                             h("ion-label", null, "Action"),
-                            h("ion-label", { slot: "end", "text-right": true }, this.tradeAction)),
+                            h("ion-label", { "text-right": true }, this.tradeAction)),
                         h("ion-item", { lines: "none" },
                             h("ion-label", null, "Amount"),
-                            h("ion-label", { slot: "end", "text-right": true },
+                            h("ion-label", { "text-right": true },
                                 numeral(this.tradeAmount).format(this.getAmountFormat()),
                                 " ",
                                 this.ticker.base)),
                         h("ion-item", { lines: "none" },
                             h("ion-label", null, "Price"),
-                            h("ion-label", { slot: "end", "text-right": true },
+                            h("ion-label", { "text-right": true },
                                 numeral(+this.tradePrice).format(this.getPriceFormat()),
                                 " ",
                                 this.ticker.symbol)),
                         h("ion-item", { lines: "none" },
                             h("ion-label", null, "Fee"),
-                            h("ion-label", { slot: "end", "text-right": true },
+                            h("ion-label", { "text-right": true },
                                 numeral(this.getFee(this.tradeAmount, this.tradePrice)).format(this.getPriceFormat()),
                                 " ",
                                 this.ticker.quote)),
                         h("ion-item", { lines: "none" },
                             h("ion-label", null, "Total"),
-                            h("ion-label", { slot: "end", "text-right": true },
+                            h("ion-label", { "text-right": true },
                                 numeral(+this.tradeAmount * +this.tradePrice - this.getFee(this.tradeAmount, this.tradePrice)).format(this.getAmountFormat()),
                                 ' ',
                                 this.ticker.quote)),
-                        h("ion-button", { expand: "block", color: "success", onClick: () => this.executeOrder(this.ticker.symbol, this.tradeAction, this.tradePrice, this.tradeAmount), disabled: this.isLoading },
+                        h("ion-button", { expand: "full", color: "success", onClick: () => this.executeOrder(this.ticker.symbol, this.tradeAction, this.tradePrice, this.tradeAmount), disabled: this.isLoading },
                             this.isLoading && h("ion-icon", { name: "refresh", class: "spin", "margin-right": true }),
                             " Execute"),
                     ]))) : (h("ion-content", null, "Loading exchanges...")),

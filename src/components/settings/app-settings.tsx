@@ -28,6 +28,10 @@ export class AppSettings {
             <ion-icon name="logo-usd" item-start margin-right />
             <ion-label>Base Currency</ion-label>
           </ion-item>
+          <ion-item lines="full" href={`/settings/dust`}>
+            <ion-icon name="eye-off" item-start margin-right />
+            <ion-label>Dust limit</ion-label>
+          </ion-item>
           <ion-item lines="full" href={`/settings/premium`}>
             <ion-icon name="swap" item-start margin-right />
             <ion-label>Trading</ion-label>

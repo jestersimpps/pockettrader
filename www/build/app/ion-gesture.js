@@ -1,7 +1,7 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { b as assert, c as now } from './chunk-63df273d.js';
+import { a as assert, b as now } from './chunk-63df273d.js';
 
 class PanRecognizer {
     constructor(direction, threshold, maxAngle) {

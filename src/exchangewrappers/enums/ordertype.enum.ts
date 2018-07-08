@@ -1,7 +1,0 @@
-export enum OrderType {
-    LIMITSELL = 'LIMITSELL',
-    LIMITBUY = 'LIMITBUY',
-    MARKETSELL = 'MARKETSELL',
-    MARKETBUY = 'MARKETBUY',
-    CANCEL = 'CANCEL',
-}

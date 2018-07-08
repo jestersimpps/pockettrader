@@ -2,10 +2,9 @@ import { Component, State, Prop } from '@stencil/core';
 import { Store, Action } from '@stencil/redux';
 import { Exchange, ExchangeId } from '../../services/exchange.service';
 import { Ticker } from '../../services/ticker.service';
-import { Order, OrderType } from '../../services/trade.service';
+import { Order, OrderType, OrderStatus } from '../../services/trade.service';
 import { TRADESERVICE, BALANCESERVICE } from '../../services/globals';
 import numeral from 'numeral';
-import { OrderStatus } from '../../exchangewrappers/enums/orderstatus.enum';
 import {
   appSetExchanges,
   appSetBaseCurrency,
@@ -34,6 +33,7 @@ export class AppOrders {
   @State() wallets: Wallet[];
   @State() isLoading = false;
   @State() status = 0;
+  @State() dust: number;
 
   appSetOrders: Action;
   appSetExchanges: Action;
@@ -48,13 +48,14 @@ export class AppOrders {
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { exchanges, wallets, tickers, orders },
+        app: { exchanges, wallets, tickers, orders, dust },
       } = state;
       return {
         exchanges,
         tickers,
         wallets,
         orders,
+        dust,
       };
     });
     this.store.mapDispatchToProps(this, {
@@ -109,7 +110,7 @@ export class AppOrders {
 
   refreshBalances() {
     this.isLoading = true;
-    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges).then((response) => {
+    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.dust).then((response) => {
       if (response) {
         this.appSetCurrencies(response.conversionrates);
         this.appSetTickers(response.tickers);
@@ -199,7 +200,8 @@ export class AppOrders {
             .sort((a, b) => {
               return b.updatedAt - a.updatedAt;
             })
-            .filter((o) => o.status === OrderStatus.filled)
+            .filter((o) => o.type === OrderType.LIMITBUY || o.type === OrderType.MARKETBUY)
+            .filter((o) => o.status === OrderStatus.closed || o.status === OrderStatus.filled)
             .map((order) => [
               <ion-item lines="full" href={`/orders/${order.orderId}`}>
                 <ion-grid>
@@ -236,7 +238,8 @@ export class AppOrders {
             .sort((a, b) => {
               return b.updatedAt - a.updatedAt;
             })
-            .filter((o) => o.status === OrderStatus.closed)
+            .filter((o) => o.type === OrderType.LIMITSELL || o.type === OrderType.MARKETSELL)
+            .filter((o) => o.status === OrderStatus.closed || o.status === OrderStatus.filled)
             .map((order) => [
               <ion-item lines="full" href={`/orders/${order.orderId}`}>
                 <ion-grid>

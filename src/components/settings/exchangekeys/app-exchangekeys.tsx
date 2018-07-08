@@ -1,7 +1,7 @@
 import { Component, Prop, State } from '@stencil/core';
 import { Store, Action } from '@stencil/redux';
-import { ExchangeId, Exchange } from '../../services/exchange.service';
-import { appSetExchanges } from '../../actions/app';
+import { ExchangeId, Exchange } from '../../../services/exchange.service';
+import { appSetExchanges } from '../../../actions/app';
 
 @Component({
   tag: 'app-exchangekeys',
@@ -64,25 +64,25 @@ export class AppExchangeKeys {
       </ion-header>,
       <ion-content>
         <ion-list>
-          <ion-item lines="full">
+          <ion-item lines="none">
             <ion-label>Key</ion-label>
-            <ion-input name="key" type="text" value={this.exchange.key} onInput={(ev) => this.changeValue(ev, this.exchange)} />
           </ion-item>
           <ion-item lines="full">
+            <ion-input name="key" type="text" value={this.exchange.key} onInput={(ev) => this.changeValue(ev, this.exchange)} />
+          </ion-item>
+          <ion-item lines="none">
             <ion-label>Secret</ion-label>
+          </ion-item>
+          <ion-item lines="none">
             <ion-input name="secret" type="password" value={this.exchange.secret} onInput={(ev) => this.changeValue(ev, this.exchange)} />
           </ion-item>
         </ion-list>
+        <ion-nav-pop>
+          <ion-button icon-left color="success" expand="full">
+            Set
+          </ion-button>
+        </ion-nav-pop>
       </ion-content>,
-      <ion-footer>
-        <ion-toolbar>
-          <ion-nav-pop>
-            <ion-button icon-left color="light" expand="block">
-              Set
-            </ion-button>
-          </ion-nav-pop>
-        </ion-toolbar>
-      </ion-footer>,
     ];
   }
 }

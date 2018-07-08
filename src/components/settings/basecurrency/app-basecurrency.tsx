@@ -1,8 +1,8 @@
 import { Component, State, Prop } from '@stencil/core';
-import { Currency } from '../../services/currency.service';
+import { Currency } from '../../../services/currency.service';
 import { Store, Action } from '@stencil/redux';
-import { appSetBaseCurrency } from '../../actions/app';
-import { CURRENCYSERVICE } from '../../services/globals';
+import { appSetBaseCurrency } from '../../../actions/app';
+import { CURRENCYSERVICE } from '../../../services/globals';
 
 @Component({
   tag: 'app-basecurrency',

@@ -1,9 +1,9 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { a as CURRENCYSERVICE, c as BALANCESERVICE } from './chunk-6b468cd6.js';
-import { c as appSetExchanges, a as appSetBaseCurrency, d as appSetCurrencies, e as appSetTickers, f as appSetTotalBalances, b as appSetWallets, g as appSetBalances } from './chunk-43b312d9.js';
-import './chunk-8b6e0876.js';
+import { a as CURRENCYSERVICE, c as BALANCESERVICE } from './chunk-1c4b34f7.js';
+import { d as appSetExchanges, a as appSetBaseCurrency, e as appSetCurrencies, f as appSetTickers, g as appSetTotalBalances, c as appSetWallets, h as appSetBalances } from './chunk-9c7d3ec3.js';
+import './chunk-ea6d9d39.js';
 import './chunk-a7525511.js';
 
 class AppExchanges {
@@ -13,7 +13,7 @@ class AppExchanges {
     }
     componentWillLoad() {
         this.store.mapStateToProps(this, (state) => {
-            const { app: { exchanges, baseCurrency, currencies, tickers, wallets, balances }, } = state;
+            const { app: { exchanges, baseCurrency, currencies, tickers, wallets, balances, dust }, } = state;
             return {
                 exchanges,
                 baseCurrency,
@@ -21,6 +21,7 @@ class AppExchanges {
                 tickers,
                 wallets,
                 balances,
+                dust
             };
         });
         this.store.mapDispatchToProps(this, {
@@ -59,7 +60,7 @@ class AppExchanges {
     }
     refreshBalances() {
         this.isLoading = true;
-        BALANCESERVICE.refreshBalances(this.wallets, this.exchanges).then((response) => {
+        BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.dust).then((response) => {
             if (response) {
                 this.appSetCurrencies(response.conversionrates);
                 this.appSetTickers(response.tickers);
@@ -90,9 +91,9 @@ class AppExchanges {
                             h("ion-icon", { name: "refresh", class: this.isLoading ? 'spin' : '' }))))),
             h("ion-content", null,
                 h("ion-list", null, this.exchanges.filter((e) => e.key && e.secret).map((exchange) => [
-                    h("ion-list-header", { color: "light" },
-                        exchange.id,
-                        h("ion-badge", { color: "light", "margin-right": true },
+                    h("ion-item-divider", { color: "light" },
+                        h("ion-label", null, exchange.id),
+                        h("ion-badge", { slot: "end", color: "light" },
                             h("app-baseprice", { btcPrice: CURRENCYSERVICE.getBaseTotal(exchange.balances, this.baseCurrency), baseCurrency: this.baseCurrency }))),
                     exchange.balances
                         .sort((a, b) => {
@@ -108,6 +109,9 @@ class AppExchanges {
             "state": true
         },
         "baseCurrency": {
+            "state": true
+        },
+        "dust": {
             "state": true
         },
         "exchanges": {

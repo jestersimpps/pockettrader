@@ -12,3 +12,7 @@ export const TICKERSERVICE: TickerService = new TickerService();
 export const WALLETSERVICE: WalletService = new WalletService();
 export const TOKENSERVICE: TokenService = new TokenService();
 export const TRADESERVICE: TradeService = new TradeService();
+export class ClientCreds {
+  readonly key: string;
+  readonly secret: string;
+}

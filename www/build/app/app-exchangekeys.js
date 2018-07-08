@@ -1,8 +1,8 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { c as Exchange } from './chunk-8b6e0876.js';
-import { c as appSetExchanges } from './chunk-43b312d9.js';
+import { c as Exchange } from './chunk-ea6d9d39.js';
+import { d as appSetExchanges } from './chunk-9c7d3ec3.js';
 import './chunk-a7525511.js';
 
 class AppExchangeKeys {
@@ -53,16 +53,16 @@ class AppExchangeKeys {
                         " API keys"))),
             h("ion-content", null,
                 h("ion-list", null,
+                    h("ion-item", { lines: "none" },
+                        h("ion-label", null, "Key")),
                     h("ion-item", { lines: "full" },
-                        h("ion-label", null, "Key"),
                         h("ion-input", { name: "key", type: "text", value: this.exchange.key, onInput: (ev) => this.changeValue(ev, this.exchange) })),
-                    h("ion-item", { lines: "full" },
-                        h("ion-label", null, "Secret"),
-                        h("ion-input", { name: "secret", type: "password", value: this.exchange.secret, onInput: (ev) => this.changeValue(ev, this.exchange) })))),
-            h("ion-footer", null,
-                h("ion-toolbar", null,
-                    h("ion-nav-pop", null,
-                        h("ion-button", { "icon-left": true, color: "light", expand: "block" }, "Set")))),
+                    h("ion-item", { lines: "none" },
+                        h("ion-label", null, "Secret")),
+                    h("ion-item", { lines: "none" },
+                        h("ion-input", { name: "secret", type: "password", value: this.exchange.secret, onInput: (ev) => this.changeValue(ev, this.exchange) }))),
+                h("ion-nav-pop", null,
+                    h("ion-button", { "icon-left": true, color: "success", expand: "full" }, "Set"))),
         ];
     }
     static get is() { return "app-exchangekeys"; }

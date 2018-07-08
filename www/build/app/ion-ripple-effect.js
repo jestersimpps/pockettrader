@@ -1,7 +1,7 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { c as now } from './chunk-63df273d.js';
+import { b as now } from './chunk-63df273d.js';
 
 class RippleEffect {
     constructor() {

@@ -59,3 +59,9 @@ export const appSetOrders = (data: any) => async (dispatch, _getState) => {
     data: data,
   });
 };
+export const appSetDust = (data: any) => async (dispatch, _getState) => {
+  return dispatch({
+    type: TypeKeys.APP_SET_DUST,
+    data: data,
+  });
+};

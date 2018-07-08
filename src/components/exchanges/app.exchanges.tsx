@@ -29,6 +29,7 @@ export class AppExchanges {
   @State() balances: Balances;
   @State() tickers: any[];
   @State() wallets: Wallet[];
+  @State() dust: number;
 
   appSetExchanges: Action;
   appSetCurrencies: Action;
@@ -42,7 +43,7 @@ export class AppExchanges {
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { exchanges, baseCurrency, currencies, tickers, wallets, balances },
+        app: { exchanges, baseCurrency, currencies, tickers, wallets, balances,dust },
       } = state;
       return {
         exchanges,
@@ -51,6 +52,7 @@ export class AppExchanges {
         tickers,
         wallets,
         balances,
+        dust
       };
     });
     this.store.mapDispatchToProps(this, {
@@ -92,7 +94,7 @@ export class AppExchanges {
 
   refreshBalances() {
     this.isLoading = true;
-    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges).then((response) => {
+    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.dust).then((response) => {
       if (response) {
         this.appSetCurrencies(response.conversionrates);
         this.appSetTickers(response.tickers);
@@ -133,12 +135,12 @@ export class AppExchanges {
       <ion-content>
         <ion-list>
           {this.exchanges.filter((e) => e.key && e.secret).map((exchange) => [
-            <ion-list-header color="light">
-              {exchange.id}
-              <ion-badge color="light" margin-right>
+            <ion-item-divider color="light">
+              <ion-label>{exchange.id}</ion-label>
+              <ion-badge slot="end" color="light">
                 <app-baseprice btcPrice={CURRENCYSERVICE.getBaseTotal(exchange.balances, this.baseCurrency)} baseCurrency={this.baseCurrency} />
               </ion-badge>
-            </ion-list-header>,
+            </ion-item-divider>,
             exchange.balances
               .sort((a, b) => {
                 return b.btcAmount - a.btcAmount;

@@ -246,6 +246,7 @@ class AppTrade {
                                 numeral(+this.tradePrice).format(this.getPriceFormat()),
                                 " ",
                                 this.ticker.symbol)))),
+                        h("ion-item", { lines: "full", href: `/pair/${this.exchangeId}/${this.ticker.symbol}` }, "Open Tradingview Chart"),
                         h("app-ohlc", { exchangeId: this.exchangeId, symbol: this.ticker.symbol, altPrice: this.tradePrice, curPrice: this.ticker.last }),
                         h("ion-item", { lines: "none" },
                             h("ion-label", null, "Last price"),

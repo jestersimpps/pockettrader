@@ -318,6 +318,9 @@ export class AppTrade {
                     )}
                   </ion-title>
                 </ion-list-header>
+                <ion-item lines="full" href={`/pair/${this.exchangeId}/${this.ticker.symbol}`}>
+                  Open Tradingview Chart
+                </ion-item>
                 <app-ohlc exchangeId={this.exchangeId} symbol={this.ticker.symbol} altPrice={this.tradePrice} curPrice={this.ticker.last} />
                 <ion-item lines="none">
                   <ion-label>Last price</ion-label>

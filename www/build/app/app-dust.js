@@ -37,7 +37,7 @@ class AppDust {
                     h("ion-item", { lines: "none" },
                         h("ion-label", null, "Only show balances larger than (x) BTC:")),
                     h("ion-item", { lines: "none" },
-                        h("ion-input", { name: "dust", type: "number", value: `${this.dust}`, onInput: (ev) => this.changeValue(ev) })),
+                        h("ion-input", { clearInput: true, name: "dust", type: "number", value: `${this.dust}`, onInput: (ev) => this.changeValue(ev) })),
                     h("ion-item", { lines: "none" },
                         h("ion-label", null,
                             "=   ",

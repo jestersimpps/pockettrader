@@ -49,7 +49,8 @@
       "$": "app-keys"
     },
     "app-ohlc": {
-      "$": "app-ohlc"
+      "ios": "app-balanceitem.ios",
+      "md": "app-balanceitem.md"
     },
     "app-order": {
       "$": "app-order"
@@ -80,7 +81,7 @@
       "$": "app-overview"
     },
     "app-trade": {
-      "$": "app-ohlc"
+      "$": "app-trade"
     },
     "app-wallets": {
       "$": "app-wallets"

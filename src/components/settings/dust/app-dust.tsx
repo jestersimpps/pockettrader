@@ -55,7 +55,7 @@ export class AppDust {
             <ion-label>Only show balances larger than (x) BTC:</ion-label>
           </ion-item>
           <ion-item lines="none">
-            <ion-input name="dust" type="number" value={`${this.dust}`} onInput={(ev) => this.changeValue(ev)} />
+            <ion-input clearInput={true} name="dust" type="number" value={`${this.dust}`} onInput={(ev) => this.changeValue(ev)} />
           </ion-item>
           <ion-item lines="none">
             <ion-label>

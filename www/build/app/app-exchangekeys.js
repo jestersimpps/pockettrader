@@ -56,11 +56,11 @@ class AppExchangeKeys {
                     h("ion-item", { lines: "none" },
                         h("ion-label", null, "Key")),
                     h("ion-item", { lines: "full" },
-                        h("ion-input", { name: "key", type: "text", value: this.exchange.key, onInput: (ev) => this.changeValue(ev, this.exchange) })),
+                        h("ion-input", { clearInput: true, name: "key", type: "text", value: this.exchange.key, onInput: (ev) => this.changeValue(ev, this.exchange) })),
                     h("ion-item", { lines: "none" },
                         h("ion-label", null, "Secret")),
                     h("ion-item", { lines: "none" },
-                        h("ion-input", { name: "secret", type: "password", value: this.exchange.secret, onInput: (ev) => this.changeValue(ev, this.exchange) }))),
+                        h("ion-input", { clearInput: true, name: "secret", type: "password", value: this.exchange.secret, onInput: (ev) => this.changeValue(ev, this.exchange) }))),
                 h("ion-nav-pop", null,
                     h("ion-button", { "icon-left": true, color: "success", expand: "full" }, "Set"))),
         ];

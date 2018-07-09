@@ -1,124 +1,11 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { a as highstock } from './chunk-09df4f05.js';
-import { d as TRADESERVICE, b as TICKERSERVICE, c as BALANCESERVICE, e as OrderStatus, f as OrderType } from './chunk-1c4b34f7.js';
+import { b as TICKERSERVICE, c as BALANCESERVICE, e as TRADESERVICE, d as OrderStatus, f as OrderType } from './chunk-1c4b34f7.js';
 import { a as numeral } from './chunk-374e99fd.js';
 import { i as appSetOrders } from './chunk-9c7d3ec3.js';
-import './chunk-a7525511.js';
 import './chunk-ea6d9d39.js';
-
-class AppOhlc {
-    constructor() {
-        this.timeFrame = '1h';
-    }
-    changeAltLine() {
-        this.chart.series[1].setData(this.ohlcData.map((d) => {
-            return [d[0], this.altPrice];
-        }));
-    }
-    changeSymbol() {
-        TRADESERVICE.getOhlc(this.exchangeId, this.symbol, this.timeFrame)
-            .then((response) => {
-            this.ohlcData = response.data;
-            this.chart.series[0].setData(response.data);
-            this.chart.series[1].setData(this.ohlcData.map((d) => {
-                return [d[0], this.altPrice];
-            }));
-        })
-            .catch(() => {
-            window.alert(`Couldn't get chart data`);
-        });
-    }
-    setTimeFrame(timeFrame) {
-        this.timeFrame = timeFrame;
-        TRADESERVICE.getOhlc(this.exchangeId, this.symbol, timeFrame)
-            .then((response) => {
-            this.ohlcData = response.data;
-            this.chart.series[0].setData(response.data);
-            this.chart.series[1].setData(this.ohlcData.map((d) => {
-                return [d[0], this.altPrice];
-            }));
-        })
-            .catch(() => {
-            window.alert(`Couldn't get chart data`);
-        });
-    }
-    componentDidLoad() {
-        this.chart = highstock.stockChart('ohlc', {
-            title: {
-                text: ``,
-            },
-            rangeSelector: {
-                enabled: false,
-                inputEnabled: false,
-            },
-            navigator: {
-                enabled: false,
-            },
-            scrollbar: {
-                enabled: false,
-            },
-            plotOptions: {
-                line: {
-                    dashStyle: 'ShortDot',
-                },
-            },
-            series: [
-                {
-                    name: `${this.exchangeId} - ${this.symbol}`,
-                    type: 'candlestick',
-                    data: [],
-                },
-                {
-                    name: 'Set Price',
-                    type: 'line',
-                    data: [],
-                },
-            ],
-        });
-    }
-    render() {
-        return [
-            h("ion-segment", { color: "dark", onIonChange: (e) => this.setTimeFrame(e.detail.value) },
-                h("ion-segment-button", { value: "1m", checked: this.timeFrame === '1m' },
-                    "1 hour",
-                    ' '),
-                h("ion-segment-button", { value: "1h", checked: this.timeFrame === '1h' },
-                    "1 day",
-                    ' '),
-                h("ion-segment-button", { value: "1d", checked: this.timeFrame === '1d' },
-                    "1 week",
-                    ' ')),
-            h("div", { id: "ohlc", style: { height: '200px' } }),
-        ];
-    }
-    static get is() { return "app-ohlc"; }
-    static get properties() { return {
-        "altPrice": {
-            "type": Number,
-            "attr": "alt-price",
-            "watchCallbacks": ["changeAltLine"]
-        },
-        "curPrice": {
-            "type": Number,
-            "attr": "cur-price"
-        },
-        "exchangeId": {
-            "type": String,
-            "attr": "exchange-id"
-        },
-        "symbol": {
-            "type": String,
-            "attr": "symbol",
-            "watchCallbacks": ["changeSymbol"]
-        },
-        "timeFrame": {
-            "state": true
-        }
-    }; }
-    static get style() { return ""; }
-}
+import './chunk-a7525511.js';
 
 class AppTrade {
     constructor() {
@@ -502,6 +389,7 @@ class AppTrade {
                     status: OrderStatus.open,
                     orderId: response.data.id,
                     openPrice: numeral(price).format(this.getPriceFormat()),
+                    last: numeral(this.ticker.last).format(this.getPriceFormat()),
                     closePrice: 0,
                     filled: 0,
                     remaining: 0,
@@ -509,8 +397,8 @@ class AppTrade {
                     fee: this.tradeAction === OrderType.LIMITBUY || this.tradeAction === OrderType.LIMITSELL
                         ? numeral(+this.ticker.info.maker * +this.tradeAmount * +this.tradePrice).format(this.getPriceFormat())
                         : numeral(+this.ticker.info.taker * +this.tradeAmount * +this.tradePrice).format(this.getPriceFormat()),
-                    createdAt: new Date().getTime(),
-                    updatedAt: new Date().getTime(),
+                    createdAt: new Date().getTime() / 1000,
+                    updatedAt: new Date().getTime() / 1000,
                 };
                 this.appSetOrders([...this.orders, newOrder]);
                 this.isLoading = false;
@@ -572,4 +460,4 @@ class AppTrade {
     static get style() { return ".full {\n  width: 100%;\n}"; }
 }
 
-export { AppOhlc, AppTrade };
+export { AppTrade };

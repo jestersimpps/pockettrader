@@ -578,6 +578,7 @@ export class AppTrade {
             status: OrderStatus.open,
             orderId: response.data.id,
             openPrice: numeral(price).format(this.getPriceFormat()),
+            last: numeral(this.ticker.last).format(this.getPriceFormat()),
             closePrice: 0,
             filled: 0,
             remaining: 0,
@@ -586,8 +587,8 @@ export class AppTrade {
               this.tradeAction === OrderType.LIMITBUY || this.tradeAction === OrderType.LIMITSELL
                 ? numeral(+this.ticker.info.maker * +this.tradeAmount * +this.tradePrice).format(this.getPriceFormat())
                 : numeral(+this.ticker.info.taker * +this.tradeAmount * +this.tradePrice).format(this.getPriceFormat()),
-            createdAt: new Date().getTime(),
-            updatedAt: new Date().getTime(),
+            createdAt: new Date().getTime() / 1000,
+            updatedAt: new Date().getTime() / 1000,
           };
           this.appSetOrders([...this.orders, newOrder]);
           this.isLoading = false;

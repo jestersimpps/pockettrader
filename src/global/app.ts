@@ -11,5 +11,7 @@
 declare let Context: any;
 
 import { highcharts, highstock } from './highcharts';
+import { moment } from './moment';
 Context.highcharts = highcharts;
 Context.highstock = highstock;
+Context.moment = moment;

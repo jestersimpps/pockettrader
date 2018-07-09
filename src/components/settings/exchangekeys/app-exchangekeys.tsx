@@ -68,13 +68,13 @@ export class AppExchangeKeys {
             <ion-label>Key</ion-label>
           </ion-item>
           <ion-item lines="full">
-            <ion-input name="key" type="text" value={this.exchange.key} onInput={(ev) => this.changeValue(ev, this.exchange)} />
+            <ion-input clearInput={true} name="key" type="text" value={this.exchange.key} onInput={(ev) => this.changeValue(ev, this.exchange)} />
           </ion-item>
           <ion-item lines="none">
             <ion-label>Secret</ion-label>
           </ion-item>
           <ion-item lines="none">
-            <ion-input name="secret" type="password" value={this.exchange.secret} onInput={(ev) => this.changeValue(ev, this.exchange)} />
+            <ion-input clearInput={true} name="secret" type="password" value={this.exchange.secret} onInput={(ev) => this.changeValue(ev, this.exchange)} />
           </ion-item>
         </ion-list>
         <ion-nav-pop>

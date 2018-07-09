@@ -319,4 +319,4 @@ const WALLETSERVICE = new WalletService();
 const TOKENSERVICE = new TokenService();
 const TRADESERVICE = new TradeService();
 
-export { CURRENCYSERVICE as a, TICKERSERVICE as b, BALANCESERVICE as c, TRADESERVICE as d, OrderStatus as e, OrderType as f, WALLETSERVICE as g, TOKENSERVICE as h, EXCHANGESERVICE as i };
+export { CURRENCYSERVICE as a, TICKERSERVICE as b, BALANCESERVICE as c, OrderStatus as d, TRADESERVICE as e, OrderType as f, WALLETSERVICE as g, TOKENSERVICE as h, EXCHANGESERVICE as i };

@@ -16,6 +16,7 @@ import {
   appSetOrders,
 } from '../../actions/app';
 import { Wallet } from '../../services/wallets.service';
+import { moment } from '../../global/moment';
 
 @Component({
   tag: 'app-orders',
@@ -96,7 +97,7 @@ export class AppOrders {
               currentOrder.closePrice = ticker.last;
             }
           }
-          currentOrder.updatedAt = new Date().getTime();
+          currentOrder.updatedAt = new Date().getTime() / 1000;
         });
         this.isLoading = false;
         this.refreshBalances();
@@ -157,6 +158,43 @@ export class AppOrders {
           </ion-segment-button>
         </ion-segment>
       </ion-header>,
+      <ion-item lines="full" color="light">
+        <ion-grid>
+          <ion-row>
+            <ion-col col-4 class="lineText">
+              <b>Pair</b>
+            </ion-col>
+            <ion-col col-4 text-center class="lineText">
+              <b>Type</b>
+            </ion-col>
+            <ion-col col-4 text-right class="lineText">
+              <b>Exchange</b>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col col-4 class="lineText">
+              <b>Amount</b>
+            </ion-col>
+            <ion-col col-4 text-center class="lineText">
+              <b>Open</b>
+            </ion-col>
+            <ion-col col-4 text-right class="lineText">
+              <b>Total</b>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col col-4 class="lineText">
+              <b>Created</b>
+            </ion-col>
+            <ion-col col-4 text-center class="lineText">
+              <b>Last</b>
+            </ion-col>
+            <ion-col col-4 text-right class="lineText">
+              <b>Last/Open</b>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>,
       <ion-content>
         {this.status === 0 && [
           this.orders
@@ -168,27 +206,40 @@ export class AppOrders {
               <ion-item lines="full" href={`/orders/${order.orderId}`}>
                 <ion-grid>
                   <ion-row>
-                    <ion-col col-4 class="lineText">
-                      {order.type}
-                    </ion-col>
-                    <ion-col col-4 text-center class="lineText">
-                      {numeral(order.amount).format('0,0.000000')}
-                    </ion-col>
-                    <ion-col col-4 text-right class="lineText">
-                      <small>open:</small>
-                      {numeral(order.openPrice).format('0,0.000000')}
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
                     <ion-col col-4 text-left class="lineText">
                       <b>{order.pair}</b>
                     </ion-col>
                     <ion-col col-4 text-center class="lineText">
-                      {order.exchangeId}
+                      {order.type}
                     </ion-col>
                     <ion-col col-4 text-right class="lineText">
-                      <small>last:</small>
+                      {order.exchangeId}
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col col-4 text-left class="lineText">
+                      {numeral(order.amount).format('0,0.000000')}
+                    </ion-col>
+                    <ion-col col-4 text-center class="lineText">
+                      {numeral(order.openPrice).format('0,0.000000')}
+                    </ion-col>
+                    <ion-col col-4 text-right class="lineText">
+                      {numeral(order.openPrice * order.amount).format('0,0.000000')}
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col col-4 text-left class="lineText">
+                      <small>{moment.unix(order.createdAt).fromNow()}</small>
+                    </ion-col>
+                    <ion-col col-4 text-center class="lineText">
                       {numeral(order.last).format('0,0.000000')}
+                    </ion-col>
+                    <ion-col col-4 text-right class="lineText">
+                      <b style={{ color: (order.last * 100) / order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
+                        {(order.last * 100) / order.openPrice - 100 > 0
+                          ? '+' + numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'
+                          : numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'}
+                      </b>{' '}
                     </ion-col>
                   </ion-row>
                 </ion-grid>

@@ -2,7 +2,8 @@
 const { h } = window.App;
 
 import { a as numeral } from './chunk-374e99fd.js';
-import { a as CURRENCYSERVICE } from './chunk-1c4b34f7.js';
+import { a as CURRENCYSERVICE, e as TRADESERVICE } from './chunk-1c4b34f7.js';
+import { a as highstock } from './chunk-09df4f05.js';
 import { c as debounceEvent, d as deferEvent } from './chunk-63df273d.js';
 import { a as createThemedClasses } from './chunk-ea7ac2d5.js';
 import './chunk-a7525511.js';
@@ -79,6 +80,135 @@ class AppCryptoIcon {
         }
     }; }
     static get style() { return ""; }
+}
+
+class AppOhlc {
+    constructor() {
+        this.timeFrame = '1h';
+    }
+    changeAltLine() {
+        this.chart.series[1].color = +this.curPrice > +this.altPrice ? '#10dc60' : '#f53d3d';
+        this.chart.series[1].setData(this.ohlcData.map((d) => {
+            return [d[0], this.altPrice];
+        }));
+    }
+    changeSymbol() {
+        TRADESERVICE.getOhlc(this.exchangeId, this.symbol, this.timeFrame)
+            .then((response) => {
+            this.ohlcData = response.data;
+            this.chart.series[0].setData(response.data);
+            this.chart.series[1].color = +this.curPrice > +this.altPrice ? '#10dc60' : '#f53d3d';
+            this.chart.series[1].setData(this.ohlcData.map((d) => {
+                return [d[0], this.altPrice];
+            }));
+            if (this.curPrice) {
+                this.chart.series[2].setData(this.ohlcData.map((d) => {
+                    return [d[0], this.curPrice];
+                }));
+            }
+        })
+            .catch(() => {
+            window.alert(`Couldn't get chart data`);
+        });
+    }
+    componentWillUpdate() {
+        console.log('Component will update and re-render');
+    }
+    setTimeFrame(timeFrame) {
+        this.timeFrame = timeFrame;
+        TRADESERVICE.getOhlc(this.exchangeId, this.symbol, timeFrame)
+            .then((response) => {
+            this.ohlcData = response.data;
+            this.chart.series[0].setData(response.data);
+            this.chart.series[1].color = +this.curPrice > +this.altPrice ? '#10dc60' : '#f53d3d';
+            this.chart.series[1].setData(this.ohlcData.map((d) => {
+                return [d[0], this.altPrice];
+            }));
+            if (this.curPrice) {
+                this.chart.series[2].setData(this.ohlcData.map((d) => {
+                    return [d[0], this.curPrice];
+                }));
+            }
+        })
+            .catch(() => {
+            window.alert(`Couldn't get chart data`);
+        });
+    }
+    componentDidLoad() {
+        this.chart = highstock.stockChart('ohlc', {
+            title: {
+                text: ``,
+            },
+            rangeSelector: {
+                enabled: false,
+                inputEnabled: false,
+            },
+            navigator: {
+                enabled: false,
+            },
+            scrollbar: {
+                enabled: false,
+            },
+            plotOptions: {
+                line: {
+                    dashStyle: 'Solid',
+                    lineWidth: 1
+                },
+            },
+            series: [
+                {
+                    name: `${this.exchangeId} - ${this.symbol}`,
+                    type: 'candlestick',
+                    data: [],
+                },
+                {
+                    name: 'Open Price',
+                    type: 'line',
+                    data: [],
+                },
+                {
+                    name: 'Last Price',
+                    type: 'line',
+                    data: [],
+                    color: '#000',
+                },
+            ],
+        });
+    }
+    render() {
+        return [
+            h("ion-segment", { color: "dark", onIonChange: (e) => this.setTimeFrame(e.detail.value) },
+                h("ion-segment-button", { value: "1m", checked: this.timeFrame === '1m' }, "1 hour"),
+                h("ion-segment-button", { value: "1h", checked: this.timeFrame === '1h' }, "1 day"),
+                h("ion-segment-button", { value: "1d", checked: this.timeFrame === '1d' }, "1 week")),
+            h("div", { id: "ohlc", style: { height: '200px' } }),
+        ];
+    }
+    static get is() { return "app-ohlc"; }
+    static get properties() { return {
+        "altPrice": {
+            "type": Number,
+            "attr": "alt-price",
+            "watchCallbacks": ["changeAltLine"]
+        },
+        "curPrice": {
+            "type": Number,
+            "attr": "cur-price"
+        },
+        "exchangeId": {
+            "type": String,
+            "attr": "exchange-id"
+        },
+        "symbol": {
+            "type": String,
+            "attr": "symbol",
+            "watchCallbacks": ["changeSymbol"]
+        },
+        "timeFrame": {
+            "state": true
+        }
+    }; }
+    static get style() { return ".highcharts-point-up {\n  fill: #10dc60;\n}\n.highcharts-point-down {\n  fill: #f53d3d;\n}"; }
 }
 
 class Input {
@@ -1309,4 +1439,4 @@ class ToolbarTitle {
     static get styleMode() { return "ios"; }
 }
 
-export { AppBalanceItem as AppBalanceitem, AppCryptoIcon as AppCryptoicon, Input as IonInput, ItemDivider as IonItemDivider, List as IonList, ListHeader as IonListHeader, NavPop as IonNavPop, Radio as IonRadio, Refresher as IonRefresher, RefresherContent as IonRefresherContent, Spinner as IonSpinner, ToolbarTitle as IonTitle };
+export { AppBalanceItem as AppBalanceitem, AppCryptoIcon as AppCryptoicon, AppOhlc, Input as IonInput, ItemDivider as IonItemDivider, List as IonList, ListHeader as IonListHeader, NavPop as IonNavPop, Radio as IonRadio, Refresher as IonRefresher, RefresherContent as IonRefresherContent, Spinner as IonSpinner, ToolbarTitle as IonTitle };

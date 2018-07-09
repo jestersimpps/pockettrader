@@ -73,7 +73,7 @@ export class AppEditwallet {
           <ion-list>
             <ion-item lines="none">
               <ion-label>Amount:</ion-label>
-              <ion-input name="key" type="number" value={`${this.wallet.balance}`} onInput={(ev) => this.changeValue(ev)} />
+              <ion-input clearInput={true} name="key" type="number" value={`${this.wallet.balance}`} onInput={(ev) => this.changeValue(ev)} />
             </ion-item>
           </ion-list>
           <ion-nav-pop>

@@ -63,7 +63,7 @@ class AppEditwallet {
                 h("ion-list", null,
                     h("ion-item", { lines: "none" },
                         h("ion-label", null, "Amount:"),
-                        h("ion-input", { name: "key", type: "number", value: `${this.wallet.balance}`, onInput: (ev) => this.changeValue(ev) }))),
+                        h("ion-input", { clearInput: true, name: "key", type: "number", value: `${this.wallet.balance}`, onInput: (ev) => this.changeValue(ev) }))),
                 h("ion-nav-pop", null,
                     h("ion-button", { "icon-left": true, color: "success", expand: "full" }, "Set"))),
         ]);

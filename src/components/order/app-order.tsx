@@ -48,11 +48,36 @@ export class AppOrder {
           <ion-buttons slot="start">
             <ion-back-button defaultHref="/orders" />
           </ion-buttons>
-          <ion-title text-center>{this.order.base} Order</ion-title>
+          <ion-title text-center>{this.order.pair}</ion-title>
         </ion-toolbar>
       </ion-header>,
       <ion-content>
         <ion-list>
+          <app-ohlc exchangeId={this.order.exchangeId} symbol={this.order.pair} altPrice={this.order.openPrice} curPrice={this.order.last} />
+          {this.order.status === OrderStatus.filled && (
+            <ion-item lines="none">
+              <ion-label>Profit/Loss</ion-label>
+              <ion-label text-right slot="end">
+                <b style={{ color: (this.order.last * 100) / this.order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
+                  {(this.order.last * 100) / this.order.openPrice - 100 > 0
+                    ? '+' + numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'
+                    : numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'}
+                </b>
+              </ion-label>
+            </ion-item>
+          )}
+          {this.order.status === OrderStatus.open && (
+            <ion-item lines="none">
+              <ion-label>Last/Open Price</ion-label>
+              <ion-label text-right slot="end">
+                <b style={{ color: (this.order.last * 100) / this.order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
+                  {(this.order.last * 100) / this.order.openPrice - 100 > 0
+                    ? '+' + numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'
+                    : numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'}
+                </b>
+              </ion-label>
+            </ion-item>
+          )}
           <ion-item lines="none">
             <ion-label>Type</ion-label>
             <ion-label text-right slot="end">
@@ -84,53 +109,11 @@ export class AppOrder {
             </ion-label>
           </ion-item>
           <ion-item lines="none">
-            <ion-label>Amount</ion-label>
-            <ion-label text-right slot="end">
-              {this.order.amount} {this.order.base}
-            </ion-label>
-          </ion-item>
-          <ion-item lines="none">
-            <ion-label>Fee</ion-label>
-            <ion-label text-right slot="end">
-              {this.order.fee ? numeral(this.order.fee).format('0,0.00000000') : '-'}
-            </ion-label>
-          </ion-item>
-          <ion-item lines="full">
-            <ion-label>Total</ion-label>
-            <ion-label text-right slot="end">
-              {numeral(this.order.openPrice * this.order.amount - this.order.fee).format('0,0.00000000')} {this.order.quote}
-            </ion-label>
-          </ion-item>
-          <ion-item lines="none">
-            <ion-label>last Price</ion-label>
+            <ion-label>Last Price</ion-label>
             <ion-label text-right slot="end">
               {this.order.last ? numeral(this.order.last).format('0,0.00000000') : '-'}
             </ion-label>
           </ion-item>
-          {this.order.status === OrderStatus.filled && (
-            <ion-item lines="none">
-              <ion-label>Profit/Loss</ion-label>
-              <ion-label text-right slot="end">
-                <b style={{ color: (this.order.last * 100) / this.order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
-                  {(this.order.last * 100) / this.order.openPrice - 100 > 0
-                    ? '+' + numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'
-                    : numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'}
-                </b>
-              </ion-label>
-            </ion-item>
-          )}
-          {this.order.status === OrderStatus.open && (
-            <ion-item lines="none">
-              <ion-label>Last/Open Price</ion-label>
-              <ion-label text-right slot="end">
-                <b style={{ color: (this.order.last * 100) / this.order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
-                  {(this.order.last * 100) / this.order.openPrice - 100 > 0
-                    ? '+' + numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'
-                    : numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'}
-                </b>
-              </ion-label>
-            </ion-item>
-          )}
           <ion-item lines="none">
             <ion-label>Close Price</ion-label>
             <ion-label text-right slot="end">
@@ -138,9 +121,40 @@ export class AppOrder {
             </ion-label>
           </ion-item>
           <ion-item lines="none">
-            <ion-label>Total Profit/Loss</ion-label>
+            <ion-label>Amount</ion-label>
             <ion-label text-right slot="end">
-              {this.baseCurrency.symbol}{' '}
+              {this.order.amount} {this.order.base}
+            </ion-label>
+          </ion-item>
+          <ion-item lines="full">
+            <ion-label>Fee</ion-label>
+            <ion-label text-right slot="end">
+              {this.order.fee ? numeral(this.order.fee).format('0,0.00000000') : '-'}
+            </ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-label>Open Total</ion-label>
+            <ion-label text-right slot="end">
+              {numeral(this.order.openPrice * this.order.amount - this.order.fee).format('0,0.00000000')} {this.order.quote}
+            </ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-label>Last Total</ion-label>
+            <ion-label text-right slot="end">
+              {numeral(this.order.last * this.order.amount - this.order.fee).format('0,0.00000000')} {this.order.quote}
+            </ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-label>Close Total</ion-label>
+            <ion-label text-right slot="end">
+              {this.order.closePrice
+                ? numeral(this.order.closePrice * this.order.amount - this.order.fee).format('0,0.00000000') + ` ${this.order.quote}`
+                : '-'}
+            </ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-label>Profit/Loss total</ion-label>
+            <ion-label text-right slot="end">
               {this.order.closePrice ? (
                 <app-baseprice
                   btcPrice={CURRENCYSERVICE.convertToBase(
@@ -174,6 +188,7 @@ export class AppOrder {
         .then(() => {
           window.alert(`Order cancelled`);
           this.order.status = OrderStatus.cancelled;
+          this.order.updatedAt = new Date().getTime() / 1000;
           this.appSetOrders(this.orders);
           this.isLoading = false;
         })

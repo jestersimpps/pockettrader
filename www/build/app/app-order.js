@@ -113,7 +113,7 @@ class AppOrder {
             })
                 .catch((error) => {
                 this.isLoading = false;
-                window.alert(`Something went wrong while cancelling the order: ${error.message}`);
+                window.alert(`Something went wrong while canceling the order: ${error.message}`);
             });
         }
     }

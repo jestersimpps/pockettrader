@@ -749,6 +749,9 @@ class MyApp {
             this.loading = false;
         });
     }
+    setNav() {
+        this.nav = document.querySelector('ion-nav');
+    }
     render() {
         return !this.loading ? (h("ion-app", null,
             h("ion-router", { useHash: false },
@@ -768,15 +771,15 @@ class MyApp {
                 h("ion-route", { url: "/settings/premium", component: "app-premium" }),
                 h("ion-route", { url: "/settings/dust", component: "app-dust" }),
                 h("ion-route", { url: "/panic", component: "app-panic" })),
-            h("ion-nav", { animated: true, "margin-bottom": true }),
+            h("ion-nav", { animated: true, "margin-bottom": true, swipeBackEnabled: false, onIonNavDidChange: () => this.setNav() }),
             ",",
             h("ion-footer", { class: "footerHeight" },
-                h("ion-tabs", { color: "light", tabbarHighlight: true, useRouter: true },
-                    h("ion-tab", { icon: "swap", label: "Trade", href: "/trade" }),
-                    h("ion-tab", { icon: "time", label: "Orders", href: "/orders" }),
-                    h("ion-tab", { icon: "pie", label: "Overview", href: "/" }),
-                    h("ion-tab", { icon: "list-box", label: "Exchanges", href: "/exchanges" }),
-                    h("ion-tab", { icon: "wallet", label: "Wallets", href: "/wallets" }))),
+                h("ion-tabs", { color: "light", tabbarHighlight: true, useRouter: false },
+                    h("ion-tab", { icon: "swap", label: "Trade", onIonSelect: () => this.nav.setRoot('app-trade') }),
+                    h("ion-tab", { icon: "time", label: "Orders", onIonSelect: () => this.nav.setRoot('app-orders') }),
+                    h("ion-tab", { icon: "pie", label: "Overview", onIonSelect: () => this.nav.setRoot('app-overview') }),
+                    h("ion-tab", { icon: "list-box", label: "Exchanges", onIonSelect: () => this.nav.setRoot('app-exchanges') }),
+                    h("ion-tab", { icon: "wallet", label: "Wallets", onIonSelect: () => this.nav.setRoot('app-wallets') }))),
             ",")) : ([
             h("div", { class: "progress", "text-center": true },
                 h("ion-icon", { name: "sync", class: "spin" })),
@@ -785,6 +788,9 @@ class MyApp {
     static get is() { return "my-app"; }
     static get properties() { return {
         "loading": {
+            "state": true
+        },
+        "nav": {
             "state": true
         },
         "store": {

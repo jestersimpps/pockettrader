@@ -239,6 +239,11 @@ export class AppTrade {
               Panic
             </ion-button>
           </ion-buttons> */}
+          <ion-buttons slot="start">
+            <ion-button icon-only href="/settings" padding>
+              <ion-icon name="options" />
+            </ion-button>
+          </ion-buttons>
           <ion-title text-center>Trade</ion-title>
         </ion-toolbar>
         {this.ticker && [
@@ -546,7 +551,7 @@ export class AppTrade {
           </ion-list>
         </ion-content>
       ) : (
-        <ion-content>Loading exchanges...</ion-content>
+        <ion-content padding>Loading exchanges...</ion-content>
       ),
     ];
   }

@@ -203,6 +203,9 @@ class AppTrade {
         return [
             h("ion-header", null,
                 h("ion-toolbar", { color: "dark" },
+                    h("ion-buttons", { slot: "start" },
+                        h("ion-button", { "icon-only": true, href: "/settings", padding: true },
+                            h("ion-icon", { name: "options" }))),
                     h("ion-title", { "text-center": true }, "Trade")),
                 this.ticker && [
                     h("ion-segment", { color: "dark", onIonChange: (e) => (this.step = +e.detail.value) },
@@ -359,7 +362,7 @@ class AppTrade {
                         h("ion-button", { expand: "full", color: "success", onClick: () => this.executeOrder(this.ticker.symbol, this.tradeAction, this.tradePrice, this.tradeAmount), disabled: this.isLoading },
                             this.isLoading && h("ion-icon", { name: "refresh", class: "spin", "margin-right": true }),
                             " Execute"),
-                    ]))) : (h("ion-content", null, "Loading exchanges...")),
+                    ]))) : (h("ion-content", { padding: true }, "Loading exchanges...")),
         ];
     }
     executeOrder(pair, type, price, amount) {

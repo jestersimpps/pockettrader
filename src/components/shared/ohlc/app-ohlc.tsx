@@ -14,6 +14,7 @@ export class AppOhlc {
   @Prop() curPrice: number;
 
   @State() timeFrame = '1h';
+  @State() isLoading = true;
   chart;
   ohlcData;
 
@@ -29,6 +30,7 @@ export class AppOhlc {
 
   @Watch('symbol')
   changeSymbol() {
+    this.isLoading = true;
     TRADESERVICE.getOhlc(this.exchangeId, this.symbol, this.timeFrame)
       .then((response) => {
         this.ohlcData = response.data;
@@ -46,15 +48,16 @@ export class AppOhlc {
             }),
           );
         }
+        this.isLoading = false;
       })
       .catch(() => {
+        this.isLoading = false;
         window.alert(`Couldn't get chart data`);
       });
   }
-  componentWillUpdate() {
-    console.log('Component will update and re-render');
-  }
+  
   setTimeFrame(timeFrame: string) {
+    this.isLoading = true;
     this.timeFrame = timeFrame;
     TRADESERVICE.getOhlc(this.exchangeId, this.symbol, timeFrame)
       .then((response) => {
@@ -73,8 +76,10 @@ export class AppOhlc {
             }),
           );
         }
+        this.isLoading = false;
       })
       .catch(() => {
+        this.isLoading = false;
         window.alert(`Couldn't get chart data`);
       });
   }
@@ -97,7 +102,7 @@ export class AppOhlc {
       plotOptions: {
         line: {
           dashStyle: 'Solid',
-          lineWidth: 1
+          lineWidth: 1,
         },
       },
       series: [
@@ -110,7 +115,6 @@ export class AppOhlc {
           name: 'Open Price',
           type: 'line',
           data: [],
-          
         },
         {
           name: 'Last Price',
@@ -135,7 +139,8 @@ export class AppOhlc {
           1 week
         </ion-segment-button>
       </ion-segment>,
-      <div id="ohlc" style={{ height: '200px' }} />,
+      <div id="ohlc" style={{ height: '200px', display: this.isLoading ? 'none' : 'block' }} />,
+      <div style={{ height: '200px', display: !this.isLoading ? 'none' : 'block' }} padding>Loading chart...</div>,
     ];
   }
 }

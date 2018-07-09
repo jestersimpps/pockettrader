@@ -23,7 +23,7 @@ class AppOverview {
                 tickers,
                 wallets,
                 balances,
-                dust
+                dust,
             };
         });
         this.store.mapDispatchToProps(this, {
@@ -91,18 +91,15 @@ class AppOverview {
                     h("ion-buttons", { slot: "end" },
                         h("ion-button", { "icon-only": true, disabled: this.isLoading, onClick: () => this.refreshBalances(), padding: true },
                             h("ion-icon", { name: "refresh", class: this.isLoading ? 'spin' : '' }))))),
-            h("ion-content", null,
-                h("ion-refresher", { slot: "fixed", onIonRefresh: () => this.refreshBalances() },
-                    h("ion-refresher-content", null)),
-                !this.isLoading ? (h("ion-list", null,
-                    h("ion-list-header", { color: "light" }, "Distribution & 24h Change"),
-                    h("app-sunburst", { exchanges: this.exchanges, wallets: this.wallets, totalBalance: this.balances.overview, baseCurrency: this.baseCurrency }),
-                    h("ion-list-header", { color: "light" },
-                        "Total Balance (",
-                        this.baseCurrency.id,
-                        ")"),
-                    h("app-splinechart", null))) : (h("div", { class: "progress", "text-center": true },
-                    h("ion-icon", { name: "sync", class: "spin" })))),
+            h("ion-content", null, !this.isLoading ? (h("ion-list", null,
+                h("ion-list-header", { color: "light" }, "Distribution & 24h Change"),
+                h("app-sunburst", { exchanges: this.exchanges, wallets: this.wallets, totalBalance: this.balances.overview, baseCurrency: this.baseCurrency }),
+                h("ion-list-header", { color: "light" },
+                    "Total Balance (",
+                    this.baseCurrency.id,
+                    ")"),
+                h("app-splinechart", null))) : (h("div", { class: "progress", "text-center": true },
+                h("ion-icon", { name: "sync", class: "spin" })))),
         ];
     }
     static get is() { return "app-overview"; }

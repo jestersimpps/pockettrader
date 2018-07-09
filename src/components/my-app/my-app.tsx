@@ -25,6 +25,7 @@ export class MyApp {
   @Prop({ context: 'store' })
   store: Store;
   @State() loading = true;
+  @State() nav;
 
   appSetExchanges: Action;
   appSetBaseCurrency: Action;
@@ -87,13 +88,17 @@ export class MyApp {
         return EXCHANGESERVICE.getDustFromStorage();
       })
       .then((dust) => {
-        dust ? this.appSetDust(dust) : this.appSetDust( 0.000002);
+        dust ? this.appSetDust(dust) : this.appSetDust(0.000002);
         return TOKENSERVICE.getTokenFromStorage();
       })
       .then((token) => {
         token ? this.appSetToken(token) : this.appSetToken(TOKENSERVICE.generateNewToken());
         this.loading = false;
       });
+  }
+
+  setNav() {
+    this.nav = document.querySelector('ion-nav');
   }
 
   render() {
@@ -117,14 +122,14 @@ export class MyApp {
           <ion-route url="/settings/dust" component="app-dust" />
           <ion-route url="/panic" component="app-panic" />
         </ion-router>
-        <ion-nav animated={true} margin-bottom />,
+        <ion-nav animated={true} margin-bottom swipeBackEnabled={false} onIonNavDidChange={() => this.setNav()} />,
         <ion-footer class="footerHeight">
-          <ion-tabs color="light" tabbarHighlight={true} useRouter={true}>
-            <ion-tab icon="swap" label="Trade" href="/trade" />
-            <ion-tab icon="time" label="Orders" href="/orders" />
-            <ion-tab icon="pie" label="Overview" href="/" />
-            <ion-tab icon="list-box" label="Exchanges" href="/exchanges" />
-            <ion-tab icon="wallet" label="Wallets" href="/wallets" />
+          <ion-tabs color="light" tabbarHighlight={true} useRouter={false}>
+            <ion-tab icon="swap" label="Trade" onIonSelect={() => this.nav.setRoot('app-trade')} />
+            <ion-tab icon="time" label="Orders" onIonSelect={() => this.nav.setRoot('app-orders')} />
+            <ion-tab icon="pie" label="Overview" onIonSelect={() => this.nav.setRoot('app-overview')} />
+            <ion-tab icon="list-box" label="Exchanges" onIonSelect={() => this.nav.setRoot('app-exchanges')} />
+            <ion-tab icon="wallet" label="Wallets" onIonSelect={() => this.nav.setRoot('app-wallets')} />
           </ion-tabs>
         </ion-footer>,
       </ion-app>

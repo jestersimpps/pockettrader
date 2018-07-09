@@ -90,8 +90,6 @@ class AppWallets {
                         h("ion-button", { "icon-only": true, disabled: this.isLoading, onClick: () => this.refreshBalances(), padding: true },
                             h("ion-icon", { name: "refresh", class: this.isLoading ? 'spin' : '' }))))),
             h("ion-content", null,
-                h("ion-refresher", { slot: "fixed", onIonRefresh: () => this.refreshBalances() },
-                    h("ion-refresher-content", null)),
                 h("ion-list", null, this.wallets
                     .filter((w) => w.balance > 0)
                     .sort((a, b) => {

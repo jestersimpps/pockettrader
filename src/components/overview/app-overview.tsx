@@ -52,7 +52,7 @@ export class AppOverview {
         tickers,
         wallets,
         balances,
-        dust
+        dust,
       };
     });
     this.store.mapDispatchToProps(this, {
@@ -133,9 +133,9 @@ export class AppOverview {
         </ion-toolbar>
       </ion-header>,
       <ion-content>
-        <ion-refresher slot="fixed" onIonRefresh={() => this.refreshBalances()}>
+        {/* <ion-refresher slot="fixed" onIonRefresh={() => this.refreshBalances()}>
           <ion-refresher-content />
-        </ion-refresher>
+        </ion-refresher> */}
         {!this.isLoading ? (
           <ion-list>
             <ion-list-header color="light">Distribution & 24h Change</ion-list-header>

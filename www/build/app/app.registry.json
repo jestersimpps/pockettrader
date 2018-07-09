@@ -175,14 +175,6 @@
       "ios": "app-balanceitem.ios",
       "md": "app-balanceitem.md"
     },
-    "ion-refresher": {
-      "ios": "app-balanceitem.ios",
-      "md": "app-balanceitem.md"
-    },
-    "ion-refresher-content": {
-      "ios": "app-balanceitem.ios",
-      "md": "app-balanceitem.md"
-    },
     "ion-ripple-effect": {
       "$": "ion-ripple-effect"
     },
@@ -213,10 +205,6 @@
     "ion-segment-button": {
       "ios": "ion-segment.ios",
       "md": "ion-segment.md"
-    },
-    "ion-spinner": {
-      "ios": "app-balanceitem.ios",
-      "md": "app-balanceitem.md"
     },
     "ion-status-tap": {
       "ios": "my-app.ios",

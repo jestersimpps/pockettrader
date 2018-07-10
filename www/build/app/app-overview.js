@@ -35,8 +35,11 @@ class AppOverview {
             appSetTotalBalances,
             appSetWallets,
             appSetBalances,
-            appSetOrders
+            appSetOrders,
         });
+        let scopedWallets = this.wallets.filter((w) => w.balance > 0);
+        let scopedExchanges = this.exchanges.filter((e) => e.key && e.secret);
+        this.showTutorial = scopedWallets.length + scopedExchanges.length === 0;
     }
     addTotalBalance(totalBtcBalance) {
         BALANCESERVICE.getTotalBalancesFromStorage().then((totalBalances) => {
@@ -94,14 +97,18 @@ class AppOverview {
                     h("ion-buttons", { slot: "end" },
                         h("ion-button", { "icon-only": true, disabled: this.isLoading, onClick: () => this.refreshBalances(), padding: true },
                             h("ion-icon", { name: "refresh", class: this.isLoading ? 'spin' : '' }))))),
-            h("ion-content", null, !this.isLoading ? (h("ion-list", null,
+            h("ion-content", null, !this.isLoading ? (this.showTutorial ? ([
+                h("div", { padding: true },
+                    h("p", null, "Welcome to Pocket Trader!"),
+                    h("ion-button", { expand: "block", color: "light", href: "/settings/tutorial" }, "View tutorial")),
+            ]) : (h("ion-list", null,
                 h("ion-list-header", { color: "light" }, "Distribution & 24h Change"),
                 h("app-sunburst", { exchanges: this.exchanges, wallets: this.wallets, totalBalance: this.balances.overview, baseCurrency: this.baseCurrency }),
                 h("ion-list-header", { color: "light" },
                     "Total Balance (",
                     this.baseCurrency.id,
                     ")"),
-                h("app-splinechart", null))) : (h("div", { class: "progress", "text-center": true },
+                h("app-splinechart", null)))) : (h("div", { class: "progress", "text-center": true },
                 h("ion-icon", { name: "sync", class: "spin" })))),
         ];
     }
@@ -123,6 +130,9 @@ class AppOverview {
             "state": true
         },
         "orders": {
+            "state": true
+        },
+        "showTutorial": {
             "state": true
         },
         "store": {

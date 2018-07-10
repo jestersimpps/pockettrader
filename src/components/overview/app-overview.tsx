@@ -33,6 +33,7 @@ export class AppOverview {
   @State() wallets: Wallet[];
   @State() orders: Order[];
   @State() dust: number;
+  @State() showTutorial: boolean;
 
   appSetCurrencies: Action;
   appSetExchanges: Action;
@@ -68,8 +69,11 @@ export class AppOverview {
       appSetTotalBalances,
       appSetWallets,
       appSetBalances,
-      appSetOrders
+      appSetOrders,
     });
+    let scopedWallets: Wallet[] = this.wallets.filter((w) => w.balance > 0);
+    let scopedExchanges: Exchange[] = this.exchanges.filter((e) => e.key && e.secret);
+    this.showTutorial = scopedWallets.length + scopedExchanges.length === 0;
   }
 
   addTotalBalance(totalBtcBalance: number) {
@@ -144,12 +148,28 @@ export class AppOverview {
           <ion-refresher-content />
         </ion-refresher> */}
         {!this.isLoading ? (
-          <ion-list>
-            <ion-list-header color="light">Distribution & 24h Change</ion-list-header>
-            <app-sunburst exchanges={this.exchanges} wallets={this.wallets} totalBalance={this.balances.overview} baseCurrency={this.baseCurrency} />
-            <ion-list-header color="light">Total Balance ({this.baseCurrency.id})</ion-list-header>
-            <app-splinechart />
-          </ion-list>
+          this.showTutorial ? (
+            [
+              <div padding>
+                <p>Welcome to Pocket Trader!</p>
+                <ion-button expand="block" color="light" href="/settings/tutorial">
+                  View tutorial
+                </ion-button>
+              </div>,
+            ]
+          ) : (
+            <ion-list>
+              <ion-list-header color="light">Distribution & 24h Change</ion-list-header>
+              <app-sunburst
+                exchanges={this.exchanges}
+                wallets={this.wallets}
+                totalBalance={this.balances.overview}
+                baseCurrency={this.baseCurrency}
+              />
+              <ion-list-header color="light">Total Balance ({this.baseCurrency.id})</ion-list-header>
+              <app-splinechart />
+            </ion-list>
+          )
         ) : (
           <div class="progress" text-center>
             <ion-icon name="sync" class="spin" />

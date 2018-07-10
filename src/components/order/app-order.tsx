@@ -62,30 +62,16 @@ export class AppOrder {
       <ion-content>
         <ion-list>
           <app-ohlc exchangeId={this.order.exchangeId} symbol={this.order.pair} altPrice={this.order.openPrice} curPrice={this.order.last} />
-          {this.order.status === OrderStatus.filled && (
-            <ion-item lines="none">
-              <ion-label>Profit/Loss</ion-label>
-              <ion-label text-right slot="end">
-                <b style={{ color: (this.order.last * 100) / this.order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
-                  {(this.order.last * 100) / this.order.openPrice - 100 > 0
-                    ? '+' + numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'
-                    : numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'}
-                </b>
-              </ion-label>
-            </ion-item>
-          )}
-          {this.order.status === OrderStatus.open && (
-            <ion-item lines="none">
-              <ion-label>Last/Open Price</ion-label>
-              <ion-label text-right slot="end">
-                <b style={{ color: (this.order.last * 100) / this.order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
-                  {(this.order.last * 100) / this.order.openPrice - 100 > 0
-                    ? '+' + numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'
-                    : numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'}
-                </b>
-              </ion-label>
-            </ion-item>
-          )}
+          <ion-item lines="none">
+            <ion-label>Last/Open Price</ion-label>
+            <ion-label text-right slot="end">
+              <b style={{ color: (this.order.last * 100) / this.order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
+                {(this.order.last * 100) / this.order.openPrice - 100 > 0
+                  ? '+' + numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'
+                  : numeral((this.order.last * 100) / this.order.openPrice - 100).format('0,0.00') + ' %'}
+              </b>
+            </ion-label>
+          </ion-item>
           <ion-item lines="none">
             <ion-label>Type</ion-label>
             <ion-label text-right slot="end">
@@ -122,12 +108,12 @@ export class AppOrder {
               {this.order.last ? numeral(this.order.last).format('0,0.00000000') : '-'}
             </ion-label>
           </ion-item>
-          <ion-item lines="none">
+          {/* <ion-item lines="none">
             <ion-label>Close Price</ion-label>
             <ion-label text-right slot="end">
               {this.order.closePrice ? numeral(this.order.closePrice).format('0,0.00000000') : '-'}
             </ion-label>
-          </ion-item>
+          </ion-item> */}
           <ion-item lines="none">
             <ion-label>Amount</ion-label>
             <ion-label text-right slot="end">
@@ -152,21 +138,26 @@ export class AppOrder {
               {numeral(this.order.last * this.order.amount - this.order.fee).format('0,0.00000000')} {this.order.quote}
             </ion-label>
           </ion-item>
-          <ion-item lines="none">
+          {/* <ion-item lines="none">
             <ion-label>Close Total</ion-label>
             <ion-label text-right slot="end">
               {this.order.closePrice
                 ? numeral(this.order.closePrice * this.order.amount - this.order.fee).format('0,0.00000000') + ` ${this.order.quote}`
                 : '-'}
             </ion-label>
-          </ion-item>
+          </ion-item> */}
           <ion-item lines="none">
-            <ion-label>Profit/Loss total</ion-label>
+            <ion-label>
+              {this.order.status === OrderStatus.open && 'Last - Open total'}
+              {this.order.status === OrderStatus.filled && 'Last - Fill total'}
+              {this.order.status === OrderStatus.closed && 'Last - Fill total'}
+              {this.order.status === OrderStatus.cancelled && 'Last/Open total'}
+            </ion-label>
             <ion-label text-right slot="end">
-              {this.order.closePrice ? (
+              {this.order.last ? (
                 <app-baseprice
                   btcPrice={CURRENCYSERVICE.convertToBase(
-                    this.order.closePrice * this.order.amount - this.order.openPrice * this.order.amount - 2 * this.order.fee,
+                    this.order.last * this.order.amount - this.order.openPrice * this.order.amount - 2 * this.order.fee,
                     this.baseCurrency,
                   )}
                   baseCurrency={this.baseCurrency}
@@ -176,7 +167,6 @@ export class AppOrder {
               )}
             </ion-label>
           </ion-item>
-
           {this.order.status === OrderStatus.open && (
             <ion-button color="danger" expand="full" disabled={this.isLoading} onClick={() => this.cancelOrder()}>
               {this.isLoading && <ion-icon name="refresh" class="spin" margin-right />}

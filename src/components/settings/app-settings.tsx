@@ -16,6 +16,10 @@ export class AppSettings {
       </ion-header>,
       <ion-content>
         <ion-list>
+          <ion-item lines="full" href={`/settings/tutorial`}>
+            <ion-icon name="book" item-start margin-right />
+            <ion-label>Tutorial</ion-label>
+          </ion-item>
           <ion-item lines="full" href={`/settings/keys`}>
             <ion-icon name="key" item-start margin-right />
             <ion-label>Exchange Keys</ion-label>

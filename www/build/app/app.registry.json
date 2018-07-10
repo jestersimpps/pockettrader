@@ -83,6 +83,10 @@
     "app-trade": {
       "$": "app-trade"
     },
+    "app-tutorial": {
+      "ios": "app-tutorial.ios",
+      "md": "app-tutorial.md"
+    },
     "app-wallets": {
       "$": "app-wallets"
     },
@@ -205,6 +209,14 @@
     "ion-segment-button": {
       "ios": "app-balanceitem.ios",
       "md": "app-balanceitem.md"
+    },
+    "ion-slide": {
+      "ios": "app-tutorial.ios",
+      "md": "app-tutorial.md"
+    },
+    "ion-slides": {
+      "ios": "app-tutorial.ios",
+      "md": "app-tutorial.md"
     },
     "ion-status-tap": {
       "ios": "my-app.ios",

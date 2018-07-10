@@ -1,0 +1,22 @@
+.top-image {
+  margin-top: 20%;
+}
+.slide-image {
+  max-height: 40% !important;
+  max-width: 60% !important;
+}
+.half-slide-image {
+  max-height: 20% !important;
+  max-width: 60% !important;
+}
+.intertext {
+  line-height: 1.5rem;
+}
+
+p {
+  font-size: 14px;
+  padding-right: 2rem;
+  padding-left: 2rem;
+  margin-bottom: 3rem;
+  color: #60646b;
+}

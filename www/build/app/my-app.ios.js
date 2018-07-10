@@ -763,6 +763,7 @@ class MyApp {
                 h("ion-route", { url: "/orders", component: "app-orders" }),
                 h("ion-route", { url: "/orders/:orderId", component: "app-order" }),
                 h("ion-route", { url: "/settings", component: "app-settings" }),
+                h("ion-route", { url: "/settings/tutorial", component: "app-tutorial" }),
                 h("ion-route", { url: "/settings/keys", component: "app-keys" }),
                 h("ion-route", { url: "/settings/keys/:exchangeId", component: "app-exchangekeys" }),
                 h("ion-route", { url: "/settings/basecurrency", component: "app-basecurrency" }),

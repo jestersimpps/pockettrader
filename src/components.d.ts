@@ -681,6 +681,39 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface AppTutorial {
+
+    }
+  }
+
+  interface HTMLAppTutorialElement extends StencilComponents.AppTutorial, HTMLStencilElement {}
+
+  var HTMLAppTutorialElement: {
+    prototype: HTMLAppTutorialElement;
+    new (): HTMLAppTutorialElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-tutorial': HTMLAppTutorialElement;
+  }
+  interface ElementTagNameMap {
+    'app-tutorial': HTMLAppTutorialElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-tutorial': JSXElements.AppTutorialAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppTutorialAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface AppBalanceitem {
       'baseCurrency': Currency;
       'cryptodata': Wallet | Balance;

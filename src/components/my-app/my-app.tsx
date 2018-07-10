@@ -113,6 +113,7 @@ export class MyApp {
           <ion-route url="/orders" component="app-orders" />
           <ion-route url="/orders/:orderId" component="app-order" />
           <ion-route url="/settings" component="app-settings" />
+          <ion-route url="/settings/tutorial" component="app-tutorial" />
           <ion-route url="/settings/keys" component="app-keys" />
           <ion-route url="/settings/keys/:exchangeId" component="app-exchangekeys" />
           <ion-route url="/settings/basecurrency" component="app-basecurrency" />

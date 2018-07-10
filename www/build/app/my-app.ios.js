@@ -2,7 +2,7 @@
 const { h } = window.App;
 
 import { a as commonjsGlobal, b as commonjsRequire, c as unwrapExports, d as createCommonjsModule } from './chunk-a7525511.js';
-import { c as BALANCESERVICE, h as TOKENSERVICE, e as TRADESERVICE, i as EXCHANGESERVICE, a as CURRENCYSERVICE, b as TICKERSERVICE, g as WALLETSERVICE } from './chunk-1c4b34f7.js';
+import { c as BALANCESERVICE, h as TOKENSERVICE, e as TRADESERVICE, i as EXCHANGESERVICE, a as CURRENCYSERVICE, b as TICKERSERVICE, g as WALLETSERVICE } from './chunk-6a09bead.js';
 import { k as TypeKeys, d as appSetExchanges, a as appSetBaseCurrency, e as appSetCurrencies, f as appSetTickers, g as appSetTotalBalances, c as appSetWallets, j as appSetToken, h as appSetBalances, i as appSetOrders, b as appSetDust } from './chunk-9c7d3ec3.js';
 import { d as DefaultExchanges } from './chunk-ea6d9d39.js';
 import { a as createThemedClasses } from './chunk-ea7ac2d5.js';

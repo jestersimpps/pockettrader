@@ -199,12 +199,12 @@
       "md": "app-holdings.md"
     },
     "ion-segment": {
-      "ios": "ion-segment.ios",
-      "md": "ion-segment.md"
+      "ios": "app-balanceitem.ios",
+      "md": "app-balanceitem.md"
     },
     "ion-segment-button": {
-      "ios": "ion-segment.ios",
-      "md": "ion-segment.md"
+      "ios": "app-balanceitem.ios",
+      "md": "app-balanceitem.md"
     },
     "ion-status-tap": {
       "ios": "my-app.ios",

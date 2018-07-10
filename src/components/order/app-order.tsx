@@ -3,10 +3,11 @@ import { Store, Action } from '@stencil/redux';
 import { Order, OrderStatus } from '../../services/trade.service';
 import numeral from 'numeral';
 import { appSetOrders } from '../../actions/app';
-import { TRADESERVICE } from '../../services/globals';
+import { TRADESERVICE, TICKERSERVICE } from '../../services/globals';
 import { Exchange } from '../../services/exchange.service';
 import { CURRENCYSERVICE } from '../../services/globals';
 import { Currency } from '../../services/currency.service';
+import { Ticker } from '../../services/ticker.service';
 
 @Component({
   tag: 'app-order',
@@ -18,6 +19,7 @@ export class AppOrder {
   @Prop() orderId: string;
   @State() order: Order;
   @State() orders: Order[];
+  @State() tickers: Ticker[];
   @State() exchanges: Exchange[];
   @State() isLoading: boolean;
   @State() baseCurrency: Currency;
@@ -27,10 +29,11 @@ export class AppOrder {
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { orders, exchanges, baseCurrency },
+        app: { orders, tickers, exchanges, baseCurrency },
       } = state;
       return {
         orders,
+        tickers,
         exchanges,
         baseCurrency,
       };
@@ -49,6 +52,11 @@ export class AppOrder {
             <ion-back-button defaultHref="/orders" />
           </ion-buttons>
           <ion-title text-center>{this.order.pair}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button icon-only disabled={this.isLoading} onClick={() => this.reloadOrder()} padding>
+              <ion-icon name="refresh" class={this.isLoading ? 'spin' : ''} />
+            </ion-button>
+          </ion-buttons>
         </ion-toolbar>
       </ion-header>,
       <ion-content>
@@ -175,6 +183,15 @@ export class AppOrder {
               Cancel Order
             </ion-button>
           )}
+          {this.order.status === OrderStatus.filled ||
+            (this.order.status === OrderStatus.cancelled && (
+              <ion-nav-pop>
+                <ion-button color="danger" expand="full" disabled={this.isLoading} onClick={() => this.deleteOrder()}>
+                  {this.isLoading && <ion-icon name="refresh" class="spin" margin-right />}
+                  Delete Order
+                </ion-button>
+              </ion-nav-pop>
+            ))}
         </ion-list>
       </ion-content>,
     ];
@@ -197,5 +214,47 @@ export class AppOrder {
           window.alert(`Something went wrong while canceling the order: ${error.message}`);
         });
     }
+  }
+
+  deleteOrder() {
+    this.isLoading = true;
+    let newOrders = this.orders.filter((o) => o.orderId !== this.orderId);
+    this.appSetOrders(newOrders);
+    this.isLoading = false;
+  }
+
+  reloadOrder() {
+    this.isLoading = true;
+    let exchange = this.exchanges.find((e) => e.id === this.order.exchangeId);
+    let tickerData = [];
+    TICKERSERVICE.getTickers(this.order.exchangeId)
+      .then((response) => {
+        tickerData = response.data;
+        return TRADESERVICE.getOrder(exchange, this.order.orderId, this.order.pair)
+          .then((response) => {
+            let orderData = response.data;
+            let currentOrder = this.orders.find((o) => o.orderId === orderData.id);
+            let ticker = tickerData.find((t) => t.symbol === currentOrder.pair);
+            currentOrder.filled = orderData.filled;
+            currentOrder.remaining = orderData.remaining;
+            currentOrder.base = ticker.base;
+            currentOrder.last = ticker.last;
+            currentOrder.quote = ticker.quote;
+            if (+orderData.remaining === 0) {
+              currentOrder.status = OrderStatus.filled;
+            }
+            currentOrder.updatedAt = new Date().getTime() / 1000;
+            this.isLoading = false;
+            this.appSetOrders(this.orders);
+          })
+          .catch((error) => {
+            window.alert(`Something went wrong while fetching the orderbook: ${error.message}`);
+            this.isLoading = false;
+          });
+      })
+      .catch((error) => {
+        window.alert(`Error fetching ticker data: ${error.message}`);
+        this.isLoading = false;
+      });
   }
 }

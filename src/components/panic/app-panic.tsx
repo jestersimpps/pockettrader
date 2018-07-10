@@ -13,8 +13,10 @@ import {
   appSetTotalBalances,
   appSetWallets,
   appSetBalances,
+  appSetOrders,
 } from '../../actions/app';
 import { Balances } from '../../services/balance.service';
+import { Order } from '../../services/trade.service';
 
 @Component({
   tag: 'app-panic',
@@ -31,6 +33,7 @@ export class AppPanic {
   @State() wallets: Wallet[];
   @State() isLoading = false;
   @State() balances: Balances;
+  @State() orders: Order[];
   @State() dust: number;
 
   appSetCurrencies: Action;
@@ -41,11 +44,12 @@ export class AppPanic {
   appSetTotalBalances: Action;
   appSetWallets: Action;
   appSetBalances: Action;
+  appSetOrders: Action;
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { exchanges, baseCurrency, currencies, tickers, wallets, balances, dust },
+        app: { exchanges, baseCurrency, currencies, tickers, wallets, balances, orders, dust },
       } = state;
       return {
         exchanges,
@@ -54,7 +58,8 @@ export class AppPanic {
         tickers,
         wallets,
         balances,
-        dust
+        orders,
+        dust,
       };
     });
     this.store.mapDispatchToProps(this, {
@@ -65,6 +70,7 @@ export class AppPanic {
       appSetTotalBalances,
       appSetWallets,
       appSetBalances,
+      appSetOrders,
     });
   }
 
@@ -230,7 +236,7 @@ export class AppPanic {
 
   refreshBalances() {
     this.isLoading = true;
-    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.dust).then((response) => {
+    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.orders, this.dust).then((response) => {
       if (response) {
         this.appSetCurrencies(response.conversionrates);
         this.appSetTickers(response.tickers);
@@ -242,6 +248,7 @@ export class AppPanic {
           exchanges: response.exchangeTotal,
           wallets: response.walletTotal,
         });
+        this.appSetOrders(response.orders);
       }
       this.isLoading = false;
     });

@@ -90,18 +90,12 @@ export class AppOrders {
           currentOrder.last = ticker.last;
           currentOrder.quote = ticker.quote;
           if (+order.remaining === 0) {
-            if (order.type === OrderType.LIMITBUY || order.type === OrderType.MARKETBUY) {
-              currentOrder.status = OrderStatus.filled;
-            } else {
-              currentOrder.status = OrderStatus.closed;
-              currentOrder.closePrice = ticker.last;
-            }
+            currentOrder.status = OrderStatus.filled;
           }
           currentOrder.updatedAt = new Date().getTime() / 1000;
         });
         this.isLoading = false;
         this.refreshBalances();
-        this.appSetOrders(this.orders);
       })
       .catch((error) => {
         window.alert(`Something went wrong while fetching the orderbook: ${error.message}`);
@@ -111,7 +105,7 @@ export class AppOrders {
 
   refreshBalances() {
     this.isLoading = true;
-    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.dust).then((response) => {
+    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.orders, this.dust).then((response) => {
       if (response) {
         this.appSetCurrencies(response.conversionrates);
         this.appSetTickers(response.tickers);
@@ -122,6 +116,7 @@ export class AppOrders {
           exchanges: response.exchangeTotal,
           wallets: response.walletTotal,
         });
+        this.appSetOrders(response.orders);
       }
       this.isLoading = false;
     });
@@ -176,7 +171,10 @@ export class AppOrders {
               <b>Amount</b>
             </ion-col>
             <ion-col col-4 text-center class="lineText">
-              <b>Open price</b>
+              {this.status === 0 && <b>Open price</b>}
+              {this.status === 1 && <b>Fill price</b>}
+              {this.status === 2 && <b>Fill price</b>}
+              {this.status === 3 && <b>Open price</b>}
             </ion-col>
             <ion-col col-4 text-right class="lineText">
               <b>Total</b>
@@ -184,222 +182,233 @@ export class AppOrders {
           </ion-row>
           <ion-row>
             <ion-col col-4 class="lineText">
-              {this.status === 0 && <b>Created</b>}
-              {this.status === 1 && <b>Filled</b>}
-              {this.status === 2 && <b>Closed</b>}
+              {this.status === 0 && <b>Opened</b>}
+              {this.status === 1 && <b>Bought</b>}
+              {this.status === 2 && <b>Sold</b>}
               {this.status === 3 && <b>Cancelled</b>}
             </ion-col>
             <ion-col col-4 text-center class="lineText">
-              {this.status === 0 && <b>Last price</b>}
-              {this.status === 1 && <b>Fill price</b>}
-              {this.status === 2 && <b>Close price</b>}
-              {this.status === 3 && <b>Last price</b>}{' '}
+              {this.status === 3 ? <b>-</b> : <b>Last price</b>}
             </ion-col>
             <ion-col col-4 text-right class="lineText">
-              {this.status === 0 ? <b>Last/Open</b> : <b>Profit/Loss</b>}
+              {this.status === 0 && <b>Last/Open</b>}
+              {this.status === 1 && <b>Last/Fill</b>}
+              {this.status === 2 && <b>Last/Fill</b>}
+              {this.status === 3 && <b>-</b>}
             </ion-col>
           </ion-row>
         </ion-grid>
       </ion-item>,
       <ion-content>
-        {this.status === 0 && [
-          this.orders
-            .sort((a, b) => {
-              return b.updatedAt - a.updatedAt;
-            })
-            .filter((o) => o.status === OrderStatus.open)
-            .map((order) => [
-              <ion-item lines="full" href={`/orders/${order.orderId}`}>
-                <ion-grid>
-                  <ion-row>
-                    <ion-col col-4 text-left class="lineText">
-                      <b>{order.pair}</b>
-                    </ion-col>
-                    <ion-col col-4 text-center class="lineText">
-                      {order.type}
-                    </ion-col>
-                    <ion-col col-4 text-right class="lineText">
-                      {order.exchangeId}
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col col-4 text-left class="lineText">
-                      {numeral(order.amount).format('0,0.000000')}
-                    </ion-col>
-                    <ion-col col-4 text-center class="lineText">
-                      {numeral(order.openPrice).format('0,0.000000')}
-                    </ion-col>
-                    <ion-col col-4 text-right class="lineText">
-                      {numeral(order.openPrice * order.amount).format('0,0.000000')}
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col col-4 text-left class="lineText">
-                      <small>{moment.unix(order.createdAt).fromNow()}</small>
-                    </ion-col>
-                    <ion-col col-4 text-center class="lineText">
-                      {numeral(order.last).format('0,0.000000')}
-                    </ion-col>
-                    <ion-col col-4 text-right class="lineText">
-                      <b style={{ color: (order.last * 100) / order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
-                        {(order.last * 100) / order.openPrice - 100 > 0
-                          ? '+' + numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'
-                          : numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'}
-                      </b>
-                    </ion-col>
-                  </ion-row>
-                </ion-grid>
-              </ion-item>,
-            ]),
-        ]}
-        {this.status === 1 && [
-          this.orders
-            .sort((a, b) => {
-              return b.updatedAt - a.updatedAt;
-            })
-            .filter((o) => o.type === OrderType.LIMITBUY || o.type === OrderType.MARKETBUY)
-            .filter((o) => o.status === OrderStatus.closed || o.status === OrderStatus.filled)
-            .map((order) => [
-              <ion-item lines="full" href={`/orders/${order.orderId}`}>
-                <ion-grid>
-                  <ion-row>
-                    <ion-col col-4 text-left class="lineText">
-                      <b>{order.pair}</b>
-                    </ion-col>
-                    <ion-col col-4 text-center class="lineText">
-                      {order.type}
-                    </ion-col>
-                    <ion-col col-4 text-right class="lineText">
-                      {order.exchangeId}
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col col-4 text-left class="lineText">
-                      {numeral(order.amount).format('0,0.000000')}
-                    </ion-col>
-                    <ion-col col-4 text-center class="lineText">
-                      {numeral(order.openPrice).format('0,0.000000')}
-                    </ion-col>
-                    <ion-col col-4 text-right class="lineText">
-                      {numeral(order.openPrice * order.amount).format('0,0.000000')}
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col col-4 text-left class="lineText">
-                      <small>{moment.unix(order.updatedAt).fromNow()}</small>
-                    </ion-col>
-                    <ion-col col-4 text-center class="lineText">
-                      {numeral(order.openPrice).format('0,0.000000')}
-                    </ion-col>
-                    <ion-col col-4 text-right class="lineText">
-                      <b style={{ color: (order.last * 100) / order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
-                        {(order.last * 100) / order.openPrice - 100 > 0
-                          ? '+' + numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'
-                          : numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'}
-                      </b>
-                    </ion-col>
-                  </ion-row>
-                </ion-grid>
-              </ion-item>,
-            ]),
-        ]}
-        {this.status === 2 && [
-          this.orders
-            .sort((a, b) => {
-              return b.updatedAt - a.updatedAt;
-            })
-            .filter((o) => o.type === OrderType.LIMITSELL || o.type === OrderType.MARKETSELL)
-            .filter((o) => o.status === OrderStatus.closed || o.status === OrderStatus.filled)
-            .map((order) => [
-              <ion-item lines="full" href={`/orders/${order.orderId}`}>
-                <ion-grid>
-                  <ion-row>
-                    <ion-col col-4 text-left class="lineText">
-                      <b>{order.pair}</b>
-                    </ion-col>
-                    <ion-col col-4 text-center class="lineText">
-                      {order.type}
-                    </ion-col>
-                    <ion-col col-4 text-right class="lineText">
-                      {order.exchangeId}
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col col-4 text-left class="lineText">
-                      {numeral(order.amount).format('0,0.000000')}
-                    </ion-col>
-                    <ion-col col-4 text-center class="lineText">
-                      {numeral(order.openPrice).format('0,0.000000')}
-                    </ion-col>
-                    <ion-col col-4 text-right class="lineText">
-                      {numeral(order.openPrice * order.amount).format('0,0.000000')}
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col col-4 text-left class="lineText">
-                      <small>{moment.unix(order.updatedAt).fromNow()}</small>
-                    </ion-col>
-                    <ion-col col-4 text-center class="lineText">
-                      {numeral(order.closePrice).format('0,0.000000')}
-                    </ion-col>
-                    <ion-col col-4 text-right class="lineText">
-                      <b style={{ color: (order.closePrice * 100) / order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
-                        {(order.closePrice * 100) / order.openPrice - 100 > 0
-                          ? '+' + numeral((order.closePrice * 100) / order.openPrice - 100).format('0,0.00') + ' %'
-                          : numeral((order.closePrice * 100) / order.openPrice - 100).format('0,0.00') + ' %'}
-                      </b>
-                    </ion-col>
-                  </ion-row>
-                </ion-grid>
-              </ion-item>,
-            ]),
-        ]}
-        {this.status === 3 && [
-          this.orders
-            .sort((a, b) => {
-              return b.updatedAt - a.updatedAt;
-            })
-            .filter((o) => o.status === OrderStatus.cancelled)
-            .map((order) => [
-              <ion-item lines="full" href={`/orders/${order.orderId}`}>
-                <ion-grid>
-                  <ion-row>
-                    <ion-col col-4 text-left class="lineText">
-                      <b>{order.pair}</b>
-                    </ion-col>
-                    <ion-col col-4 text-center class="lineText">
-                      {order.type}
-                    </ion-col>
-                    <ion-col col-4 text-right class="lineText">
-                      {order.exchangeId}
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col col-4 text-left class="lineText">
-                      {numeral(order.amount).format('0,0.000000')}
-                    </ion-col>
-                    <ion-col col-4 text-center class="lineText">
-                      {numeral(order.openPrice).format('0,0.000000')}
-                    </ion-col>
-                    <ion-col col-4 text-right class="lineText">
-                      {numeral(order.openPrice * order.amount).format('0,0.000000')}
-                    </ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col col-4 text-left class="lineText">
-                      <small>{moment.unix(order.updatedAt).fromNow()}</small>
-                    </ion-col>
-                    <ion-col col-4 text-center class="lineText">
-                      -
-                    </ion-col>
-                    <ion-col col-4 text-right class="lineText">
-                      -
-                    </ion-col>
-                  </ion-row>
-                </ion-grid>
-              </ion-item>,
-            ]),
-        ]}
+        <ion-list>
+          {this.status === 0 && [
+            this.orders
+              .sort((a, b) => {
+                return b.updatedAt - a.updatedAt;
+              })
+              .filter((o) => o.status === OrderStatus.open)
+              .map((order) => [
+                <ion-item lines="full" href={`/orders/${order.orderId}`}>
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col col-4 text-left class="lineText">
+                        <b>{order.pair}</b>
+                      </ion-col>
+                      <ion-col col-4 text-center class="lineText">
+                        {order.type}
+                      </ion-col>
+                      <ion-col col-4 text-right class="lineText">
+                        {order.exchangeId}
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col col-4 text-left class="lineText">
+                        {numeral(order.amount).format('0,0.00000')}
+                      </ion-col>
+                      <ion-col col-4 text-center class="lineText">
+                        {numeral(order.openPrice).format('0,0.00000000')}
+                      </ion-col>
+                      <ion-col col-4 text-right class="lineText">
+                        {numeral(order.openPrice * order.amount).format('0,0.00000000')}
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col col-4 text-left class="lineText">
+                        <small>{moment.unix(order.createdAt).fromNow()}</small>
+                      </ion-col>
+                      <ion-col col-4 text-center class="lineText">
+                        {numeral(order.last).format('0,0.00000000')}
+                      </ion-col>
+                      <ion-col col-4 text-right class="lineText">
+                        <b style={{ color: (order.last * 100) / order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
+                          {(order.last * 100) / order.openPrice - 100 > 0
+                            ? '+' + numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'
+                            : numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'}
+                        </b>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </ion-item>,
+              ]),
+          ]}
+          {this.status === 1 && [
+            this.orders
+              .sort((a, b) => {
+                return b.updatedAt - a.updatedAt;
+              })
+              .filter((o) => o.type === OrderType.LIMITBUY || o.type === OrderType.MARKETBUY)
+              .filter((o) => o.status === OrderStatus.closed || o.status === OrderStatus.filled)
+              .map((order) => [
+                <ion-item lines="full" href={`/orders/${order.orderId}`}>
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col col-4 text-left class="lineText">
+                        <b>{order.pair}</b>
+                      </ion-col>
+                      <ion-col col-4 text-center class="lineText">
+                        {order.type}
+                      </ion-col>
+                      <ion-col col-4 text-right class="lineText">
+                        {order.exchangeId}
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col col-4 text-left class="lineText">
+                        {numeral(order.amount).format('0,0.00000')}
+                      </ion-col>
+                      <ion-col col-4 text-center class="lineText">
+                        {numeral(order.openPrice).format('0,0.00000000')}
+                      </ion-col>
+                      <ion-col col-4 text-right class="lineText">
+                        {numeral(order.openPrice * order.amount).format('0,0.00000000')}
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col col-4 text-left class="lineText">
+                        <small>{moment.unix(order.updatedAt).fromNow()}</small>
+                      </ion-col>
+                      <ion-col col-4 text-center class="lineText">
+                        {numeral(order.openPrice).format('0,0.00000000')}
+                      </ion-col>
+                      <ion-col col-4 text-right class="lineText">
+                        <b style={{ color: (order.last * 100) / order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
+                          {(order.last * 100) / order.openPrice - 100 > 0
+                            ? '+' + numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'
+                            : numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'}
+                        </b>
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </ion-item>,
+              ]),
+          ]}
+          {this.status === 2 && [
+            this.orders
+              .sort((a, b) => {
+                return b.updatedAt - a.updatedAt;
+              })
+              .filter((o) => o.type === OrderType.LIMITSELL || o.type === OrderType.MARKETSELL)
+              .filter((o) => o.status === OrderStatus.closed || o.status === OrderStatus.filled)
+              .map((order) => [
+                <ion-item lines="full" href={`/orders/${order.orderId}`}>
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col col-4 text-left class="lineText">
+                        <b>{order.pair}</b>
+                      </ion-col>
+                      <ion-col col-4 text-center class="lineText">
+                        {order.type}
+                      </ion-col>
+                      <ion-col col-4 text-right class="lineText">
+                        {order.exchangeId}
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col col-4 text-left class="lineText">
+                        {numeral(order.amount).format('0,0.00000')}
+                      </ion-col>
+                      <ion-col col-4 text-center class="lineText">
+                        {numeral(order.openPrice).format('0,0.00000000')}
+                      </ion-col>
+                      <ion-col col-4 text-right class="lineText">
+                        {numeral(order.openPrice * order.amount).format('0,0.00000000')}
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col col-4 text-left class="lineText">
+                        <small>{moment.unix(order.updatedAt).fromNow()}</small>
+                      </ion-col>
+                      <ion-col col-4 text-center class="lineText">
+                        {order.closePrice ? numeral(order.closePrice).format('0,0.00000000') : numeral(order.last).format('0,0.00000000')}
+                      </ion-col>
+                      <ion-col col-4 text-right class="lineText">
+                        {order.closePrice ? (
+                          <b style={{ color: (order.closePrice * 100) / order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
+                            {(order.closePrice * 100) / order.openPrice - 100 > 0
+                              ? '+' + numeral((order.closePrice * 100) / order.openPrice - 100).format('0,0.00') + ' %'
+                              : numeral((order.closePrice * 100) / order.openPrice - 100).format('0,0.00') + ' %'}
+                          </b>
+                        ) : (
+                          <b style={{ color: (order.last * 100) / order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>
+                            {(order.last * 100) / order.openPrice - 100 > 0
+                              ? '+' + numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'
+                              : numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'}
+                          </b>
+                        )}
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </ion-item>,
+              ]),
+          ]}
+
+          {this.status === 3 && [
+            this.orders
+              .sort((a, b) => {
+                return b.updatedAt - a.updatedAt;
+              })
+              .filter((o) => o.status === OrderStatus.cancelled)
+              .map((order) => [
+                <ion-item lines="full" href={`/orders/${order.orderId}`}>
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col col-4 text-left class="lineText">
+                        <b>{order.pair}</b>
+                      </ion-col>
+                      <ion-col col-4 text-center class="lineText">
+                        {order.type}
+                      </ion-col>
+                      <ion-col col-4 text-right class="lineText">
+                        {order.exchangeId}
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col col-4 text-left class="lineText">
+                        {numeral(order.amount).format('0,0.00000')}
+                      </ion-col>
+                      <ion-col col-4 text-center class="lineText">
+                        {numeral(order.openPrice).format('0,0.00000000')}
+                      </ion-col>
+                      <ion-col col-4 text-right class="lineText">
+                        {numeral(order.openPrice * order.amount).format('0,0.00000000')}
+                      </ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col col-4 text-left class="lineText">
+                        <small>{moment.unix(order.updatedAt).fromNow()}</small>
+                      </ion-col>
+                      <ion-col col-4 text-center class="lineText">
+                        -
+                      </ion-col>
+                      <ion-col col-4 text-right class="lineText">
+                        -
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </ion-item>,
+              ]),
+          ]}
+        </ion-list>
       </ion-content>,
     ];
   }

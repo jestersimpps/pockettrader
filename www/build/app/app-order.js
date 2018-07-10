@@ -1,7 +1,7 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { d as OrderStatus, e as TRADESERVICE, a as CURRENCYSERVICE } from './chunk-1c4b34f7.js';
+import { d as OrderStatus, e as TRADESERVICE, b as TICKERSERVICE, a as CURRENCYSERVICE } from './chunk-6a09bead.js';
 import { a as numeral } from './chunk-374e99fd.js';
 import { i as appSetOrders } from './chunk-9c7d3ec3.js';
 import './chunk-ea6d9d39.js';
@@ -10,9 +10,10 @@ import './chunk-a7525511.js';
 class AppOrder {
     componentWillLoad() {
         this.store.mapStateToProps(this, (state) => {
-            const { app: { orders, exchanges, baseCurrency }, } = state;
+            const { app: { orders, tickers, exchanges, baseCurrency }, } = state;
             return {
                 orders,
+                tickers,
                 exchanges,
                 baseCurrency,
             };
@@ -28,7 +29,10 @@ class AppOrder {
                 h("ion-toolbar", { color: "dark" },
                     h("ion-buttons", { slot: "start" },
                         h("ion-back-button", { defaultHref: "/orders" })),
-                    h("ion-title", { "text-center": true }, this.order.pair))),
+                    h("ion-title", { "text-center": true }, this.order.pair),
+                    h("ion-buttons", { slot: "end" },
+                        h("ion-button", { "icon-only": true, disabled: this.isLoading, onClick: () => this.reloadOrder(), padding: true },
+                            h("ion-icon", { name: "refresh", class: this.isLoading ? 'spin' : '' }))))),
             h("ion-content", null,
                 h("ion-list", null,
                     h("app-ohlc", { exchangeId: this.order.exchangeId, symbol: this.order.pair, altPrice: this.order.openPrice, curPrice: this.order.last }),
@@ -96,7 +100,12 @@ class AppOrder {
                         h("ion-label", { "text-right": true, slot: "end" }, this.order.closePrice ? (h("app-baseprice", { btcPrice: CURRENCYSERVICE.convertToBase(this.order.closePrice * this.order.amount - this.order.openPrice * this.order.amount - 2 * this.order.fee, this.baseCurrency), baseCurrency: this.baseCurrency })) : ('-'))),
                     this.order.status === OrderStatus.open && (h("ion-button", { color: "danger", expand: "full", disabled: this.isLoading, onClick: () => this.cancelOrder() },
                         this.isLoading && h("ion-icon", { name: "refresh", class: "spin", "margin-right": true }),
-                        "Cancel Order")))),
+                        "Cancel Order")),
+                    this.order.status === OrderStatus.filled ||
+                        (this.order.status === OrderStatus.cancelled && (h("ion-nav-pop", null,
+                            h("ion-button", { color: "danger", expand: "full", disabled: this.isLoading, onClick: () => this.deleteOrder() },
+                                this.isLoading && h("ion-icon", { name: "refresh", class: "spin", "margin-right": true }),
+                                "Delete Order")))))),
         ];
     }
     cancelOrder() {
@@ -116,6 +125,46 @@ class AppOrder {
                 window.alert(`Something went wrong while canceling the order: ${error.message}`);
             });
         }
+    }
+    deleteOrder() {
+        this.isLoading = true;
+        let newOrders = this.orders.filter((o) => o.orderId !== this.orderId);
+        this.appSetOrders(newOrders);
+        this.isLoading = false;
+    }
+    reloadOrder() {
+        this.isLoading = true;
+        let exchange = this.exchanges.find((e) => e.id === this.order.exchangeId);
+        let tickerData = [];
+        TICKERSERVICE.getTickers(this.order.exchangeId)
+            .then((response) => {
+            tickerData = response.data;
+            return TRADESERVICE.getOrder(exchange, this.order.orderId, this.order.pair)
+                .then((response) => {
+                let orderData = response.data;
+                let currentOrder = this.orders.find((o) => o.orderId === orderData.id);
+                let ticker = tickerData.find((t) => t.symbol === currentOrder.pair);
+                currentOrder.filled = orderData.filled;
+                currentOrder.remaining = orderData.remaining;
+                currentOrder.base = ticker.base;
+                currentOrder.last = ticker.last;
+                currentOrder.quote = ticker.quote;
+                if (+orderData.remaining === 0) {
+                    currentOrder.status = OrderStatus.filled;
+                }
+                currentOrder.updatedAt = new Date().getTime() / 1000;
+                this.isLoading = false;
+                this.appSetOrders(this.orders);
+            })
+                .catch((error) => {
+                window.alert(`Something went wrong while fetching the orderbook: ${error.message}`);
+                this.isLoading = false;
+            });
+        })
+            .catch((error) => {
+            window.alert(`Error fetching ticker data: ${error.message}`);
+            this.isLoading = false;
+        });
     }
     static get is() { return "app-order"; }
     static get properties() { return {
@@ -140,6 +189,9 @@ class AppOrder {
         },
         "store": {
             "context": "store"
+        },
+        "tickers": {
+            "state": true
         }
     }; }
     static get style() { return ""; }

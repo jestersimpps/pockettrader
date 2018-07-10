@@ -10,10 +10,12 @@ import {
   appSetTotalBalances,
   appSetWallets,
   appSetBalances,
+  appSetOrders,
 } from '../../actions/app';
 import { Store, Action } from '@stencil/redux';
 import { Wallet } from '../../services/wallets.service';
 import { Balances } from '../../services/balance.service';
+import { Order } from '../../services/trade.service';
 
 @Component({
   tag: 'app-wallets',
@@ -31,6 +33,7 @@ export class AppWallets {
   @State() wallets: Wallet[];
   @State() segment = '1';
   @State() dust: number;
+  @State() orders: Order[];
 
   appSetCurrencies: Action;
   appSetExchanges: Action;
@@ -40,11 +43,12 @@ export class AppWallets {
   appSetTotalBalances: Action;
   appSetWallets: Action;
   appSetBalances: Action;
+  appSetOrders: Action;
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { exchanges, baseCurrency, currencies, tickers, wallets, balances, dust },
+        app: { exchanges, baseCurrency, currencies, tickers, wallets, balances, orders, dust },
       } = state;
       return {
         exchanges,
@@ -53,6 +57,7 @@ export class AppWallets {
         tickers,
         wallets,
         balances,
+        orders,
         dust,
       };
     });
@@ -64,6 +69,7 @@ export class AppWallets {
       appSetTotalBalances,
       appSetWallets,
       appSetBalances,
+      appSetOrders,
     });
   }
 
@@ -79,7 +85,7 @@ export class AppWallets {
 
   refreshBalances() {
     this.isLoading = true;
-    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.dust).then((response) => {
+    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.orders, this.dust).then((response) => {
       if (response) {
         this.appSetCurrencies(response.conversionrates);
         this.appSetTickers(response.tickers);
@@ -91,6 +97,7 @@ export class AppWallets {
           exchanges: response.exchangeTotal,
           wallets: response.walletTotal,
         });
+        this.appSetOrders(response.orders);
       }
       this.isLoading = false;
     });

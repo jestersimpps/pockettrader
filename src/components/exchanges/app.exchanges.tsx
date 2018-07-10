@@ -10,10 +10,12 @@ import {
   appSetTotalBalances,
   appSetWallets,
   appSetBalances,
+  appSetOrders,
 } from '../../actions/app';
 import { Store, Action } from '@stencil/redux';
 import { Wallet } from '../../services/wallets.service';
 import { Balances } from '../../services/balance.service';
+import { Order } from '../../services/trade.service';
 
 @Component({
   tag: 'app-exchanges',
@@ -30,6 +32,7 @@ export class AppExchanges {
   @State() tickers: any[];
   @State() wallets: Wallet[];
   @State() dust: number;
+  @State() orders: Order[];
 
   appSetExchanges: Action;
   appSetCurrencies: Action;
@@ -39,11 +42,12 @@ export class AppExchanges {
   appSetTotalBalances: Action;
   appSetWallets: Action;
   appSetBalances: Action;
+  appSetOrders: Action;
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { exchanges, baseCurrency, currencies, tickers, wallets, balances,dust },
+        app: { exchanges, baseCurrency, currencies, tickers, wallets, balances, orders, dust },
       } = state;
       return {
         exchanges,
@@ -52,7 +56,8 @@ export class AppExchanges {
         tickers,
         wallets,
         balances,
-        dust
+        orders,
+        dust,
       };
     });
     this.store.mapDispatchToProps(this, {
@@ -63,6 +68,7 @@ export class AppExchanges {
       appSetTotalBalances,
       appSetWallets,
       appSetBalances,
+      appSetOrders,
     });
   }
 
@@ -94,7 +100,7 @@ export class AppExchanges {
 
   refreshBalances() {
     this.isLoading = true;
-    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.dust).then((response) => {
+    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.orders, this.dust).then((response) => {
       if (response) {
         this.appSetCurrencies(response.conversionrates);
         this.appSetTickers(response.tickers);
@@ -106,6 +112,7 @@ export class AppExchanges {
           exchanges: response.exchangeTotal,
           wallets: response.walletTotal,
         });
+        this.appSetOrders(response.orders);
       }
       this.isLoading = false;
     });

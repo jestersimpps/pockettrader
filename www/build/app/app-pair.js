@@ -1,7 +1,7 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { b as TICKERSERVICE } from './chunk-1c4b34f7.js';
+import { b as TICKERSERVICE } from './chunk-6a09bead.js';
 import './chunk-ea6d9d39.js';
 import './chunk-a7525511.js';
 

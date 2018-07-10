@@ -4,6 +4,7 @@ import { Wallet } from './wallets.service';
 import { Ticker } from './ticker.service';
 import { TICKERSERVICE, BALANCESERVICE, CURRENCYSERVICE } from './globals';
 import { Currency } from './currency.service';
+import { Order, OrderStatus } from './trade.service';
 declare const axios;
 
 export class Balance {
@@ -26,6 +27,7 @@ export class RefreshResponse {
   conversionrates: Currency[];
   tickers: Ticker[];
   wallets: Wallet[];
+  orders: Order[];
   exchanges: Exchange[];
   exchangeTotal: number;
   walletTotal: number;
@@ -62,7 +64,7 @@ export class BalanceService {
     });
   }
 
-  refreshBalances(wallets: Wallet[], exchanges: Exchange[], dust:number): Promise<RefreshResponse> {
+  refreshBalances(wallets: Wallet[], exchanges: Exchange[], orders: Order[], dust: number): Promise<RefreshResponse> {
     let exchangeIds: ExchangeId[] = [];
     let tickerPromises = [];
     let balancePromises = [];
@@ -82,6 +84,7 @@ export class BalanceService {
       conversionrates: null,
       tickers: null,
       wallets: null,
+      orders: null,
       exchanges: null,
       exchangeTotal: 0,
       walletTotal: 0,
@@ -120,6 +123,14 @@ export class BalanceService {
                           return +b.btcAmount > dust; // leave out dust balances
                         });
                     }
+                    // refresh orders
+                    orders.filter((o) => o.status != OrderStatus.cancelled).map((order) => {
+                      let tickerData = scopedTickers.find((t) => t.exchangeId === order.exchangeId).tickers;
+                      let ticker = tickerData.find((t) => t.symbol === order.pair);
+                      order.last = ticker.last;
+                      console.log(order);
+                      return order;
+                    });
                     // refresh wallets
                     for (let index = 0; index < scopedWallets.length; index++) {
                       scopedWallets[index].btcPrice = +walletData[index].data.data.quotes.BTC.price;
@@ -128,6 +139,7 @@ export class BalanceService {
                       response.walletTotal += +scopedWallets[index].balance * +walletData[index].data.data.quotes.BTC.price;
                     }
                     response.tickers = scopedTickers;
+                    response.orders = orders;
                     response.wallets = scopedWallets;
                     response.exchanges = exchanges.map((e) => {
                       let newData = scopedExchanges.find((s) => s.id === e.id);

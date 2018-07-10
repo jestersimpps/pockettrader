@@ -30,6 +30,57 @@ class WalletService {
     }
 }
 
+var OrderType;
+(function (OrderType) {
+    OrderType["LIMITSELL"] = "LIMITSELL";
+    OrderType["LIMITBUY"] = "LIMITBUY";
+    OrderType["MARKETSELL"] = "MARKETSELL";
+    OrderType["MARKETBUY"] = "MARKETBUY";
+    OrderType["CANCEL"] = "CANCEL";
+})(OrderType || (OrderType = {}));
+var OrderStatus;
+(function (OrderStatus) {
+    OrderStatus["open"] = "open";
+    OrderStatus["filled"] = "filled";
+    OrderStatus["cancelled"] = "cancelled";
+    OrderStatus["closed"] = "closed";
+    OrderStatus["failed"] = "failed";
+})(OrderStatus || (OrderStatus = {}));
+class TradeService {
+    getOrdersFromStorage() {
+        return STORAGE.get('orders');
+    }
+    setOrders(orders) {
+        return STORAGE.set('orders', orders);
+    }
+    newOrder(exchange, newOrder) {
+        return axios.post(`https://lightningassets.com/exchangeapi/${exchange.id}/orders/create`, newOrder);
+    }
+    getOrder(exchange, orderId, pair) {
+        return axios.post(`https://lightningassets.com/exchangeapi/${exchange.id}/orders/get`, {
+            pair: pair,
+            orderId: orderId,
+            clientCreds: {
+                key: exchange.key,
+                secret: exchange.secret,
+            },
+        });
+    }
+    cancelOrder(exchange, orderId, pair) {
+        return axios.post(`https://lightningassets.com/exchangeapi/${exchange.id}/orders/cancel`, {
+            pair: pair,
+            orderId: orderId,
+            clientCreds: {
+                key: exchange.key,
+                secret: exchange.secret,
+            },
+        });
+    }
+    getOhlc(exchangeId, symbol, timeFrame = '1h') {
+        return axios.get(`https://lightningassets.com/exchangeapi/${exchangeId}/ticker/ohlc?symbol=${symbol}&timeframe=${timeFrame}`);
+    }
+}
+
 class BalanceService {
     getTotalBalancesFromStorage() {
         return STORAGE.get('totalbalances');
@@ -55,7 +106,7 @@ class BalanceService {
             secret: exchange.secret,
         });
     }
-    refreshBalances(wallets, exchanges, dust) {
+    refreshBalances(wallets, exchanges, orders, dust) {
         let exchangeIds = [];
         let tickerPromises = [];
         let balancePromises = [];
@@ -73,6 +124,7 @@ class BalanceService {
             conversionrates: null,
             tickers: null,
             wallets: null,
+            orders: null,
             exchanges: null,
             exchangeTotal: 0,
             walletTotal: 0,
@@ -111,6 +163,14 @@ class BalanceService {
                                 return +b.btcAmount > dust; // leave out dust balances
                             });
                         }
+                        // refresh orders
+                        orders.filter((o) => o.status != OrderStatus.cancelled).map((order) => {
+                            let tickerData = scopedTickers.find((t) => t.exchangeId === order.exchangeId).tickers;
+                            let ticker = tickerData.find((t) => t.symbol === order.pair);
+                            order.last = ticker.last;
+                            console.log(order);
+                            return order;
+                        });
                         // refresh wallets
                         for (let index = 0; index < scopedWallets.length; index++) {
                             scopedWallets[index].btcPrice = +walletData[index].data.data.quotes.BTC.price;
@@ -119,6 +179,7 @@ class BalanceService {
                             response.walletTotal += +scopedWallets[index].balance * +walletData[index].data.data.quotes.BTC.price;
                         }
                         response.tickers = scopedTickers;
+                        response.orders = orders;
                         response.wallets = scopedWallets;
                         response.exchanges = exchanges.map((e) => {
                             let newData = scopedExchanges.find((s) => s.id === e.id);
@@ -257,57 +318,6 @@ class TickerService {
     }
     getCoinmarketcapTicker(tickerId) {
         return axios.get(`https://api.coinmarketcap.com/v2/ticker/${tickerId}/?convert=BTC`);
-    }
-}
-
-var OrderType;
-(function (OrderType) {
-    OrderType["LIMITSELL"] = "LIMITSELL";
-    OrderType["LIMITBUY"] = "LIMITBUY";
-    OrderType["MARKETSELL"] = "MARKETSELL";
-    OrderType["MARKETBUY"] = "MARKETBUY";
-    OrderType["CANCEL"] = "CANCEL";
-})(OrderType || (OrderType = {}));
-var OrderStatus;
-(function (OrderStatus) {
-    OrderStatus["open"] = "open";
-    OrderStatus["filled"] = "filled";
-    OrderStatus["cancelled"] = "cancelled";
-    OrderStatus["closed"] = "closed";
-    OrderStatus["failed"] = "failed";
-})(OrderStatus || (OrderStatus = {}));
-class TradeService {
-    getOrdersFromStorage() {
-        return STORAGE.get('orders');
-    }
-    setOrders(orders) {
-        return STORAGE.set('orders', orders);
-    }
-    newOrder(exchange, newOrder) {
-        return axios.post(`https://lightningassets.com/exchangeapi/${exchange.id}/orders/create`, newOrder);
-    }
-    getOrder(exchange, orderId, pair) {
-        return axios.post(`https://lightningassets.com/exchangeapi/${exchange.id}/orders/get`, {
-            pair: pair,
-            orderId: orderId,
-            clientCreds: {
-                key: exchange.key,
-                secret: exchange.secret,
-            },
-        });
-    }
-    cancelOrder(exchange, orderId, pair) {
-        return axios.post(`https://lightningassets.com/exchangeapi/${exchange.id}/orders/cancel`, {
-            pair: pair,
-            orderId: orderId,
-            clientCreds: {
-                key: exchange.key,
-                secret: exchange.secret,
-            },
-        });
-    }
-    getOhlc(exchangeId, symbol, timeFrame = '1h') {
-        return axios.get(`https://lightningassets.com/exchangeapi/${exchangeId}/ticker/ohlc?symbol=${symbol}&timeframe=${timeFrame}`);
     }
 }
 

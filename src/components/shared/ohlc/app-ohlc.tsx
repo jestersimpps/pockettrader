@@ -55,7 +55,7 @@ export class AppOhlc {
         window.alert(`Couldn't get chart data`);
       });
   }
-  
+
   setTimeFrame(timeFrame: string) {
     this.isLoading = true;
     this.timeFrame = timeFrame;
@@ -140,7 +140,15 @@ export class AppOhlc {
         </ion-segment-button>
       </ion-segment>,
       <div id="ohlc" style={{ height: '200px', display: this.isLoading ? 'none' : 'block' }} />,
-      <div style={{ height: '200px', display: !this.isLoading ? 'none' : 'block' }} padding>Loading chart...</div>,
+      <div style={{ height: '200px', display: !this.isLoading ? 'none' : 'block' }} padding>
+        Loading chart...
+      </div>,
+      <div padding-left padding-right>
+        <ion-button size="small" color="dark" fill="outline" expand="block" href={`/pair/${this.exchangeId}/${this.symbol}`}>
+          <ion-icon name="stats" margin-right />
+          Open Tradingview Chart
+        </ion-button>
+      </div>,
     ];
   }
 }

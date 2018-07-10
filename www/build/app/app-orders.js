@@ -1,7 +1,7 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { f as OrderType, d as OrderStatus, e as TRADESERVICE, c as BALANCESERVICE } from './chunk-1c4b34f7.js';
+import { f as OrderType, d as OrderStatus, e as TRADESERVICE, c as BALANCESERVICE } from './chunk-6a09bead.js';
 import { a as numeral } from './chunk-374e99fd.js';
 import { d as appSetExchanges, a as appSetBaseCurrency, e as appSetCurrencies, f as appSetTickers, g as appSetTotalBalances, c as appSetWallets, h as appSetBalances, i as appSetOrders } from './chunk-9c7d3ec3.js';
 import './chunk-ea6d9d39.js';
@@ -4552,19 +4552,12 @@ class AppOrders {
                 currentOrder.last = ticker.last;
                 currentOrder.quote = ticker.quote;
                 if (+order.remaining === 0) {
-                    if (order.type === OrderType.LIMITBUY || order.type === OrderType.MARKETBUY) {
-                        currentOrder.status = OrderStatus.filled;
-                    }
-                    else {
-                        currentOrder.status = OrderStatus.closed;
-                        currentOrder.closePrice = ticker.last;
-                    }
+                    currentOrder.status = OrderStatus.filled;
                 }
                 currentOrder.updatedAt = new Date().getTime() / 1000;
             });
             this.isLoading = false;
             this.refreshBalances();
-            this.appSetOrders(this.orders);
         })
             .catch((error) => {
             window.alert(`Something went wrong while fetching the orderbook: ${error.message}`);
@@ -4573,7 +4566,7 @@ class AppOrders {
     }
     refreshBalances() {
         this.isLoading = true;
-        BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.dust).then((response) => {
+        BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.orders, this.dust).then((response) => {
             if (response) {
                 this.appSetCurrencies(response.conversionrates);
                 this.appSetTickers(response.tickers);
@@ -4584,6 +4577,7 @@ class AppOrders {
                     exchanges: response.exchangeTotal,
                     wallets: response.walletTotal,
                 });
+                this.appSetOrders(response.orders);
             }
             this.isLoading = false;
         });
@@ -4617,134 +4611,138 @@ class AppOrders {
                         h("ion-col", { "col-4": true, class: "lineText" },
                             h("b", null, "Amount")),
                         h("ion-col", { "col-4": true, "text-center": true, class: "lineText" },
-                            h("b", null, "Open price")),
+                            this.status === 0 && h("b", null, "Open price"),
+                            this.status === 1 && h("b", null, "Fill price"),
+                            this.status === 2 && h("b", null, "Fill price"),
+                            this.status === 3 && h("b", null, "Open price")),
                         h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
                             h("b", null, "Total"))),
                     h("ion-row", null,
                         h("ion-col", { "col-4": true, class: "lineText" },
-                            this.status === 0 && h("b", null, "Created"),
-                            this.status === 1 && h("b", null, "Filled"),
-                            this.status === 2 && h("b", null, "Closed"),
+                            this.status === 0 && h("b", null, "Opened"),
+                            this.status === 1 && h("b", null, "Bought"),
+                            this.status === 2 && h("b", null, "Sold"),
                             this.status === 3 && h("b", null, "Cancelled")),
-                        h("ion-col", { "col-4": true, "text-center": true, class: "lineText" },
-                            this.status === 0 && h("b", null, "Last price"),
-                            this.status === 1 && h("b", null, "Fill price"),
-                            this.status === 2 && h("b", null, "Close price"),
-                            this.status === 3 && h("b", null, "Last price"),
-                            ' '),
-                        h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, this.status === 0 ? h("b", null, "Last/Open") : h("b", null, "Profit/Loss"))))),
+                        h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, this.status === 3 ? h("b", null, "-") : h("b", null, "Last price")),
+                        h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
+                            this.status === 0 && h("b", null, "Last/Open"),
+                            this.status === 1 && h("b", null, "Last/Fill"),
+                            this.status === 2 && h("b", null, "Last/Fill"),
+                            this.status === 3 && h("b", null, "-"))))),
             h("ion-content", null,
-                this.status === 0 && [
-                    this.orders
-                        .sort((a, b) => {
-                        return b.updatedAt - a.updatedAt;
-                    })
-                        .filter((o) => o.status === OrderStatus.open)
-                        .map((order) => [
-                        h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
-                            h("ion-grid", null,
-                                h("ion-row", null,
-                                    h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
-                                        h("b", null, order.pair)),
-                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, order.type),
-                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, order.exchangeId)),
-                                h("ion-row", null,
-                                    h("ion-col", { "col-4": true, "text-left": true, class: "lineText" }, numeral(order.amount).format('0,0.000000')),
-                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.openPrice).format('0,0.000000')),
-                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, numeral(order.openPrice * order.amount).format('0,0.000000'))),
-                                h("ion-row", null,
-                                    h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
-                                        h("small", null, moment.unix(order.createdAt).fromNow())),
-                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.last).format('0,0.000000')),
-                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
-                                        h("b", { style: { color: (order.last * 100) / order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' } }, (order.last * 100) / order.openPrice - 100 > 0
-                                            ? '+' + numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'
-                                            : numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'))))),
-                    ]),
-                ],
-                this.status === 1 && [
-                    this.orders
-                        .sort((a, b) => {
-                        return b.updatedAt - a.updatedAt;
-                    })
-                        .filter((o) => o.type === OrderType.LIMITBUY || o.type === OrderType.MARKETBUY)
-                        .filter((o) => o.status === OrderStatus.closed || o.status === OrderStatus.filled)
-                        .map((order) => [
-                        h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
-                            h("ion-grid", null,
-                                h("ion-row", null,
-                                    h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
-                                        h("b", null, order.pair)),
-                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, order.type),
-                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, order.exchangeId)),
-                                h("ion-row", null,
-                                    h("ion-col", { "col-4": true, "text-left": true, class: "lineText" }, numeral(order.amount).format('0,0.000000')),
-                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.openPrice).format('0,0.000000')),
-                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, numeral(order.openPrice * order.amount).format('0,0.000000'))),
-                                h("ion-row", null,
-                                    h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
-                                        h("small", null, moment.unix(order.updatedAt).fromNow())),
-                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.openPrice).format('0,0.000000')),
-                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
-                                        h("b", { style: { color: (order.last * 100) / order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' } }, (order.last * 100) / order.openPrice - 100 > 0
-                                            ? '+' + numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'
-                                            : numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'))))),
-                    ]),
-                ],
-                this.status === 2 && [
-                    this.orders
-                        .sort((a, b) => {
-                        return b.updatedAt - a.updatedAt;
-                    })
-                        .filter((o) => o.type === OrderType.LIMITSELL || o.type === OrderType.MARKETSELL)
-                        .filter((o) => o.status === OrderStatus.closed || o.status === OrderStatus.filled)
-                        .map((order) => [
-                        h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
-                            h("ion-grid", null,
-                                h("ion-row", null,
-                                    h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
-                                        h("b", null, order.pair)),
-                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, order.type),
-                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, order.exchangeId)),
-                                h("ion-row", null,
-                                    h("ion-col", { "col-4": true, "text-left": true, class: "lineText" }, numeral(order.amount).format('0,0.000000')),
-                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.openPrice).format('0,0.000000')),
-                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, numeral(order.openPrice * order.amount).format('0,0.000000'))),
-                                h("ion-row", null,
-                                    h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
-                                        h("small", null, moment.unix(order.updatedAt).fromNow())),
-                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.closePrice).format('0,0.000000')),
-                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
-                                        h("b", { style: { color: (order.closePrice * 100) / order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' } }, (order.closePrice * 100) / order.openPrice - 100 > 0
+                h("ion-list", null,
+                    this.status === 0 && [
+                        this.orders
+                            .sort((a, b) => {
+                            return b.updatedAt - a.updatedAt;
+                        })
+                            .filter((o) => o.status === OrderStatus.open)
+                            .map((order) => [
+                            h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
+                                h("ion-grid", null,
+                                    h("ion-row", null,
+                                        h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
+                                            h("b", null, order.pair)),
+                                        h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, order.type),
+                                        h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, order.exchangeId)),
+                                    h("ion-row", null,
+                                        h("ion-col", { "col-4": true, "text-left": true, class: "lineText" }, numeral(order.amount).format('0,0.00000')),
+                                        h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.openPrice).format('0,0.00000000')),
+                                        h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, numeral(order.openPrice * order.amount).format('0,0.00000000'))),
+                                    h("ion-row", null,
+                                        h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
+                                            h("small", null, moment.unix(order.createdAt).fromNow())),
+                                        h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.last).format('0,0.00000000')),
+                                        h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
+                                            h("b", { style: { color: (order.last * 100) / order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' } }, (order.last * 100) / order.openPrice - 100 > 0
+                                                ? '+' + numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'
+                                                : numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'))))),
+                        ]),
+                    ],
+                    this.status === 1 && [
+                        this.orders
+                            .sort((a, b) => {
+                            return b.updatedAt - a.updatedAt;
+                        })
+                            .filter((o) => o.type === OrderType.LIMITBUY || o.type === OrderType.MARKETBUY)
+                            .filter((o) => o.status === OrderStatus.closed || o.status === OrderStatus.filled)
+                            .map((order) => [
+                            h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
+                                h("ion-grid", null,
+                                    h("ion-row", null,
+                                        h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
+                                            h("b", null, order.pair)),
+                                        h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, order.type),
+                                        h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, order.exchangeId)),
+                                    h("ion-row", null,
+                                        h("ion-col", { "col-4": true, "text-left": true, class: "lineText" }, numeral(order.amount).format('0,0.00000')),
+                                        h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.openPrice).format('0,0.00000000')),
+                                        h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, numeral(order.openPrice * order.amount).format('0,0.00000000'))),
+                                    h("ion-row", null,
+                                        h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
+                                            h("small", null, moment.unix(order.updatedAt).fromNow())),
+                                        h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.openPrice).format('0,0.00000000')),
+                                        h("ion-col", { "col-4": true, "text-right": true, class: "lineText" },
+                                            h("b", { style: { color: (order.last * 100) / order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' } }, (order.last * 100) / order.openPrice - 100 > 0
+                                                ? '+' + numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'
+                                                : numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'))))),
+                        ]),
+                    ],
+                    this.status === 2 && [
+                        this.orders
+                            .sort((a, b) => {
+                            return b.updatedAt - a.updatedAt;
+                        })
+                            .filter((o) => o.type === OrderType.LIMITSELL || o.type === OrderType.MARKETSELL)
+                            .filter((o) => o.status === OrderStatus.closed || o.status === OrderStatus.filled)
+                            .map((order) => [
+                            h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
+                                h("ion-grid", null,
+                                    h("ion-row", null,
+                                        h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
+                                            h("b", null, order.pair)),
+                                        h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, order.type),
+                                        h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, order.exchangeId)),
+                                    h("ion-row", null,
+                                        h("ion-col", { "col-4": true, "text-left": true, class: "lineText" }, numeral(order.amount).format('0,0.00000')),
+                                        h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.openPrice).format('0,0.00000000')),
+                                        h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, numeral(order.openPrice * order.amount).format('0,0.00000000'))),
+                                    h("ion-row", null,
+                                        h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
+                                            h("small", null, moment.unix(order.updatedAt).fromNow())),
+                                        h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, order.closePrice ? numeral(order.closePrice).format('0,0.00000000') : numeral(order.last).format('0,0.00000000')),
+                                        h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, order.closePrice ? (h("b", { style: { color: (order.closePrice * 100) / order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' } }, (order.closePrice * 100) / order.openPrice - 100 > 0
                                             ? '+' + numeral((order.closePrice * 100) / order.openPrice - 100).format('0,0.00') + ' %'
-                                            : numeral((order.closePrice * 100) / order.openPrice - 100).format('0,0.00') + ' %'))))),
-                    ]),
-                ],
-                this.status === 3 && [
-                    this.orders
-                        .sort((a, b) => {
-                        return b.updatedAt - a.updatedAt;
-                    })
-                        .filter((o) => o.status === OrderStatus.cancelled)
-                        .map((order) => [
-                        h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
-                            h("ion-grid", null,
-                                h("ion-row", null,
-                                    h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
-                                        h("b", null, order.pair)),
-                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, order.type),
-                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, order.exchangeId)),
-                                h("ion-row", null,
-                                    h("ion-col", { "col-4": true, "text-left": true, class: "lineText" }, numeral(order.amount).format('0,0.000000')),
-                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.openPrice).format('0,0.000000')),
-                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, numeral(order.openPrice * order.amount).format('0,0.000000'))),
-                                h("ion-row", null,
-                                    h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
-                                        h("small", null, moment.unix(order.updatedAt).fromNow())),
-                                    h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, "-"),
-                                    h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, "-")))),
-                    ]),
-                ]),
+                                            : numeral((order.closePrice * 100) / order.openPrice - 100).format('0,0.00') + ' %')) : (h("b", { style: { color: (order.last * 100) / order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' } }, (order.last * 100) / order.openPrice - 100 > 0
+                                            ? '+' + numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %'
+                                            : numeral((order.last * 100) / order.openPrice - 100).format('0,0.00') + ' %')))))),
+                        ]),
+                    ],
+                    this.status === 3 && [
+                        this.orders
+                            .sort((a, b) => {
+                            return b.updatedAt - a.updatedAt;
+                        })
+                            .filter((o) => o.status === OrderStatus.cancelled)
+                            .map((order) => [
+                            h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
+                                h("ion-grid", null,
+                                    h("ion-row", null,
+                                        h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
+                                            h("b", null, order.pair)),
+                                        h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, order.type),
+                                        h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, order.exchangeId)),
+                                    h("ion-row", null,
+                                        h("ion-col", { "col-4": true, "text-left": true, class: "lineText" }, numeral(order.amount).format('0,0.00000')),
+                                        h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, numeral(order.openPrice).format('0,0.00000000')),
+                                        h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, numeral(order.openPrice * order.amount).format('0,0.00000000'))),
+                                    h("ion-row", null,
+                                        h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
+                                            h("small", null, moment.unix(order.updatedAt).fromNow())),
+                                        h("ion-col", { "col-4": true, "text-center": true, class: "lineText" }, "-"),
+                                        h("ion-col", { "col-4": true, "text-right": true, class: "lineText" }, "-")))),
+                        ]),
+                    ])),
         ];
     }
     static get is() { return "app-orders"; }

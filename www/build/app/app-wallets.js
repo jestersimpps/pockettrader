@@ -1,8 +1,8 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { c as BALANCESERVICE, a as CURRENCYSERVICE } from './chunk-1c4b34f7.js';
-import { d as appSetExchanges, a as appSetBaseCurrency, e as appSetCurrencies, f as appSetTickers, g as appSetTotalBalances, c as appSetWallets, h as appSetBalances } from './chunk-9c7d3ec3.js';
+import { c as BALANCESERVICE, a as CURRENCYSERVICE } from './chunk-6a09bead.js';
+import { d as appSetExchanges, a as appSetBaseCurrency, e as appSetCurrencies, f as appSetTickers, g as appSetTotalBalances, c as appSetWallets, h as appSetBalances, i as appSetOrders } from './chunk-9c7d3ec3.js';
 import './chunk-ea6d9d39.js';
 import './chunk-a7525511.js';
 
@@ -14,7 +14,7 @@ class AppWallets {
     }
     componentWillLoad() {
         this.store.mapStateToProps(this, (state) => {
-            const { app: { exchanges, baseCurrency, currencies, tickers, wallets, balances, dust }, } = state;
+            const { app: { exchanges, baseCurrency, currencies, tickers, wallets, balances, orders, dust }, } = state;
             return {
                 exchanges,
                 baseCurrency,
@@ -22,6 +22,7 @@ class AppWallets {
                 tickers,
                 wallets,
                 balances,
+                orders,
                 dust,
             };
         });
@@ -33,6 +34,7 @@ class AppWallets {
             appSetTotalBalances,
             appSetWallets,
             appSetBalances,
+            appSetOrders,
         });
     }
     addTotalBalance(totalBtcBalance) {
@@ -46,7 +48,7 @@ class AppWallets {
     }
     refreshBalances() {
         this.isLoading = true;
-        BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.dust).then((response) => {
+        BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.orders, this.dust).then((response) => {
             if (response) {
                 this.appSetCurrencies(response.conversionrates);
                 this.appSetTickers(response.tickers);
@@ -58,6 +60,7 @@ class AppWallets {
                     exchanges: response.exchangeTotal,
                     wallets: response.walletTotal,
                 });
+                this.appSetOrders(response.orders);
             }
             this.isLoading = false;
         });
@@ -115,6 +118,9 @@ class AppWallets {
             "state": true
         },
         "isLoading": {
+            "state": true
+        },
+        "orders": {
             "state": true
         },
         "segment": {

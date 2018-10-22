@@ -1,23 +1,2 @@
 /*! Built with http://stenciljs.com */
-const { h } = window.App;
-
-function startStatusTap(win, queue) {
-    win.addEventListener('statusTap', () => {
-        queue.read(() => {
-            const width = win.innerWidth;
-            const height = win.innerHeight;
-            const el = win.document.elementFromPoint(width / 2, height / 2);
-            if (!el) {
-                return;
-            }
-            const contentEl = el.closest('ion-content');
-            if (contentEl) {
-                contentEl.componentOnReady().then(() => {
-                    queue.write(() => contentEl.scrollToTop(300));
-                });
-            }
-        });
-    });
-}
-
-export { startStatusTap };
+const{h:n}=window.App;function t(n,t){n.addEventListener("statusTap",()=>{t.read(()=>{const e=n.document.elementFromPoint(n.innerWidth/2,n.innerHeight/2);if(!e)return;const o=e.closest("ion-content");o&&o.componentOnReady().then(()=>{t.write(()=>o.scrollToTop(300))})})})}export{t as startStatusTap};

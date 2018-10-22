@@ -2,390 +2,390 @@
   "namespace": "App",
   "fsNamespace": "app",
   "loader": "../app.js",
-  "corePolyfilled": "es5-build-disabled.js",
   "global": "app.global.js",
-  "core": "app.core.js",
+  "core": "app.kdvcpfpw.js",
+  "corePolyfilled": "app.eoss5rcf.js",
   "components": {
     "app-balanceitem": {
       "bundleIds": {
-        "ios": "app-balanceitem.ios",
-        "md": "app-balanceitem.md"
+        "ios": "n0qp22jq",
+        "md": "klq0al2b"
       }
     },
     "app-barchart": {
       "bundleIds": {
-        "$": "app-barchart"
+        "$": "pcqzyxwd"
       }
     },
     "app-basecurrency": {
       "bundleIds": {
-        "$": "app-basecurrency"
+        "$": "w1xz9dbq"
       }
     },
     "app-baseprice": {
       "bundleIds": {
-        "$": "app-baseprice"
+        "$": "6vkrhkgb"
       }
     },
     "app-cryptoicon": {
       "bundleIds": {
-        "ios": "app-balanceitem.ios",
-        "md": "app-balanceitem.md"
+        "ios": "n0qp22jq",
+        "md": "klq0al2b"
       }
     },
     "app-dust": {
       "bundleIds": {
-        "$": "app-dust"
+        "$": "kp2rcx8f"
       }
     },
     "app-editwallet": {
       "bundleIds": {
-        "$": "app-editwallet"
+        "$": "2svanbpf"
       }
     },
     "app-exchangebalances": {
       "bundleIds": {
-        "$": "app-exchangebalances"
+        "$": "lobk9ypc"
       }
     },
     "app-exchangeitem": {
       "bundleIds": {
-        "$": "app-exchangeitem"
+        "$": "16wb6ris"
       }
     },
     "app-exchangekeys": {
       "bundleIds": {
-        "$": "app-exchangekeys"
+        "$": "32cvdnuh"
       }
     },
     "app-exchanges": {
       "bundleIds": {
-        "$": "app-exchanges"
+        "$": "hfmdsg5p"
       }
     },
     "app-holdings": {
       "bundleIds": {
-        "ios": "app-holdings.ios",
-        "md": "app-holdings.md"
+        "ios": "p0ad9y9w",
+        "md": "au0ap61x"
       }
     },
     "app-keys": {
       "bundleIds": {
-        "$": "app-keys"
+        "$": "b8ynjanm"
       }
     },
     "app-ohlc": {
       "bundleIds": {
-        "ios": "app-balanceitem.ios",
-        "md": "app-balanceitem.md"
+        "ios": "n0qp22jq",
+        "md": "klq0al2b"
       }
     },
     "app-order": {
       "bundleIds": {
-        "$": "app-order"
+        "$": "tzjzmtah"
       }
     },
     "app-orders": {
       "bundleIds": {
-        "$": "app-orders"
+        "$": "vf3f4hf2"
       }
     },
     "app-overview": {
       "bundleIds": {
-        "$": "app-overview"
+        "$": "refoxkdz"
       }
     },
     "app-pair": {
       "bundleIds": {
-        "$": "app-pair"
+        "$": "fpsdwktu"
       }
     },
     "app-panic": {
       "bundleIds": {
-        "ios": "app-panic.ios",
-        "md": "app-panic.md"
+        "ios": "ltyqcehu",
+        "md": "ocvmigbb"
       }
     },
     "app-premium": {
       "bundleIds": {
-        "$": "app-premium"
+        "$": "afguvh1n"
       }
     },
     "app-settings": {
       "bundleIds": {
-        "$": "app-settings"
+        "$": "3rdx8www"
       }
     },
     "app-splinechart": {
       "bundleIds": {
-        "$": "app-overview"
+        "$": "refoxkdz"
       }
     },
     "app-sunburst": {
       "bundleIds": {
-        "$": "app-overview"
+        "$": "refoxkdz"
       }
     },
     "app-trade": {
       "bundleIds": {
-        "$": "app-trade"
+        "$": "sysv5vgz"
       }
     },
     "app-tutorial": {
       "bundleIds": {
-        "ios": "app-tutorial.ios",
-        "md": "app-tutorial.md"
+        "ios": "unmnggju",
+        "md": "misulsv0"
       }
     },
     "app-wallets": {
       "bundleIds": {
-        "$": "app-wallets"
+        "$": "smxrw09i"
       }
     },
     "ion-animation-controller": {
       "bundleIds": {
-        "ios": "my-app.ios",
-        "md": "my-app.md"
+        "ios": "skfhavul",
+        "md": "zr58vwhz"
       }
     },
     "ion-app": {
       "bundleIds": {
-        "ios": "my-app.ios",
-        "md": "my-app.md"
+        "ios": "skfhavul",
+        "md": "zr58vwhz"
       }
     },
     "ion-back-button": {
       "bundleIds": {
-        "ios": "ion-back-button.ios",
-        "md": "ion-back-button.md"
+        "ios": "vhd1hp2e",
+        "md": "suddm2vc"
       },
       "encapsulation": "scoped"
     },
     "ion-badge": {
       "bundleIds": {
-        "ios": "ion-badge.ios",
-        "md": "ion-badge.md"
+        "ios": "yuargux6",
+        "md": "d5h90bqr"
       },
       "encapsulation": "shadow"
     },
     "ion-button": {
       "bundleIds": {
-        "ios": "ion-button.ios",
-        "md": "ion-button.md"
+        "ios": "nqposqpe",
+        "md": "vd9mn9dy"
       },
       "encapsulation": "shadow"
     },
     "ion-buttons": {
       "bundleIds": {
-        "ios": "ion-back-button.ios",
-        "md": "ion-back-button.md"
+        "ios": "vhd1hp2e",
+        "md": "suddm2vc"
       },
       "encapsulation": "scoped"
     },
     "ion-col": {
       "bundleIds": {
-        "ios": "ion-col.ios",
-        "md": "ion-col.md"
+        "ios": "gtcblzit",
+        "md": "qiccsgic"
       },
       "encapsulation": "shadow"
     },
     "ion-content": {
       "bundleIds": {
-        "ios": "ion-back-button.ios",
-        "md": "ion-back-button.md"
+        "ios": "vhd1hp2e",
+        "md": "suddm2vc"
       },
       "encapsulation": "shadow"
     },
     "ion-footer": {
       "bundleIds": {
-        "ios": "my-app.ios",
-        "md": "my-app.md"
+        "ios": "skfhavul",
+        "md": "zr58vwhz"
       }
     },
     "ion-grid": {
       "bundleIds": {
-        "ios": "ion-col.ios",
-        "md": "ion-col.md"
+        "ios": "gtcblzit",
+        "md": "qiccsgic"
       },
       "encapsulation": "shadow"
     },
     "ion-header": {
       "bundleIds": {
-        "ios": "ion-back-button.ios",
-        "md": "ion-back-button.md"
+        "ios": "vhd1hp2e",
+        "md": "suddm2vc"
       }
     },
     "ion-icon": {
       "bundleIds": {
-        "$": "ion-icon"
+        "$": "hiit7yyf"
       },
       "encapsulation": "shadow"
     },
     "ion-input": {
       "bundleIds": {
-        "ios": "app-balanceitem.ios",
-        "md": "app-balanceitem.md"
+        "ios": "n0qp22jq",
+        "md": "klq0al2b"
       },
       "encapsulation": "shadow"
     },
     "ion-item": {
       "bundleIds": {
-        "ios": "ion-col.ios",
-        "md": "ion-col.md"
+        "ios": "gtcblzit",
+        "md": "qiccsgic"
       },
       "encapsulation": "shadow"
     },
     "ion-item-divider": {
       "bundleIds": {
-        "ios": "app-balanceitem.ios",
-        "md": "app-balanceitem.md"
+        "ios": "n0qp22jq",
+        "md": "klq0al2b"
       },
       "encapsulation": "shadow"
     },
     "ion-label": {
       "bundleIds": {
-        "ios": "ion-label.ios",
-        "md": "ion-label.md"
+        "ios": "fpox5w6m",
+        "md": "dccf3j8u"
       },
       "encapsulation": "scoped"
     },
     "ion-list": {
       "bundleIds": {
-        "ios": "app-balanceitem.ios",
-        "md": "app-balanceitem.md"
+        "ios": "n0qp22jq",
+        "md": "klq0al2b"
       }
     },
     "ion-list-header": {
       "bundleIds": {
-        "ios": "app-balanceitem.ios",
-        "md": "app-balanceitem.md"
+        "ios": "n0qp22jq",
+        "md": "klq0al2b"
       },
       "encapsulation": "shadow"
     },
     "ion-nav": {
       "bundleIds": {
-        "ios": "my-app.ios",
-        "md": "my-app.md"
+        "ios": "skfhavul",
+        "md": "zr58vwhz"
       },
       "encapsulation": "shadow"
     },
     "ion-nav-pop": {
       "bundleIds": {
-        "ios": "app-balanceitem.ios",
-        "md": "app-balanceitem.md"
+        "ios": "n0qp22jq",
+        "md": "klq0al2b"
       }
     },
     "ion-radio": {
       "bundleIds": {
-        "ios": "app-balanceitem.ios",
-        "md": "app-balanceitem.md"
+        "ios": "n0qp22jq",
+        "md": "klq0al2b"
       },
       "encapsulation": "shadow"
     },
     "ion-ripple-effect": {
       "bundleIds": {
-        "$": "ion-ripple-effect"
+        "$": "2xgvy2yb"
       },
       "encapsulation": "shadow"
     },
     "ion-route": {
       "bundleIds": {
-        "ios": "my-app.ios",
-        "md": "my-app.md"
+        "ios": "skfhavul",
+        "md": "zr58vwhz"
       }
     },
     "ion-router": {
       "bundleIds": {
-        "ios": "my-app.ios",
-        "md": "my-app.md"
+        "ios": "skfhavul",
+        "md": "zr58vwhz"
       }
     },
     "ion-row": {
       "bundleIds": {
-        "ios": "ion-col.ios",
-        "md": "ion-col.md"
+        "ios": "gtcblzit",
+        "md": "qiccsgic"
       },
       "encapsulation": "shadow"
     },
     "ion-searchbar": {
       "bundleIds": {
-        "ios": "app-holdings.ios",
-        "md": "app-holdings.md"
+        "ios": "p0ad9y9w",
+        "md": "au0ap61x"
       },
       "encapsulation": "scoped"
     },
     "ion-segment": {
       "bundleIds": {
-        "ios": "app-balanceitem.ios",
-        "md": "app-balanceitem.md"
+        "ios": "n0qp22jq",
+        "md": "klq0al2b"
       },
       "encapsulation": "scoped"
     },
     "ion-segment-button": {
       "bundleIds": {
-        "ios": "app-balanceitem.ios",
-        "md": "app-balanceitem.md"
+        "ios": "n0qp22jq",
+        "md": "klq0al2b"
       },
       "encapsulation": "shadow"
     },
     "ion-slide": {
       "bundleIds": {
-        "ios": "app-tutorial.ios",
-        "md": "app-tutorial.md"
+        "ios": "unmnggju",
+        "md": "misulsv0"
       }
     },
     "ion-slides": {
       "bundleIds": {
-        "ios": "app-tutorial.ios",
-        "md": "app-tutorial.md"
+        "ios": "unmnggju",
+        "md": "misulsv0"
       }
     },
     "ion-tab": {
       "bundleIds": {
-        "ios": "my-app.ios",
-        "md": "my-app.md"
+        "ios": "skfhavul",
+        "md": "zr58vwhz"
       },
       "encapsulation": "shadow"
     },
     "ion-tabbar": {
       "bundleIds": {
-        "ios": "my-app.ios",
-        "md": "my-app.md"
+        "ios": "skfhavul",
+        "md": "zr58vwhz"
       },
       "encapsulation": "scoped"
     },
     "ion-tabs": {
       "bundleIds": {
-        "ios": "my-app.ios",
-        "md": "my-app.md"
+        "ios": "skfhavul",
+        "md": "zr58vwhz"
       },
       "encapsulation": "shadow"
     },
     "ion-title": {
       "bundleIds": {
-        "ios": "app-balanceitem.ios",
-        "md": "app-balanceitem.md"
+        "ios": "n0qp22jq",
+        "md": "klq0al2b"
       },
       "encapsulation": "shadow"
     },
     "ion-toggle": {
       "bundleIds": {
-        "ios": "app-panic.ios",
-        "md": "app-panic.md"
+        "ios": "ltyqcehu",
+        "md": "ocvmigbb"
       },
       "encapsulation": "shadow"
     },
     "ion-toolbar": {
       "bundleIds": {
-        "ios": "ion-back-button.ios",
-        "md": "ion-back-button.md"
+        "ios": "vhd1hp2e",
+        "md": "suddm2vc"
       },
       "encapsulation": "shadow"
     },
     "my-app": {
       "bundleIds": {
-        "ios": "my-app.ios",
-        "md": "my-app.md"
+        "ios": "skfhavul",
+        "md": "zr58vwhz"
       }
     }
   }

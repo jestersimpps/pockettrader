@@ -1,0 +1,2 @@
+/*! Built with http://stenciljs.com */
+const{h:e}=window.App;import{a as r}from"./chunk-f8b49345.js";import"./chunk-6a7807b8.js";class t{render(){return[`${this.baseCurrency.symbol} ${r(this.btcPrice).format(this.btcPrice<1?"0,0.000000":"0,0.00")}`]}static get is(){return"app-baseprice"}static get properties(){return{baseCurrency:{type:"Any",attr:"base-currency"},btcPrice:{type:Number,attr:"btc-price"}}}static get style(){return""}}export{t as AppBaseprice};

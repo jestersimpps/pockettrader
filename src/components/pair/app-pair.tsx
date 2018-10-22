@@ -101,6 +101,8 @@ export class AppPair {
     return [
       this.ticker && (
         <ion-header>
+          <script type="text/javascript" src="https://s3.tradingview.com/tv.js" />
+
           <ion-toolbar color="dark">
             <ion-buttons slot="start">
               <ion-back-button defaultHref={`/exchanges`} />

@@ -5,7 +5,6 @@ import numeral from 'numeral';
 import { appSetOrders } from '../../actions/app';
 import { TRADESERVICE, TICKERSERVICE } from '../../services/globals';
 import { Exchange } from '../../services/exchange.service';
-import { CURRENCYSERVICE } from '../../services/globals';
 import { Currency } from '../../services/currency.service';
 import { Ticker } from '../../services/ticker.service';
 
@@ -129,13 +128,13 @@ export class AppOrder {
           <ion-item lines="none">
             <ion-label>Open Total</ion-label>
             <ion-label text-right slot="end">
-              {numeral(this.order.openPrice * this.order.amount - this.order.fee).format('0,0.00000000')} {this.order.quote}
+              {this.order.openPrice ? numeral(this.order.openPrice * this.order.amount - this.order.fee).format('0,0.00000000') : '-'}
             </ion-label>
           </ion-item>
           <ion-item lines="none">
             <ion-label>Last Total</ion-label>
             <ion-label text-right slot="end">
-              {numeral(this.order.last * this.order.amount - this.order.fee).format('0,0.00000000')} {this.order.quote}
+              {this.order.last ? numeral(this.order.last * this.order.amount - this.order.fee).format('0,0.00000000') : '-'}
             </ion-label>
           </ion-item>
           {/* <ion-item lines="none">
@@ -154,17 +153,9 @@ export class AppOrder {
               {this.order.status === OrderStatus.cancelled && 'Last/Open total'}
             </ion-label>
             <ion-label text-right slot="end">
-              {this.order.last ? (
-                <app-baseprice
-                  btcPrice={CURRENCYSERVICE.convertToBase(
-                    this.order.last * this.order.amount - this.order.openPrice * this.order.amount - 2 * this.order.fee,
-                    this.baseCurrency,
-                  )}
-                  baseCurrency={this.baseCurrency}
-                />
-              ) : (
-                '-'
-              )}
+              {this.order.last
+                ? numeral(this.order.last * this.order.amount - this.order.openPrice * this.order.amount - 2 * this.order.fee).format('0,0.00000000')
+                : '-'}
             </ion-label>
           </ion-item>
           {this.order.status === OrderStatus.open && (
@@ -173,15 +164,14 @@ export class AppOrder {
               Cancel Order
             </ion-button>
           )}
-          {this.order.status === OrderStatus.filled ||
-            (this.order.status === OrderStatus.cancelled && (
-              <ion-nav-pop>
-                <ion-button color="danger" expand="full" disabled={this.isLoading} onClick={() => this.deleteOrder()}>
-                  {this.isLoading && <ion-icon name="refresh" class="spin" margin-right />}
-                  Delete Order
-                </ion-button>
-              </ion-nav-pop>
-            ))}
+          {this.order.status !== OrderStatus.open && (
+            <ion-nav-pop>
+              <ion-button color="danger" expand="full" disabled={this.isLoading} onClick={() => this.deleteOrder()}>
+                {this.isLoading && <ion-icon name="refresh" class="spin" margin-right />}
+                Delete Order
+              </ion-button>
+            </ion-nav-pop>
+          )}
         </ion-list>
       </ion-content>,
     ];
@@ -195,7 +185,6 @@ export class AppOrder {
         .then(() => {
           window.alert(`Order cancelled`);
           this.order.status = OrderStatus.cancelled;
-          this.order.updatedAt = new Date().getTime() / 1000;
           this.appSetOrders(this.orders);
           this.isLoading = false;
         })
@@ -227,13 +216,10 @@ export class AppOrder {
             let ticker = tickerData.find((t) => t.symbol === currentOrder.pair);
             currentOrder.filled = orderData.filled;
             currentOrder.remaining = orderData.remaining;
-            currentOrder.base = ticker.base;
             currentOrder.last = ticker.last;
-            currentOrder.quote = ticker.quote;
             if (+orderData.remaining === 0) {
               currentOrder.status = OrderStatus.filled;
             }
-            currentOrder.updatedAt = new Date().getTime() / 1000;
             this.isLoading = false;
             this.appSetOrders(this.orders);
           })

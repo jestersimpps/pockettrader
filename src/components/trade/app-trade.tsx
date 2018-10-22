@@ -4,9 +4,19 @@ import { Exchange, ExchangeId } from '../../services/exchange.service';
 import { Ticker } from '../../services/ticker.service';
 import { TICKERSERVICE, BALANCESERVICE, TRADESERVICE } from '../../services/globals';
 import numeral from 'numeral';
-import { appSetOrders } from '../../actions/app';
+import {
+  appSetExchanges,
+  appSetBaseCurrency,
+  appSetCurrencies,
+  appSetTickers,
+  appSetTotalBalances,
+  appSetWallets,
+  appSetBalances,
+  appSetOrders,
+} from '../../actions/app';
 import { Balance } from '../../services/balance.service';
 import { Order, OrderStatus, OrderType } from '../../services/trade.service';
+import { Wallet } from '../../services/wallets.service';
 
 @Component({
   tag: 'app-trade',
@@ -22,6 +32,8 @@ export class AppTrade {
   @State() ticker: any;
   @State() orders: Order[];
   @State() isLoading = false;
+  @State() dust: number;
+  @State() wallets: Wallet[];
 
   @State() tradePrice = 0;
   @State() tradeAmount = 0;
@@ -32,11 +44,19 @@ export class AppTrade {
   @State() selectedExchange: ExchangeId;
 
   appSetOrders: Action;
+  appSetCurrencies: Action;
+  appSetExchanges: Action;
+  appSetBaseCurrency: Action;
+  appSetConversionRates: Action;
+  appSetTickers: Action;
+  appSetTotalBalances: Action;
+  appSetWallets: Action;
+  appSetBalances: Action;
 
   componentWillLoad() {
     this.store.mapStateToProps(this, (state) => {
       const {
-        app: { exchanges, baseCurrency, currencies, tickers, wallets, orders },
+        app: { exchanges, baseCurrency, currencies, tickers, dust, wallets, orders },
       } = state;
       return {
         exchanges,
@@ -45,9 +65,17 @@ export class AppTrade {
         tickers,
         wallets,
         orders,
+        dust,
       };
     });
     this.store.mapDispatchToProps(this, {
+      appSetExchanges,
+      appSetBaseCurrency,
+      appSetCurrencies,
+      appSetTickers,
+      appSetTotalBalances,
+      appSetWallets,
+      appSetBalances,
       appSetOrders,
     });
     if (this.tickers.length) {
@@ -229,6 +257,36 @@ export class AppTrade {
     return BALANCESERVICE.getBtcStats(balance, tickers).symbol;
   }
 
+  refreshBalances() {
+    this.isLoading = true;
+    BALANCESERVICE.refreshBalances(this.wallets, this.exchanges, this.orders, this.dust).then((response) => {
+      if (response) {
+        this.appSetCurrencies(response.conversionrates);
+        this.appSetTickers(response.tickers);
+        this.appSetWallets(response.wallets);
+        this.appSetExchanges(response.exchanges);
+        this.addTotalBalance(response.exchangeTotal + response.walletTotal);
+        this.appSetBalances({
+          overview: response.exchangeTotal + response.walletTotal,
+          exchanges: response.exchangeTotal,
+          wallets: response.walletTotal,
+        });
+        this.appSetOrders(response.orders);
+      }
+      this.isLoading = false;
+    });
+  }
+
+  addTotalBalance(totalBtcBalance: number) {
+    BALANCESERVICE.getTotalBalancesFromStorage().then((totalBalances) => {
+      if (totalBtcBalance && totalBtcBalance > 0) {
+        let now = Math.round(new Date().getTime());
+        BALANCESERVICE.setTotalBalances([...totalBalances, [now, totalBtcBalance]]);
+        this.appSetTotalBalances([...totalBalances, [now, totalBtcBalance]]);
+      }
+    });
+  }
+
   render() {
     return [
       <ion-header>
@@ -245,6 +303,11 @@ export class AppTrade {
             </ion-button>
           </ion-buttons>
           <ion-title text-center>Trade</ion-title>
+          <ion-buttons slot="end">
+            <ion-button icon-only disabled={this.isLoading} onClick={() => this.refreshBalances()} padding>
+              <ion-icon name="refresh" class={this.isLoading ? 'spin' : ''} />
+            </ion-button>
+          </ion-buttons>
         </ion-toolbar>
         {this.ticker && [
           <ion-segment color="dark" onIonChange={(e) => (this.step = +e.detail.value)}>
@@ -564,32 +627,37 @@ export class AppTrade {
         },
       })
         .then((response) => {
-          window.alert(`Placed order:\n
+          if (response.data.id) {
+            window.alert(`Placed order:\n
                       Pair: ${pair}\n
                       Type: ${type}\n
                       Price: ${numeral(price).format(this.getPriceFormat())}\n
                       amount:${numeral(amount).format(this.getAmountFormat())}`);
-          let newOrder = {
-            exchangeId: exchange.id,
-            pair: pair,
-            type: type,
-            status: OrderStatus.open,
-            orderId: response.data.id,
-            openPrice: numeral(price).format(this.getPriceFormat()),
-            last: numeral(this.ticker.last).format(this.getPriceFormat()),
-            closePrice: 0,
-            filled: 0,
-            remaining: 0,
-            amount: numeral(amount).format(this.getAmountFormat()),
-            fee:
-              this.tradeAction === OrderType.LIMITBUY || this.tradeAction === OrderType.LIMITSELL
-                ? numeral(+this.ticker.info.maker * +this.tradeAmount * +this.tradePrice).format(this.getPriceFormat())
-                : numeral(+this.ticker.info.taker * +this.tradeAmount * +this.tradePrice).format(this.getPriceFormat()),
-            createdAt: new Date().getTime() / 1000,
-            updatedAt: new Date().getTime() / 1000,
-          };
-          this.appSetOrders([...this.orders, newOrder]);
-          this.isLoading = false;
+            let newOrder = {
+              exchangeId: exchange.id,
+              pair: pair,
+              type: type,
+              status: OrderStatus.open,
+              orderId: response.data.id,
+              openPrice: numeral(price).format(this.getPriceFormat()),
+              last: numeral(this.ticker.last).format(this.getPriceFormat()),
+              closePrice: 0,
+              filled: 0,
+              remaining: 0,
+              amount: numeral(amount).format(this.getAmountFormat()),
+              fee:
+                this.tradeAction === OrderType.LIMITBUY || this.tradeAction === OrderType.LIMITSELL
+                  ? numeral(+this.ticker.info.maker * +this.tradeAmount * +this.tradePrice).format(this.getPriceFormat())
+                  : numeral(+this.ticker.info.taker * +this.tradeAmount * +this.tradePrice).format(this.getPriceFormat()),
+              createdAt: new Date().getTime() / 1000,
+              updatedAt: new Date().getTime() / 1000,
+            };
+            this.appSetOrders([...this.orders, newOrder]);
+            this.isLoading = false;
+          } else {
+            this.isLoading = false;
+            window.alert(`Something went wrong while executing the order.`);
+          }
         })
         .catch((error) => {
           this.isLoading = false;

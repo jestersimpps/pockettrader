@@ -1,7 +1,7 @@
 /*! Built with http://stenciljs.com */
 const { h } = window.App;
 
-import { f as pointerCoord } from './chunk-63df273d.js';
+import { i as pointerCoord } from './chunk-cb94efc7.js';
 
 const RELOCATED_KEY = '$ionRelocated';
 function relocateInput(componentEl, inputEl, shouldRelocate, inputRelativeY = 0) {
@@ -10,21 +10,10 @@ function relocateInput(componentEl, inputEl, shouldRelocate, inputRelativeY = 0)
     }
     console.debug(`native-input, hideCaret, shouldHideCaret: ${shouldRelocate}, input value: ${inputEl.value}`);
     if (shouldRelocate) {
-        // this allows for the actual input to receive the focus from
-        // the user's touch event, but before it receives focus, it
-        // moves the actual input to a location that will not screw
-        // up the app's layout, and does not allow the native browser
-        // to attempt to scroll the input into place (messing up headers/footers)
-        // the cloned input fills the area of where native input should be
-        // while the native input fakes out the browser by relocating itself
-        // before it receives the actual focus event
-        // We hide the focused input (with the visible caret) invisiable by making it scale(0),
         cloneInputComponent(componentEl, inputEl);
         const doc = componentEl.ownerDocument;
         const tx = doc.dir === 'rtl' ? 9999 : -9999;
         inputEl.style.transform = `translate3d(${tx}px,${inputRelativeY}px,0)`;
-        // TODO
-        // inputEle.style.opacity = '0';
     }
     else {
         removeClone(componentEl, inputEl);
@@ -36,32 +25,21 @@ function isFocused(input) {
 }
 function removeClone(componentEl, inputEl) {
     if (componentEl && componentEl.parentElement) {
-        const clonedInputEles = componentEl.parentElement.querySelectorAll('.cloned-input');
-        for (let i = 0; i < clonedInputEles.length; i++) {
-            clonedInputEles[i].remove();
-        }
+        Array.from(componentEl.parentElement.querySelectorAll('.cloned-input'))
+            .forEach(clon => clon.remove());
         componentEl.style.pointerEvents = '';
     }
     inputEl.style['transform'] = '';
     inputEl.style.opacity = '';
 }
 function cloneInputComponent(componentEl, inputEl) {
-    // Make sure we kill all the clones before creating new ones
-    // It is a defensive, removeClone() should do nothing
-    // removeClone(plt, srcComponentEle, srcNativeInputEle);
-    // given a native <input> or <textarea> element
-    // find its parent wrapping component like <ion-input> or <ion-textarea>
-    // then clone the entire component
     const parentElement = componentEl.parentElement;
     const doc = componentEl.ownerDocument;
     if (componentEl && parentElement) {
-        // DOM READ
         const srcTop = componentEl.offsetTop;
         const srcLeft = componentEl.offsetLeft;
         const srcWidth = componentEl.offsetWidth;
         const srcHeight = componentEl.offsetHeight;
-        // DOM WRITE
-        // not using deep clone so we don't pull in unnecessary nodes
         const clonedComponentEle = doc.createElement('div');
         const clonedStyle = clonedComponentEle.style;
         clonedComponentEle.classList.add(...Array.from(componentEl.classList));
@@ -92,7 +70,6 @@ function enableHideCaretOnScroll(componentEl, inputEl, scrollEl) {
     }
     console.debug('Input: enableHideCaretOnScroll');
     const scrollHideCaret = (shouldHideCaret) => {
-        // console.log('scrollHideCaret', shouldHideCaret)
         if (isFocused(inputEl)) {
             relocateInput(componentEl, inputEl, shouldHideCaret);
         }
@@ -100,8 +77,8 @@ function enableHideCaretOnScroll(componentEl, inputEl, scrollEl) {
     const onBlur = () => relocateInput(componentEl, inputEl, false);
     const hideCaret = () => scrollHideCaret(true);
     const showCaret = () => scrollHideCaret(false);
-    scrollEl && scrollEl.addEventListener('ionScrollStart', hideCaret);
-    scrollEl && scrollEl.addEventListener('ionScrollEnd', showCaret);
+    scrollEl.addEventListener('ionScrollStart', hideCaret);
+    scrollEl.addEventListener('ionScrollEnd', showCaret);
     inputEl.addEventListener('blur', onBlur);
     return () => {
         scrollEl.removeEventListener('ionScrollStart', hideCaret);
@@ -110,7 +87,7 @@ function enableHideCaretOnScroll(componentEl, inputEl, scrollEl) {
     };
 }
 
-const SKIP_BLURRING = ['INPUT', 'TEXTAREA', 'ION-INPUT', 'ION-TEXTAREA'];
+const SKIP_SELECTOR = 'input, textarea, [no-blur]';
 function enableInputBlurring(doc) {
     console.debug('Input: enableInputBlurring');
     let focused = true;
@@ -122,7 +99,6 @@ function enableInputBlurring(doc) {
         focused = true;
     }
     function onTouchend(ev) {
-        // if app did scroll return early
         if (didScroll) {
             didScroll = false;
             return;
@@ -131,24 +107,20 @@ function enableInputBlurring(doc) {
         if (!active) {
             return;
         }
-        // only blur if the active element is a text-input or a textarea
-        if (SKIP_BLURRING.indexOf(active.tagName) === -1) {
+        if (active.matches(SKIP_SELECTOR)) {
             return;
         }
-        // if the selected target is the active element, do not blur
         const tapped = ev.target;
         if (tapped === active) {
             return;
         }
-        if (SKIP_BLURRING.indexOf(tapped.tagName) >= 0) {
+        if (tapped.matches(SKIP_SELECTOR) || tapped.closest(SKIP_SELECTOR)) {
             return;
         }
-        // skip if div is a cover
         if (tapped.classList.contains('input-cover')) {
             return;
         }
         focused = false;
-        // TODO: find a better way, why 50ms?
         setTimeout(() => {
             if (!focused) {
                 active.blur();
@@ -167,31 +139,18 @@ function enableInputBlurring(doc) {
 
 const SCROLL_ASSIST_SPEED = 0.3;
 function getScrollData(componentEl, contentEl, keyboardHeight) {
-    if (!contentEl) {
-        return {
-            scrollAmount: 0,
-            scrollPadding: 0,
-            scrollDuration: 0,
-            inputSafeY: 0,
-        };
-    }
     const itemEl = componentEl.closest('ion-item,[ion-item]') || componentEl;
     return calcScrollData(itemEl.getBoundingClientRect(), contentEl.getBoundingClientRect(), keyboardHeight, window.innerHeight);
 }
 function calcScrollData(inputRect, contentRect, keyboardHeight, plaformHeight) {
-    // compute input's Y values relative to the body
     const inputTop = inputRect.top;
     const inputBottom = inputRect.bottom;
-    // compute visible area
     const visibleAreaTop = contentRect.top;
     const visibleAreaBottom = Math.min(contentRect.bottom, plaformHeight - keyboardHeight);
-    // compute safe area
     const safeAreaTop = visibleAreaTop + 10;
     const safeAreaBottom = visibleAreaBottom / 2.0;
-    // figure out if each edge of teh input is within the safe area
     const distanceToBottom = safeAreaBottom - inputBottom;
     const distanceToTop = safeAreaTop - inputTop;
-    // The scrollAmount is the negated distance to the safe area.
     const scrollAmount = Math.round((distanceToBottom < 0)
         ? -distanceToBottom
         : (distanceToTop > 0)
@@ -215,19 +174,14 @@ function enableScrollAssist(componentEl, inputEl, contentEl, keyboardHeight) {
         console.debug(`input-base, pointerStart, type: ${ev.type}`);
     };
     const touchEnd = (ev) => {
-        // input cover touchend/mouseup
         console.debug(`input-base, pointerEnd, type: ${ev.type}`);
         if (!coord) {
             return;
         }
-        // get where the touchend/mouseup ended
         const endCoord = pointerCoord(ev);
-        // focus this input if the pointer hasn't moved XX pixels
-        // and the input doesn't already have focus
         if (!hasPointerMoved(6, coord, endCoord) && !isFocused(inputEl)) {
             ev.preventDefault();
             ev.stopPropagation();
-            // begin the input focus process
             jsSetFocus(componentEl, inputEl, contentEl, keyboardHeight);
         }
     };
@@ -241,22 +195,13 @@ function enableScrollAssist(componentEl, inputEl, contentEl, keyboardHeight) {
 function jsSetFocus(componentEl, inputEl, contentEl, keyboardHeight) {
     const scrollData = getScrollData(componentEl, contentEl, keyboardHeight);
     if (Math.abs(scrollData.scrollAmount) < 4) {
-        // the text input is in a safe position that doesn't
-        // require it to be scrolled into view, just set focus now
         inputEl.focus();
         return;
     }
-    // temporarily move the focus to the focus holder so the browser
-    // doesn't freak out while it's trying to get the input in place
-    // at this point the native text input still does not have focus
     relocateInput(componentEl, inputEl, true, scrollData.inputSafeY);
     inputEl.focus();
-    // scroll the input into place
-    contentEl.scrollByPoint(0, scrollData.scrollAmount, scrollData.scrollDuration, () => {
-        // the scroll view is in the correct position now
-        // give the native text input focus
+    contentEl.scrollByPoint(0, scrollData.scrollAmount, scrollData.scrollDuration).then(() => {
         relocateInput(componentEl, inputEl, false, scrollData.inputSafeY);
-        // ensure this is the focused input
         inputEl.focus();
     });
 }
@@ -293,8 +238,8 @@ function setScrollPadding(input, keyboardHeight) {
     if (input.parentElement && input.parentElement.tagName === 'ION-INPUT') {
         return;
     }
-    const el = input.closest('.scroll-inner');
-    if (!el) {
+    const el = input.closest('ion-content');
+    if (el === null) {
         return;
     }
     const timer = el[PADDING_TIMER_KEY];
@@ -302,11 +247,11 @@ function setScrollPadding(input, keyboardHeight) {
         clearTimeout(timer);
     }
     if (keyboardHeight > 0) {
-        el.style.paddingBottom = keyboardHeight + 'px';
+        el.style.setProperty('--keyboard-offset', `${keyboardHeight}px`);
     }
     else {
         el[PADDING_TIMER_KEY] = setTimeout(() => {
-            el.style.paddingBottom = '';
+            el.style.setProperty('--keyboard-offset', '0px');
         }, 120);
     }
 }
@@ -322,30 +267,33 @@ function startInputShims(doc, config) {
     const hideCaretMap = new WeakMap();
     const scrollAssistMap = new WeakMap();
     function registerInput(componentEl) {
-        const inputEl = componentEl.querySelector('input');
-        const scrollEl = componentEl.closest('ion-scroll');
-        const contentEl = componentEl.closest('ion-content');
+        const inputEl = (componentEl.shadowRoot || componentEl).querySelector('input');
+        const scrollEl = componentEl.closest('ion-content');
         if (!inputEl) {
             return;
         }
-        if (scrollEl && hideCaret && !hideCaretMap.has(componentEl)) {
+        if (!!scrollEl && hideCaret && !hideCaretMap.has(componentEl)) {
             const rmFn = enableHideCaretOnScroll(componentEl, inputEl, scrollEl);
             hideCaretMap.set(componentEl, rmFn);
         }
-        if (contentEl && scrollAssist && !scrollAssistMap.has(componentEl)) {
-            const rmFn = enableScrollAssist(componentEl, inputEl, contentEl, keyboardHeight);
+        if (!!scrollEl && scrollAssist && !scrollAssistMap.has(componentEl)) {
+            const rmFn = enableScrollAssist(componentEl, inputEl, scrollEl, keyboardHeight);
             scrollAssistMap.set(componentEl, rmFn);
         }
     }
     function unregisterInput(componentEl) {
         if (hideCaret) {
             const fn = hideCaretMap.get(componentEl);
-            fn && fn();
+            if (fn) {
+                fn();
+            }
             hideCaretMap.delete(componentEl);
         }
         if (scrollAssist) {
             const fn = scrollAssistMap.get(componentEl);
-            fn && fn();
+            if (fn) {
+                fn();
+            }
             scrollAssistMap.delete(componentEl);
         }
     }
@@ -355,17 +303,14 @@ function startInputShims(doc, config) {
     if (scrollPadding && SCROLL_PADDING) {
         enableScrollPadding(doc, keyboardHeight);
     }
-    // Input might be already loaded in the DOM before ion-device-hacks did.
-    // At this point we need to look for all the ion-inputs not registered yet
-    // and register them.
     const inputs = Array.from(doc.querySelectorAll('ion-input'));
     for (const input of inputs) {
         registerInput(input);
     }
-    doc.body.addEventListener('ionInputDidLoad', (event) => {
+    doc.body.addEventListener('ionInputDidLoad', event => {
         registerInput(event.target);
     });
-    doc.body.addEventListener('ionInputDidUnload', (event) => {
+    doc.body.addEventListener('ionInputDidUnload', event => {
         unregisterInput(event.target);
     });
 }

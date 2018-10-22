@@ -74,10 +74,13 @@ export class AppOrders {
   reloadOrders() {
     this.isLoading = true;
     let openOrderPromises = [];
-    this.orders.filter((o) => o.status === OrderStatus.open).forEach((order) => {
-      let exchange = this.exchanges.find((e) => e.id === order.exchangeId);
-      openOrderPromises.push(TRADESERVICE.getOrder(exchange, order.orderId, order.pair));
-    });
+    this.orders
+      .filter((o) => o.orderId)
+      .filter((o) => o.status === OrderStatus.open)
+      .forEach((order) => {
+        let exchange = this.exchanges.find((e) => e.id === order.exchangeId);
+        openOrderPromises.push(TRADESERVICE.getOrder(exchange, order.orderId, order.pair));
+      });
     Promise.all(openOrderPromises)
       .then((openOrderData) => {
         openOrderData.map((od) => od.data).forEach((order) => {
@@ -288,7 +291,7 @@ export class AppOrders {
                         <small>{moment.unix(order.updatedAt).fromNow()}</small>
                       </ion-col>
                       <ion-col col-4 text-center class="lineText">
-                        {numeral(order.openPrice).format('0,0.00000000')}
+                        {numeral(order.last).format('0,0.00000000')}
                       </ion-col>
                       <ion-col col-4 text-right class="lineText">
                         <b style={{ color: (order.last * 100) / order.openPrice - 100 > 0 ? '#10dc60' : '#f53d3d' }}>

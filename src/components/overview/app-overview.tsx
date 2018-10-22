@@ -150,7 +150,7 @@ export class AppOverview {
         {!this.isLoading ? (
           this.showTutorial ? (
             [
-              <div padding>
+              <div>
                 <p>Welcome to Pocket Trader!</p>
                 <ion-button expand="block" color="light" href="/settings/tutorial">
                   View tutorial

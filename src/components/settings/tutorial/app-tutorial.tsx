@@ -12,7 +12,7 @@ export class AppTutorial {
           <ion-slide>
             <div class="slide-content">
               <img src="/assets/tutorial/welcome-img.png" class="slide-image top-image" />
-              <h2 class="slide-title">What is Pockettrader? </h2>
+              <h2 class="slide-title">What is PocketTrader? </h2>
               <p>
                 Pocket Trader is a crypto portfolio manager that allows you to <b>track and trade</b> your cryptos on the go.
                 <br />

@@ -9,7 +9,6 @@
 // mode: 'md'
 //});
 declare let Context: any;
-
 import { highcharts, highstock } from './highcharts';
 import { moment } from './moment';
 Context.highcharts = highcharts;

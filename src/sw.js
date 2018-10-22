@@ -1,4 +1,4 @@
-importScripts('workbox-v3.2.0/workbox-sw.js')
+importScripts('workbox-v3.4.1/workbox-sw.js')
 
 self.workbox.skipWaiting();
 self.workbox.clientsClaim();
@@ -13,7 +13,7 @@ self.addEventListener('push', (event) => {
   const title = 'Push Notification';
   const options = {
     body: `${event.data.text()}`,
-    icon: 'images/icon.png',
+    icon: 'images/pt.png',
     badge: 'images/badge.png'
   };
 
@@ -21,3 +21,4 @@ self.addEventListener('push', (event) => {
 });
 
 self.workbox.precaching.precacheAndRoute([]);
+

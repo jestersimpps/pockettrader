@@ -397,8 +397,8 @@
     (e[g].labelrank=r(e.labelrank,e.shapeArgs&&e.shapeArgs.height),a.push(e[g]));});});});this.hideOverlappingLabels(a);});C.prototype.hideOverlappingLabels=function(a){var e=a.length,g,r,l,u,c,d,k,x,p,f=function(a,c,d,e,f,g,k,l){return !(f>a+d||f+k<a||g>c+e||g+l<c)};for(r=0;r<e;r++)if(g=a[r])g.oldOpacity=g.opacity,g.newOpacity=1,g.width||(l=g.getBBox(),g.width=l.width,g.height=l.height);a.sort(function(a,c){return (c.labelrank||0)-(a.labelrank||0)});for(r=0;r<e;r++)for(l=a[r],g=r+1;g<e;++g)if(u=a[g],l&&u&&
     l!==u&&l.placed&&u.placed&&0!==l.newOpacity&&0!==u.newOpacity&&(c=l.alignAttr,d=u.alignAttr,k=l.parentGroup,x=u.parentGroup,p=2*(l.box?0:l.padding||0),c=f(c.x+k.translateX,c.y+k.translateY,l.width-p,l.height-p,d.x+x.translateX,d.y+x.translateY,u.width-p,u.height-p)))(l.labelrank<u.labelrank?l:u).newOpacity=0;F(a,function(a){var b,c;a&&(c=a.newOpacity,a.oldOpacity!==c&&a.placed&&(c?a.show(!0):b=function(){a.hide();},a.alignAttr.opacity=c,a[a.isOld?"animate":"attr"](a.alignAttr,null,b)),a.isOld=!0);});};})(K);
     (function(a){var C=a.addEvent,F=a.Chart,D=a.createElement,r=a.css,g=a.defaultOptions,e=a.defaultPlotOptions,t=a.each,w=a.extend,l=a.fireEvent,u=a.hasTouch,c=a.inArray,d=a.isObject,k=a.Legend,x=a.merge,p=a.pick,f=a.Point,b=a.Series,n=a.seriesTypes,z=a.svg,J;J=a.TrackerMixin={drawTrackerPoint:function(){var a=this,b=a.chart.pointer,c=function(a){var c=b.getPointFromEvent(a);void 0!==c&&(b.isDirectTouch=!0,c.onMouseOver(a));};t(a.points,function(a){a.graphic&&(a.graphic.element.point=a);a.dataLabel&&
-    (a.dataLabel.div?a.dataLabel.div.point=a:a.dataLabel.element.point=a);});a._hasTracking||(t(a.trackerGroups,function(d){if(a[d]){a[d].addClass("highcharts-tracker").on("mouseover",c).on("mouseout",function(a){b.onTrackerMouseOut(a);});if(u)a[d].on("touchstart",c);a.options.cursor&&a[d].css(r).css({cursor:a.options.cursor});}}),a._hasTracking=!0);l(this,"afterDrawTracker");},drawTrackerGraph:function(){var a=this,b=a.options,c=b.trackByArea,d=[].concat(c?a.areaPath:a.graphPath),f=a.chart,g=
-    f.pointer,k=f.renderer,p=f.options.tooltip.snap,h=a.tracker,r=function(){if(f.hoverSeries!==a)a.onMouseOver();},w="rgba(192,192,192,"+(z?.0001:.002)+")";h?h.attr({d:d}):a.graph&&(a.tracker=k.path(d).attr({"stroke-linejoin":"round",visibility:a.visible?"visible":"hidden",stroke:w,fill:c?w:"none","stroke-width":a.graph.strokeWidth()+(c?0:2*p),zIndex:2}).add(a.group),t([a.tracker,
+    (a.dataLabel.div?a.dataLabel.div.point=a:a.dataLabel.element.point=a);});a._hasTracking||(t(a.trackerGroups,function(d){if(a[d]){a[d].addClass("highcharts-tracker").on("mouseover",c).on("mouseout",function(a){b.onTrackerMouseOut(a);});if(u)a[d].on("touchstart",c);a.options.cursor&&a[d].css(r).css({cursor:a.options.cursor});}}),a._hasTracking=!0);l(this,"afterDrawTracker");},drawTrackerGraph:function(){var a=this,b=a.options,c=b.trackByArea,d=[].concat(c?a.areaPath:a.graphPath),e=d.length,f=a.chart,g=
+    f.pointer,k=f.renderer,p=f.options.tooltip.snap,h=a.tracker,n,r=function(){if(f.hoverSeries!==a)a.onMouseOver();},w="rgba(192,192,192,"+(z?.0001:.002)+")";if(e&&!c)for(n=e+1;n--;)"M"===d[n]&&d.splice(n+1,0,d[n+1]-p,d[n+2],"L"),(n&&"M"===d[n]||n===e)&&d.splice(n,0,"L",d[n-2]+p,d[n-1]);h?h.attr({d:d}):a.graph&&(a.tracker=k.path(d).attr({"stroke-linejoin":"round",visibility:a.visible?"visible":"hidden",stroke:w,fill:c?w:"none","stroke-width":a.graph.strokeWidth()+(c?0:2*p),zIndex:2}).add(a.group),t([a.tracker,
     a.markerGroup],function(a){a.addClass("highcharts-tracker").on("mouseover",r).on("mouseout",function(a){g.onTrackerMouseOut(a);});b.cursor&&a.css({cursor:b.cursor});if(u)a.on("touchstart",r);}));l(this,"afterDrawTracker");}};n.column&&(n.column.prototype.drawTracker=J.drawTrackerPoint);n.pie&&(n.pie.prototype.drawTracker=J.drawTrackerPoint);n.scatter&&(n.scatter.prototype.drawTracker=J.drawTrackerPoint);w(k.prototype,{setItemEvents:function(a,b,c){var d=this,e=d.chart.renderer.boxWrapper,g="highcharts-legend-"+
     (a instanceof f?"point":"series")+"-active";(c?b:a.legendGroup).on("mouseover",function(){a.setState("hover");e.addClass(g);b.css(d.options.itemHoverStyle);}).on("mouseout",function(){b.css(x(a.visible?d.itemStyle:d.itemHiddenStyle));e.removeClass(g);a.setState();}).on("click",function(b){var c=function(){a.setVisible&&a.setVisible();};e.removeClass(g);b={browserEvent:b};a.firePointEvent?a.firePointEvent("legendItemClick",b,c):l(a,"legendItemClick",b,c);});},createCheckboxForItem:function(a){a.checkbox=
     D("input",{type:"checkbox",checked:a.selected,defaultChecked:a.selected},this.options.itemCheckboxStyle,this.chart.container);C(a.checkbox,"click",function(b){l(a.series||a,"checkboxClick",{checked:b.target.checked,item:a},function(){a.select();});});}});g.legend.itemStyle.cursor="pointer";w(F.prototype,{showResetZoom:function(){function a(){b.zoomOut();}var b=this,c=g.lang,d=b.options.chart.resetZoomButton,e=d.theme,f=e.states,k="chart"===d.relativeTo?null:"plotBox";l(this,"beforeShowResetZoom",null,
@@ -807,8 +807,8 @@
     (g[m].labelrank=p(g.labelrank,g.shapeArgs&&g.shapeArgs.height),a.push(g[m]));});});});this.hideOverlappingLabels(a);});B.prototype.hideOverlappingLabels=function(a){var g=a.length,m,p,u,y,l,b,e,t,n,f=function(a,b,e,f,g,l,q,n){return !(g>a+e||g+q<a||l>b+f||l+n<b)};for(p=0;p<g;p++)if(m=a[p])m.oldOpacity=m.opacity,m.newOpacity=1,m.width||(u=m.getBBox(),m.width=u.width,m.height=u.height);a.sort(function(a,b){return (b.labelrank||0)-(a.labelrank||0)});for(p=0;p<g;p++)for(u=a[p],m=p+1;m<g;++m)if(y=a[m],u&&y&&
     u!==y&&u.placed&&y.placed&&0!==u.newOpacity&&0!==y.newOpacity&&(l=u.alignAttr,b=y.alignAttr,e=u.parentGroup,t=y.parentGroup,n=2*(u.box?0:u.padding||0),l=f(l.x+e.translateX,l.y+e.translateY,u.width-n,u.height-n,b.x+t.translateX,b.y+t.translateY,y.width-n,y.height-n)))(u.labelrank<y.labelrank?u:y).newOpacity=0;C(a,function(a){var b,c;a&&(c=a.newOpacity,a.oldOpacity!==c&&a.placed&&(c?a.show(!0):b=function(){a.hide();},a.alignAttr.opacity=c,a[a.isOld?"animate":"attr"](a.alignAttr,null,b)),a.isOld=!0);});};})(L);
     (function(a){var B=a.addEvent,C=a.Chart,G=a.createElement,p=a.css,m=a.defaultOptions,g=a.defaultPlotOptions,v=a.each,z=a.extend,u=a.fireEvent,y=a.hasTouch,l=a.inArray,b=a.isObject,e=a.Legend,t=a.merge,n=a.pick,f=a.Point,c=a.Series,h=a.seriesTypes,w=a.svg,D;D=a.TrackerMixin={drawTrackerPoint:function(){var a=this,b=a.chart.pointer,c=function(a){var c=b.getPointFromEvent(a);void 0!==c&&(b.isDirectTouch=!0,c.onMouseOver(a));};v(a.points,function(a){a.graphic&&(a.graphic.element.point=a);a.dataLabel&&
-    (a.dataLabel.div?a.dataLabel.div.point=a:a.dataLabel.element.point=a);});a._hasTracking||(v(a.trackerGroups,function(e){if(a[e]){a[e].addClass("highcharts-tracker").on("mouseover",c).on("mouseout",function(a){b.onTrackerMouseOut(a);});if(y)a[e].on("touchstart",c);a.options.cursor&&a[e].css(p).css({cursor:a.options.cursor});}}),a._hasTracking=!0);u(this,"afterDrawTracker");},drawTrackerGraph:function(){var a=this,b=a.options,c=b.trackByArea,e=[].concat(c?a.areaPath:a.graphPath),h=a.chart,d=
-    h.pointer,g=h.renderer,l=h.options.tooltip.snap,k=a.tracker,m=function(){if(h.hoverSeries!==a)a.onMouseOver();},t="rgba(192,192,192,"+(w?.0001:.002)+")";k?k.attr({d:e}):a.graph&&(a.tracker=g.path(e).attr({"stroke-linejoin":"round",visibility:a.visible?"visible":"hidden",stroke:t,fill:c?t:"none","stroke-width":a.graph.strokeWidth()+(c?0:2*l),zIndex:2}).add(a.group),v([a.tracker,
+    (a.dataLabel.div?a.dataLabel.div.point=a:a.dataLabel.element.point=a);});a._hasTracking||(v(a.trackerGroups,function(e){if(a[e]){a[e].addClass("highcharts-tracker").on("mouseover",c).on("mouseout",function(a){b.onTrackerMouseOut(a);});if(y)a[e].on("touchstart",c);a.options.cursor&&a[e].css(p).css({cursor:a.options.cursor});}}),a._hasTracking=!0);u(this,"afterDrawTracker");},drawTrackerGraph:function(){var a=this,b=a.options,c=b.trackByArea,e=[].concat(c?a.areaPath:a.graphPath),f=e.length,h=a.chart,d=
+    h.pointer,g=h.renderer,l=h.options.tooltip.snap,k=a.tracker,n,m=function(){if(h.hoverSeries!==a)a.onMouseOver();},t="rgba(192,192,192,"+(w?.0001:.002)+")";if(f&&!c)for(n=f+1;n--;)"M"===e[n]&&e.splice(n+1,0,e[n+1]-l,e[n+2],"L"),(n&&"M"===e[n]||n===f)&&e.splice(n,0,"L",e[n-2]+l,e[n-1]);k?k.attr({d:e}):a.graph&&(a.tracker=g.path(e).attr({"stroke-linejoin":"round",visibility:a.visible?"visible":"hidden",stroke:t,fill:c?t:"none","stroke-width":a.graph.strokeWidth()+(c?0:2*l),zIndex:2}).add(a.group),v([a.tracker,
     a.markerGroup],function(a){a.addClass("highcharts-tracker").on("mouseover",m).on("mouseout",function(a){d.onTrackerMouseOut(a);});b.cursor&&a.css({cursor:b.cursor});if(y)a.on("touchstart",m);}));u(this,"afterDrawTracker");}};h.column&&(h.column.prototype.drawTracker=D.drawTrackerPoint);h.pie&&(h.pie.prototype.drawTracker=D.drawTrackerPoint);h.scatter&&(h.scatter.prototype.drawTracker=D.drawTrackerPoint);z(e.prototype,{setItemEvents:function(a,b,c){var e=this,h=e.chart.renderer.boxWrapper,g="highcharts-legend-"+
     (a instanceof f?"point":"series")+"-active";(c?b:a.legendGroup).on("mouseover",function(){a.setState("hover");h.addClass(g);b.css(e.options.itemHoverStyle);}).on("mouseout",function(){b.css(t(a.visible?e.itemStyle:e.itemHiddenStyle));h.removeClass(g);a.setState();}).on("click",function(b){var d=function(){a.setVisible&&a.setVisible();};h.removeClass(g);b={browserEvent:b};a.firePointEvent?a.firePointEvent("legendItemClick",b,d):u(a,"legendItemClick",b,d);});},createCheckboxForItem:function(a){a.checkbox=
     G("input",{type:"checkbox",checked:a.selected,defaultChecked:a.selected},this.options.itemCheckboxStyle,this.chart.container);B(a.checkbox,"click",function(b){u(a.series||a,"checkboxClick",{checked:b.target.checked,item:a},function(){a.select();});});}});m.legend.itemStyle.cursor="pointer";z(C.prototype,{showResetZoom:function(){function a(){b.zoomOut();}var b=this,c=m.lang,e=b.options.chart.resetZoomButton,f=e.theme,h=f.states,d="chart"===e.relativeTo?null:"plotBox";u(this,"beforeShowResetZoom",null,
@@ -5531,24 +5531,97 @@
 (function(resourcesUrl){
     /** @ionic/core global **/
 
-    function configFromURL() {
-        const config = {};
-        const win = window;
-        win.location.search.slice(1)
-            .split('&')
-            .filter(entryText => entryText.startsWith('ionic:'))
-            .map(entryText => entryText.split('='))
-            .forEach(entry => {
-            config[entry[0].slice(6)] = decodeURIComponent(entry[1]);
-        });
-        return config;
+    const PLATFORMS_MAP = {
+        'ipad': isIpad,
+        'iphone': isIphone,
+        'ios': isIOS,
+        'android': isAndroid,
+        'phablet': isPhablet,
+        'tablet': isTablet,
+        'cordova': isCordova,
+        'capacitor': isCapacitorNative,
+        'electron': isElectron,
+        'pwa': isPWA,
+        'mobile': isMobile,
+        'desktop': isDesktop,
+        'hybrid': isHybrid
+    };
+    function getPlatforms(win) {
+        return setupPlatforms(win);
     }
-
+    function isPlatform(win, platform) {
+        return getPlatforms(win).includes(platform);
+    }
+    function setupPlatforms(win) {
+        win.Ionic = win.Ionic || {};
+        let platforms = win.Ionic.platforms;
+        if (platforms == null) {
+            platforms = win.Ionic.platforms = detectPlatforms(win);
+            const classList = win.document.documentElement.classList;
+            platforms.forEach(p => classList.add(`plt-${p}`));
+        }
+        return platforms;
+    }
+    function detectPlatforms(win) {
+        return Object.keys(PLATFORMS_MAP).filter(p => PLATFORMS_MAP[p](win));
+    }
+    function isIpad(win) {
+        return testUserAgent(win, /iPad/i);
+    }
+    function isIphone(win) {
+        return testUserAgent(win, /iPhone/i);
+    }
     function isIOS(win) {
         return testUserAgent(win, /iPad|iPhone|iPod/i);
     }
+    function isAndroid(win) {
+        return testUserAgent(win, /android|sink/i);
+    }
+    function isPhablet(win) {
+        const width = win.innerWidth;
+        const height = win.innerHeight;
+        const smallest = Math.min(width, height);
+        const largest = Math.max(width, height);
+        return (smallest > 390 && smallest < 520) &&
+            (largest > 620 && largest < 800);
+    }
+    function isTablet(win) {
+        const width = win.innerWidth;
+        const height = win.innerHeight;
+        const smallest = Math.min(width, height);
+        const largest = Math.max(width, height);
+        return (smallest > 460 && smallest < 820) &&
+            (largest > 780 && largest < 1400);
+    }
+    function isMobile(win) {
+        return matchMedia(win, '(any-pointer:coarse)');
+    }
+    function isDesktop(win) {
+        return !isMobile(win);
+    }
+    function isHybrid(win) {
+        return isCordova(win) || isCapacitorNative(win);
+    }
+    function isCordova(window) {
+        const win = window;
+        return !!(win['cordova'] || win['phonegap'] || win['PhoneGap']);
+    }
+    function isCapacitorNative(window) {
+        const win = window;
+        const capacitor = win['Capacitor'];
+        return !!(capacitor && capacitor.isNative);
+    }
+    function isElectron(win) {
+        return testUserAgent(win, /electron/);
+    }
+    function isPWA(win) {
+        return win.matchMedia('(display-mode: standalone)').matches;
+    }
     function testUserAgent(win, expr) {
         return expr.test(win.navigator.userAgent);
+    }
+    function matchMedia(win, query) {
+        return win.matchMedia(query).matches;
     }
 
     class Config {
@@ -5577,23 +5650,63 @@
             this.m.set(key, value);
         }
     }
+    function configFromSession() {
+        try {
+            const configStr = window.sessionStorage.getItem(IONIC_SESSION_KEY);
+            return configStr !== null ? JSON.parse(configStr) : {};
+        }
+        catch (e) {
+            return {};
+        }
+    }
+    function saveConfig(config) {
+        try {
+            window.sessionStorage.setItem(IONIC_SESSION_KEY, JSON.stringify(config));
+        }
+        catch (e) {
+            return;
+        }
+    }
+    function configFromURL() {
+        const config = {};
+        const win = window;
+        win.location.search.slice(1)
+            .split('&')
+            .map(entry => entry.split('='))
+            .map(([key, value]) => [decodeURIComponent(key), decodeURIComponent(value)])
+            .filter(([key]) => startsWith(key, IONIC_PREFIX))
+            .map(([key, value]) => [key.slice(IONIC_PREFIX.length), value])
+            .forEach(([key, value]) => {
+            config[key] = value;
+        });
+        return config;
+    }
+    function startsWith(input, search) {
+        return input.substr(0, search.length) === search;
+    }
+    const IONIC_PREFIX = 'ionic:';
+    const IONIC_SESSION_KEY = 'ionic-persist-config';
 
-    const Ionic = window['Ionic'] = window['Ionic'] || {};
-    // queue used to coordinate DOM reads and
-    // write in order to avoid layout thrashing
+    const win = window;
+    const Ionic = win['Ionic'] = win['Ionic'] || {};
     Object.defineProperty(Ionic, 'queue', {
         get: () => Context['queue']
     });
-    // create the Ionic.config from raw config object (if it exists)
-    // and convert Ionic.config into a ConfigApi that has a get() fn
-    const config = Ionic['config'] = Context['config'] = new Config(Object.assign({}, Ionic['config'], configFromURL()));
-    // first see if the mode was set as an attribute on <html>
-    // which could have been set by the user, or by prerendering
-    // otherwise get the mode via config settings, and fallback to md
+    setupPlatforms(win);
+    Context.isPlatform = isPlatform;
+    const configObj = Object.assign({}, configFromSession(), { persistConfig: false }, Ionic['config'], configFromURL());
+    const config = Ionic['config'] = Context['config'] = new Config(configObj);
+    if (config.getBoolean('persistConfig')) {
+        saveConfig(configObj);
+    }
     const documentElement = document.documentElement;
-    const mode = config.get('mode', documentElement.getAttribute('mode') || (isIOS(window) ? 'ios' : 'md'));
+    const mode = config.get('mode', documentElement.getAttribute('mode') || (isPlatform(win, 'ios') ? 'ios' : 'md'));
     Ionic.mode = Context.mode = mode;
     config.set('mode', mode);
-    documentElement.setAttribute('mode', Ionic.mode);
+    documentElement.setAttribute('mode', mode);
+    documentElement.classList.add(mode);
+    if (config.getBoolean('_testing')) {
+        config.set('animated', false);
+    }
 })(resourcesUrl);
 })("App");

@@ -15,6 +15,7 @@ import {
   appSetOrders,
   appSetDust,
 } from '../../actions/app';
+
 import { CURRENCYSERVICE, BALANCESERVICE, EXCHANGESERVICE, TICKERSERVICE, WALLETSERVICE, TOKENSERVICE, TRADESERVICE } from '../../services/globals';
 
 @Component({
@@ -123,23 +124,24 @@ export class MyApp {
           <ion-route url="/settings/dust" component="app-dust" />
           <ion-route url="/panic" component="app-panic" />
         </ion-router>
-        <ion-nav animated={true} margin-bottom swipeBackEnabled={false} onIonNavDidChange={() => this.setNav()} />,
+        <ion-nav animated={true} margin-bottom onIonNavDidChange={() => this.setNav()} />
+        
         <ion-footer class="footerHeight">
-          <ion-tabs color="light" tabbarHighlight={true} useRouter={false}>
+          <ion-tabs color="light" useRouter={false}>
             <ion-tab icon="swap" label="Trade" onIonSelect={() => this.nav.setRoot('app-trade')} />
             <ion-tab icon="time" label="Orders" onIonSelect={() => this.nav.setRoot('app-orders')} />
             <ion-tab icon="pie" label="Overview" onIonSelect={() => this.nav.setRoot('app-overview')} />
             <ion-tab icon="list-box" label="Exchanges" onIonSelect={() => this.nav.setRoot('app-exchanges')} />
             <ion-tab icon="wallet" label="Wallets" onIonSelect={() => this.nav.setRoot('app-wallets')} />
           </ion-tabs>
-        </ion-footer>,
+        </ion-footer>
       </ion-app>
     ) : (
-      [
-        <div class="progress" text-center>
-          <ion-icon name="sync" class="spin" />
-        </div>,
-      ]
-    );
+        [
+          <div class="progress" text-center>
+            <ion-icon name="sync" class="spin" />
+          </div>
+        ]
+      );
   }
 }

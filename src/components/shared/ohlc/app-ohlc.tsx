@@ -140,7 +140,7 @@ export class AppOhlc {
         </ion-segment-button>
       </ion-segment>,
       <div id="ohlc" style={{ height: '200px', display: this.isLoading ? 'none' : 'block' }} />,
-      <div style={{ height: '200px', display: !this.isLoading ? 'none' : 'block' }} padding>
+      <div style={{ height: '200px', display: !this.isLoading ? 'none' : 'block' }}>
         Loading chart...
       </div>,
       <div padding-left padding-right>

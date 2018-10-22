@@ -139,7 +139,7 @@ export class BalanceService {
                       response.walletTotal += +scopedWallets[index].balance * +walletData[index].data.data.quotes.BTC.price;
                     }
                     response.tickers = scopedTickers;
-                    response.orders = orders;
+                    response.orders = orders.filter((o) => o.orderId); // filter out failed orders
                     response.wallets = scopedWallets;
                     response.exchanges = exchanges.map((e) => {
                       let newData = scopedExchanges.find((s) => s.id === e.id);

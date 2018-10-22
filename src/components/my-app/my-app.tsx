@@ -105,27 +105,28 @@ export class MyApp {
   render() {
     return !this.loading ? (
       <ion-app>
-        <ion-router useHash={false}>
-          <ion-route url="/" component="app-overview" />
-          <ion-route url="/pair/:exchangeId/:pair" component="app-pair" />
-          <ion-route url="/exchanges" component="app-exchanges" />
-          <ion-route url="/wallets" component="app-wallets" />
-          <ion-route url="/trade" component="app-trade" />
-          <ion-route url="/orders" component="app-orders" />
-          <ion-route url="/orders/:orderId" component="app-order" />
-          <ion-route url="/settings" component="app-settings" />
-          <ion-route url="/settings/tutorial" component="app-tutorial" />
-          <ion-route url="/settings/keys" component="app-keys" />
-          <ion-route url="/settings/keys/:exchangeId" component="app-exchangekeys" />
-          <ion-route url="/settings/basecurrency" component="app-basecurrency" />
-          <ion-route url="/settings/holdings" component="app-holdings" />
-          <ion-route url="/settings/holdings/:walletId" component="app-editwallet" />
-          <ion-route url="/settings/premium" component="app-premium" />
-          <ion-route url="/settings/dust" component="app-dust" />
-          <ion-route url="/panic" component="app-panic" />
-        </ion-router>
-        <ion-nav animated={true} margin-bottom onIonNavDidChange={() => this.setNav()} />
-        
+        <ion-content>
+          <ion-router useHash={false}>
+            <ion-route url="/" component="app-overview" />
+            <ion-route url="/pair/:exchangeId/:pair" component="app-pair" />
+            <ion-route url="/exchanges" component="app-exchanges" />
+            <ion-route url="/wallets" component="app-wallets" />
+            <ion-route url="/trade" component="app-trade" />
+            <ion-route url="/orders" component="app-orders" />
+            <ion-route url="/orders/:orderId" component="app-order" />
+            <ion-route url="/settings" component="app-settings" />
+            <ion-route url="/settings/tutorial" component="app-tutorial" />
+            <ion-route url="/settings/keys" component="app-keys" />
+            <ion-route url="/settings/keys/:exchangeId" component="app-exchangekeys" />
+            <ion-route url="/settings/basecurrency" component="app-basecurrency" />
+            <ion-route url="/settings/holdings" component="app-holdings" />
+            <ion-route url="/settings/holdings/:walletId" component="app-editwallet" />
+            <ion-route url="/settings/premium" component="app-premium" />
+            <ion-route url="/settings/dust" component="app-dust" />
+            <ion-route url="/panic" component="app-panic" />
+          </ion-router>
+          <ion-nav animated={true} margin-bottom onIonNavDidChange={() => this.setNav()} />
+        </ion-content>
         <ion-footer class="footerHeight">
           <ion-tabs color="light" useRouter={false}>
             <ion-tab icon="swap" label="Trade" onIonSelect={() => this.nav.setRoot('app-trade')} />

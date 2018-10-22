@@ -1399,11 +1399,11 @@ self.workbox.precaching.precacheAndRoute([
   },
   {
     "url": "build/app.css",
-    "revision": "2c895a5c0a14d88befe0f6f7b8c434e3"
+    "revision": "f9d940f64ef1fbdb8624e022350185b0"
   },
   {
     "url": "build/app.js",
-    "revision": "387578120b7eb620f7d34749b642f918"
+    "revision": "b6e75f90e42553bd1a86e78e8bc1db8e"
   },
   {
     "url": "build/app/app-balanceitem.ios.entry.js",
@@ -4427,7 +4427,7 @@ self.workbox.precaching.precacheAndRoute([
   },
   {
     "url": "index.html",
-    "revision": "4ae09ba87e104cb35c5d5a3c27f6b586"
+    "revision": "7d1e4df79f00823673c199e47765427a"
   },
   {
     "url": "manifest.json",

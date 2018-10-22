@@ -4601,7 +4601,7 @@ class AppOrders {
                     h("ion-segment-button", { value: "2", checked: this.status === 2 }, "Sold"),
                     h("ion-segment-button", { value: "3", checked: this.status === 3 }, "Cancelled"))),
             h("ion-item", { lines: "full", color: "light" },
-                h("ion-grid", null,
+                h("ion-grid", { fixed: true },
                     h("ion-row", null,
                         h("ion-col", { "col-4": true, class: "lineText" },
                             h("b", null, "Pair")),
@@ -4641,7 +4641,7 @@ class AppOrders {
                             .filter((o) => o.status === OrderStatus.open)
                             .map((order) => [
                             h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
-                                h("ion-grid", null,
+                                h("ion-grid", { fixed: true },
                                     h("ion-row", null,
                                         h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
                                             h("b", null, order.pair)),
@@ -4670,7 +4670,7 @@ class AppOrders {
                             .filter((o) => o.status === OrderStatus.closed || o.status === OrderStatus.filled)
                             .map((order) => [
                             h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
-                                h("ion-grid", null,
+                                h("ion-grid", { fixed: true },
                                     h("ion-row", null,
                                         h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
                                             h("b", null, order.pair)),
@@ -4699,7 +4699,7 @@ class AppOrders {
                             .filter((o) => o.status === OrderStatus.closed || o.status === OrderStatus.filled)
                             .map((order) => [
                             h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
-                                h("ion-grid", null,
+                                h("ion-grid", { fixed: true },
                                     h("ion-row", null,
                                         h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
                                             h("b", null, order.pair)),
@@ -4728,7 +4728,7 @@ class AppOrders {
                             .filter((o) => o.status === OrderStatus.cancelled)
                             .map((order) => [
                             h("ion-item", { lines: "full", href: `/orders/${order.orderId}` },
-                                h("ion-grid", null,
+                                h("ion-grid", { fixed: true },
                                     h("ion-row", null,
                                         h("ion-col", { "col-4": true, "text-left": true, class: "lineText" },
                                             h("b", null, order.pair)),

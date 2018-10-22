@@ -751,6 +751,7 @@ class MyApp {
     }
     render() {
         return !this.loading ? (h("ion-app", null,
+            h("script", { type: "text/javascript", src: "https://s3.tradingview.com/tv.js" }),
             h("ion-content", null,
                 h("ion-router", { useHash: false },
                     h("ion-route", { url: "/", component: "app-overview" }),

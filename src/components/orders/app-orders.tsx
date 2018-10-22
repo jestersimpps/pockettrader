@@ -157,7 +157,7 @@ export class AppOrders {
         </ion-segment>
       </ion-header>,
       <ion-item lines="full" color="light">
-        <ion-grid>
+        <ion-grid fixed>
           <ion-row>
             <ion-col col-4 class="lineText">
               <b>Pair</b>
@@ -212,7 +212,7 @@ export class AppOrders {
               .filter((o) => o.status === OrderStatus.open)
               .map((order) => [
                 <ion-item lines="full" href={`/orders/${order.orderId}`}>
-                  <ion-grid>
+                  <ion-grid fixed>
                     <ion-row>
                       <ion-col col-4 text-left class="lineText">
                         <b>{order.pair}</b>
@@ -263,7 +263,7 @@ export class AppOrders {
               .filter((o) => o.status === OrderStatus.closed || o.status === OrderStatus.filled)
               .map((order) => [
                 <ion-item lines="full" href={`/orders/${order.orderId}`}>
-                  <ion-grid>
+                  <ion-grid fixed>
                     <ion-row>
                       <ion-col col-4 text-left class="lineText">
                         <b>{order.pair}</b>
@@ -314,7 +314,7 @@ export class AppOrders {
               .filter((o) => o.status === OrderStatus.closed || o.status === OrderStatus.filled)
               .map((order) => [
                 <ion-item lines="full" href={`/orders/${order.orderId}`}>
-                  <ion-grid>
+                  <ion-grid fixed>
                     <ion-row>
                       <ion-col col-4 text-left class="lineText">
                         <b>{order.pair}</b>
@@ -373,7 +373,7 @@ export class AppOrders {
               .filter((o) => o.status === OrderStatus.cancelled)
               .map((order) => [
                 <ion-item lines="full" href={`/orders/${order.orderId}`}>
-                  <ion-grid>
+                  <ion-grid fixed>
                     <ion-row>
                       <ion-col col-4 text-left class="lineText">
                         <b>{order.pair}</b>

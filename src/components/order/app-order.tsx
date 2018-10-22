@@ -164,14 +164,12 @@ export class AppOrder {
               Cancel Order
             </ion-button>
           )}
-          {this.order.status !== OrderStatus.open && (
-            <ion-nav-pop>
-              <ion-button color="danger" expand="full" disabled={this.isLoading} onClick={() => this.deleteOrder()}>
-                {this.isLoading && <ion-icon name="refresh" class="spin" margin-right />}
-                Delete Order
+          <ion-nav-pop>
+            <ion-button color="danger" expand="full" disabled={this.isLoading} onClick={() => this.deleteOrder()}>
+              {this.isLoading && <ion-icon name="refresh" class="spin" margin-right />}
+              Delete Order
               </ion-button>
-            </ion-nav-pop>
-          )}
+          </ion-nav-pop>
         </ion-list>
       </ion-content>,
     ];

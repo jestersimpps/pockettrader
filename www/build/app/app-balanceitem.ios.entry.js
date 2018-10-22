@@ -13,7 +13,7 @@ class AppBalanceItem {
         return [
             // TODO: if exchangeid == null, pick one
             this.exchangeId === null ? (h("ion-item", { lines: "full" },
-                h("ion-grid", null,
+                h("ion-grid", { fixed: true },
                     h("ion-row", null,
                         h("ion-col", { "col-4": true, class: "lineText" },
                             h("app-cryptoicon", { class: "cicon", symbol: this.cryptodata.currency })),
@@ -30,7 +30,7 @@ class AppBalanceItem {
                             h("b", { style: { color: this.cryptodata.change > 0 ? '#10dc60' : '#f53d3d' } }, this.cryptodata.change > 0
                                 ? '+' + numeral(this.cryptodata.change).format('0,0.00') + ' %'
                                 : numeral(this.cryptodata.change).format('0,0.00') + ' %')))))) : (h("ion-item", { lines: "full", href: `/pair/${this.exchangeId}/${this.cryptodata.currency}` },
-                h("ion-grid", null,
+                h("ion-grid", { fixed: true },
                     h("ion-row", null,
                         h("ion-col", { "col-4": true, class: "lineText" },
                             h("app-cryptoicon", { class: "cicon", symbol: this.cryptodata.currency })),

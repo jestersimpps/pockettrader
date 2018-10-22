@@ -86,10 +86,10 @@ class AppOrder {
                     this.order.status === OrderStatus.open && (h("ion-button", { color: "danger", expand: "full", disabled: this.isLoading, onClick: () => this.cancelOrder() },
                         this.isLoading && h("ion-icon", { name: "refresh", class: "spin", "margin-right": true }),
                         "Cancel Order")),
-                    this.order.status !== OrderStatus.open && (h("ion-nav-pop", null,
+                    h("ion-nav-pop", null,
                         h("ion-button", { color: "danger", expand: "full", disabled: this.isLoading, onClick: () => this.deleteOrder() },
                             this.isLoading && h("ion-icon", { name: "refresh", class: "spin", "margin-right": true }),
-                            "Delete Order"))))),
+                            "Delete Order")))),
         ];
     }
     cancelOrder() {

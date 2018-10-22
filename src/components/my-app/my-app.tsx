@@ -105,6 +105,8 @@ export class MyApp {
   render() {
     return !this.loading ? (
       <ion-app>
+        <script type="text/javascript" src="https://s3.tradingview.com/tv.js" />
+
         <ion-content>
           <ion-router useHash={false}>
             <ion-route url="/" component="app-overview" />

@@ -85,7 +85,6 @@ class AppPair {
         };
         return [
             this.ticker && (h("ion-header", null,
-                h("script", { type: "text/javascript", src: "https://s3.tradingview.com/tv.js" }),
                 h("ion-toolbar", { color: "dark" },
                     h("ion-buttons", { slot: "start" },
                         h("ion-back-button", { defaultHref: `/exchanges` })),

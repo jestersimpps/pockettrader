@@ -20,7 +20,7 @@ export class AppBalanceItem {
       // TODO: if exchangeid == null, pick one
       this.exchangeId === null ? (
         <ion-item lines="full">
-          <ion-grid>
+          <ion-grid fixed>
             <ion-row>
               <ion-col col-4 class="lineText">
                 <app-cryptoicon class="cicon" symbol={this.cryptodata.currency} />
@@ -57,7 +57,7 @@ export class AppBalanceItem {
         </ion-item>
       ) : (
         <ion-item lines="full" href={`/pair/${this.exchangeId}/${this.cryptodata.currency}`}>
-          <ion-grid>
+          <ion-grid fixed>
             <ion-row>
               <ion-col col-4 class="lineText">
                 <app-cryptoicon class="cicon" symbol={this.cryptodata.currency} />

@@ -4,3 +4,8 @@ Pocket Trader is a progressive web app that installs on your phone by adding it 
 
 
 [![pockettrader](http://img.youtube.com/vi/AlKLlJV97tM/0.jpg)](http://www.youtube.com/watch?v=AlKLlJV97tM)
+
+
+See post on producthunt:
+
+https://www.producthunt.com/posts/pockettrader
